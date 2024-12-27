@@ -3,45 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Stay updated with the latest in cryptocurrency, blockchain, and DeFi trends.">
+    <meta name="keywords" content="Cryptocurrency, Blockchain, DeFi, Bitcoin, Ethereum, News">
+    <meta name="author" content="Crypto News">
     <title>Crypto News</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
         <a href="index.html" class="logo-link">
-            <img src="icon.png" alt="Crypto News Icon" class="logo-icon">
-            <div class="logo-text">Crypto News</div>
+            <img src="coinhama.png" alt="Crypto News Icon" class="logo-icon">
         </a>
         <nav class="nav">
-            <button id="aboutBtn">About</button>
-            <button id="contactBtn">Contact</button>
+            <button id="aboutBtn" class="nav-btn">About</button>
+            <button id="contactBtn" class="nav-btn">Contact</button>
         </nav>
     </header>
 
     <section class="filter">
-        <div id="tags"></div>
+        <div id="tags" class="tags-container"></div>
         <div class="search-container">
             <input type="text" id="searchBar" placeholder="Search articles...">
             <button id="searchBtn">Search</button>
         </div>
     </section>
 
-    <section class="articles">
-        <div class="left-column-container">
+    <main class="main-container">
+        <section class="articles">
             <div id="article-list" class="article-container"></div>
             <button id="loadMoreBtn" class="load-more-btn">Load More</button>
-        </div>
-        <div class="right-column">
-            <center>Advertisement</center>
+        </section>
+        <aside class="sidebar">
+            <h3>Advertisement</h3>
             <div class="ad-placeholder">
                 <img src="https://www17.wellsfargomedia.com/assets/images/the-private-bank/mountain-stream-350x200.jpg" alt="Ad Placeholder 1">
             </div>
             <div class="ad-placeholder">
                 <img src="https://static.vecteezy.com/system/resources/thumbnails/024/749/560/small/tranquil-autumn-forest-reflects-vibrant-colors-in-tranquil-pond-generated-by-ai-photo.jpg" alt="Ad Placeholder 2">
             </div>
-            <!-- Place widgets here -->
-        </div>
-    </section>
+        </aside>
+    </main>
 
     <script src="main.js"></script>
 </body>

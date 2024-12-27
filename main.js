@@ -1,82 +1,84 @@
-document.addEventListener('DOMContentLoaded', () => {
-    let currentArticles = [];
-    let allArticles = [];
-    let articleCount = 10;
+document.addEventListener("DOMContentLoaded", async () => {
+    const articleList = document.getElementById("article-list");
+    const tagsContainer = document.getElementById("tags");
+    const loadMoreBtn = document.getElementById("loadMoreBtn");
+    const searchBar = document.getElementById("searchBar");
+    const searchBtn = document.getElementById("searchBtn");
 
-    // Load articles and tags from articles.json
-    fetch('articles.json')
-        .then(response => response.json())
-        .then(data => {
-            allArticles = data.articles;
-            currentArticles = allArticles.slice(0, articleCount);
-            renderArticles();
-            renderTags();
-        })
-        .catch(error => {
-            console.error('Error loading articles:', error);
+    let articles = [];
+    let articlesPerPage = 10; // Set to 10 articles per load
+    let currentPage = 0;
+
+    async function fetchArticles() {
+        const response = await fetch('articles.json');
+        const data = await response.json();
+        return data;
+    }
+
+    function renderTags(tags) {
+        tags.forEach(tag => {
+            const tagBtn = document.createElement("button");
+            tagBtn.textContent = tag;
+            tagBtn.addEventListener("click", () => filterArticlesByTag(tag));
+            tagsContainer.appendChild(tagBtn);
         });
+    }
 
-    // Function to render articles
-    function renderArticles() {
-        const articleList = document.getElementById('article-list');
-        articleList.innerHTML = ''; // Clear the list
+    function renderArticles(filteredArticles) {
+        const startIndex = currentPage * articlesPerPage;
+        const endIndex = startIndex + articlesPerPage;
+        const articlesToRender = filteredArticles.slice(startIndex, endIndex);
 
-        currentArticles.forEach(article => {
-            const articleDiv = document.createElement('div');
-            articleDiv.classList.add('article');
-            articleDiv.innerHTML = `
+        articlesToRender.forEach(article => {
+            const articleCard = document.createElement("a");
+            articleCard.href = article.url;
+            articleCard.className = "article";
+            articleCard.innerHTML = `
                 <h2>${article.title}</h2>
                 <p>${article.excerpt}</p>
-                <button onclick="window.location.href='${article.url}'">Read More</button>
             `;
-            articleList.appendChild(articleDiv);
+            articleList.appendChild(articleCard);
         });
+
+        if (endIndex >= filteredArticles.length) {
+            loadMoreBtn.style.display = "none";
+        }
     }
 
-    // Function to render tags for filtering
-    function renderTags() {
-        const tagsContainer = document.getElementById('tags');
-        const tags = [...new Set(allArticles.flatMap(article => article.tags))]; // Unique tags
-        tagsContainer.innerHTML = '';
-
-        tags.forEach(tag => {
-            const tagButton = document.createElement('button');
-            tagButton.textContent = tag;
-            tagButton.onclick = () => filterByTag(tag);
-            tagsContainer.appendChild(tagButton);
-        });
+    function filterArticlesByTag(tag) {
+        currentPage = 0;
+        articleList.innerHTML = "";
+        const filtered = articles.filter(article => article.tags.includes(tag));
+        renderArticles(filtered);
     }
 
-    // Function to filter articles by tag
-    function filterByTag(tag) {
-        currentArticles = allArticles.filter(article => article.tags.includes(tag));
-        renderArticles();
-    }
-
-    function handleSearch() {
-        const searchQuery = document.getElementById('searchBar').value.toLowerCase(); // Convert to lowercase
-        currentArticles = allArticles.filter(article => {
-            // Check if the search query matches any part of the article content, title, or tags
-            return article.title.toLowerCase().includes(searchQuery) || 
-                   article.content.toLowerCase().includes(searchQuery) ||
-                   article.tags.some(tag => tag.toLowerCase().includes(searchQuery));
-        });
-        renderArticles();
-    }
-    
-
-    // Search event listener for both the search button and Enter key
-    document.getElementById('searchBtn').addEventListener('click', handleSearch);
-    document.getElementById('searchBar').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            handleSearch();
+    searchBar.addEventListener("keyup", (event) => {
+        if (event.key === "Enter") {
+            searchBtn.click();
         }
     });
 
-    // Load more articles
-    document.getElementById('loadMoreBtn').addEventListener('click', () => {
-        articleCount += 10;
-        currentArticles = allArticles.slice(0, articleCount);
-        renderArticles();
+    searchBtn.addEventListener("click", () => {
+        const query = searchBar.value.toLowerCase();
+        const filtered = articles.filter(article =>
+            article.title.toLowerCase().includes(query) ||
+            article.excerpt.toLowerCase().includes(query)
+        );
+        articleList.innerHTML = "";
+        renderArticles(filtered);
     });
+
+    loadMoreBtn.addEventListener("click", () => {
+        currentPage++;
+        renderArticles(articles);
+    });
+
+    async function init() {
+        const data = await fetchArticles();
+        articles = data.articles;
+        renderTags(data.tags);
+        renderArticles(articles);
+    }
+
+    init();
 });
