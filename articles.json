@@ -1,23 +1,17 @@
-{
-    "tags": [
-      "Bitcoin",
-      "Ethereum",
-      "Blockchain",
-      "DeFi"
-    ],
-    "articles": [
-      {
-        "title": "Bitcoin Price Predictions for 2024",
-        "excerpt": "Experts weigh in on Bitcoin's price movements for the upcoming year.",
-        "url": "/articles/article1.html",
-        "tags": ["Bitcoin"]
-      },
-      {
-        "title": "BONK Recovers Following 1.69 Trillion Token Burn",
-        "excerpt": "On December 26, 2024, the BONK Decentralized Autonomous Organization (DAO) completed a major milestone with the burn of 1.69 trillion BONK tokens. This event, known as BURNmas, aimed to reduce the total supply of the cryptocurrency, thereby increasing its scarcity and potentially boosting its market value.",
-        "url": "/articles/bonkburn241227.html",
-        "tags": ["Memecoin"]
-      }
-    ]
+[
+  {
+      "title": "Introduction to Cryptocurrency",
+      "image": "articles/bitcoin.jpg",
+      "file": "articles/article1.html"
+  },
+  {
+      "title": "Top 5 Crypto Wallets in 2024",
+      "image": "articles/article2.jpg",
+      "file": "articles/article2.html"
+  },
+  {
+      "title": "How to Trade Bitcoin Safely",
+      "image": "articles/article3.jpg",
+      "file": "articles/article3.html"
   }
-  
+]

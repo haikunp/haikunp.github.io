@@ -3,47 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Stay updated with the latest in cryptocurrency, blockchain, and DeFi trends.">
-    <meta name="keywords" content="Cryptocurrency, Blockchain, DeFi, Bitcoin, Ethereum, News">
-    <meta name="author" content="Crypto News">
-    <title>Crypto News</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta name="description" content="Cryptohama - Your ultimate guide to the top crypto exchanges, casinos, and faucets. Discover the best platforms for trading, betting, and earning cryptocurrency.">
+    <meta name="keywords" content="crypto, cryptocurrency, exchanges, casinos, faucets, top crypto platforms, crypto guide">
+    <meta name="author" content="Cryptohama">
+    <meta property="og:title" content="Cryptohama - Your Crypto Guide">
+    <meta property="og:description" content="Discover the best crypto platforms in the industry!">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.cryptohama.com">
+    <meta property="og:image" content="https://www.cryptohama.com/images/og-image.jpg">
+    <link rel="canonical" href="https://www.cryptohama.com">
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="preload" href="style.min.css" as="style">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="style.min.css" media="print" onload="this.media='all'">
+    <title>Cryptohama - Your Crypto Guide</title>
 </head>
 <body>
     <header>
-        <a href="index.html" class="logo-link">
-            <img src="coinhama.png" alt="Crypto News Icon" class="logo-icon">
-        </a>
-        <nav class="nav">
-            <button id="aboutBtn" class="nav-btn">About</button>
-            <button id="contactBtn" class="nav-btn">Contact</button>
+        <a href="index.html">
+            <img src="images/cryptohama.png" alt="Cryptohama Logo" class="logo">
+        </a>          <p>Discover the best crypto platforms in the industry!</p>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="blog.html">Blog</a>
+            <a href="about.html">About</a>
         </nav>
     </header>
 
-    <section class="filter">
-        <div id="tags" class="tags-container"></div>
-        <div class="search-container">
-            <input type="text" id="searchBar" placeholder="Search articles...">
-            <button id="searchBtn">Search</button>
-        </div>
-    </section>
-
-    <main class="main-container">
-        <section class="articles">
-            <div id="article-list" class="article-container"></div>
-            <button id="loadMoreBtn" class="load-more-btn">Load More</button>
+    <main>
+        <section class="grid">
+            <a href="exchanges.html" class="card">
+                <h2>Best Crypto Exchanges</h2>
+                <p>Explore the most reliable and user-friendly platforms.</p>
+            </a>
+            <a href="sportsbook.html" class="card">
+                <h2>Best Crypto Sportsbook</h2>
+                <p>Best sports bookies to bet on the games you like.</p>
+            </a>
+            <a href="casinos.html" class="card">
+                <h2>Best Crypto Casinos</h2>
+                <p>Play games and win rewards on trusted crypto casinos.</p>
+            </a>
+            <a href="faucets.html" class="card">
+                <h2>Best Crypto Faucets</h2>
+                <p>Earn crypto for free claiming faucets and watching ads.</p>
+            </a>
         </section>
-        <aside class="sidebar">
-            <h3>Advertisement</h3>
-            <div class="ad-placeholder">
-                <img src="https://www17.wellsfargomedia.com/assets/images/the-private-bank/mountain-stream-350x200.jpg" alt="Ad Placeholder 1">
-            </div>
-            <div class="ad-placeholder">
-                <img src="https://static.vecteezy.com/system/resources/thumbnails/024/749/560/small/tranquil-autumn-forest-reflects-vibrant-colors-in-tranquil-pond-generated-by-ai-photo.jpg" alt="Ad Placeholder 2">
-            </div>
-        </aside>
     </main>
 
-    <script src="main.js"></script>
+    <footer>
+        <p>© 2024 Cryptohama. All rights reserved.</p>
+    </footer>
+
+    <script src="scripts/main.js" async></script>
 </body>
 </html>
