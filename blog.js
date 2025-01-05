@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const articlesContainer = document.getElementById("articles");
     const loadMoreButton = document.getElementById("load-more");
     let currentPage = 1;
-    const cardsPerPage = 10; // Number of cards to load per click
+    const cardsPerPage = 30; // Number of cards to load per click
 
     // Fetch the articles from the JSON file
     fetch("articles.json")
