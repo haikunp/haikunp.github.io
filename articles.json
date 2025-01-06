@@ -1,17 +1,23 @@
 [
     {
-        "title": "Introduction to Cryptocurrency",
-        "image": "articles/bitcoin.jpg",
-        "file": "articles/article1.html"
+        "id": "article1",
+        "title": "Understanding Blockchain Technology",
+        "description": "Learn the basics of blockchain and how it powers cryptocurrencies.",
+        "image": "images/article1-thumbnail.jpg",
+        "link": "article1.html"
     },
     {
-        "title": "Top 5 Crypto Wallets in 2024",
-        "image": "articles/article2.jpg",
-        "file": "articles/article2.html"
+        "id": "article2",
+        "title": "Top 5 Cryptocurrencies to Watch in 2024",
+        "description": "Discover the top cryptocurrencies that are expected to make waves this year.",
+        "image": "images/article2-thumbnail.jpg",
+        "link": "article2.html"
     },
     {
-        "title": "How to Trade Bitcoin Safely",
-        "image": "articles/article3.jpg",
-        "file": "articles/article3.html"
+        "id": "article3",
+        "title": "How to Secure Your Crypto Wallet",
+        "description": "Essential tips to keep your cryptocurrency safe from hackers.",
+        "image": "images/article3-thumbnail.jpg",
+        "link": "article3.html"
     }
 ]

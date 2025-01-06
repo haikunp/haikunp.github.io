@@ -22,33 +22,33 @@ header {
     justify-content: space-between;
     align-items: center;
     background: linear-gradient(90deg, #162c3f, #333633);
-    padding: 1rem 2rem; /* Reduced padding */
+    padding: 1rem 2rem;
     color: var(--white);
     box-shadow: var(--shadow);
 }
 
 /* Logo Styling */
 .logo {
-    height: 40px; /* Adjust the height as needed */
-    width: auto; /* Maintain aspect ratio */
+    height: 40px;
+    width: auto;
 }
 
 header p {
     margin: 0;
     font-size: 1.2rem;
     text-align: center;
-    flex-grow: 1; /* Center the text */
+    flex-grow: 1;
 }
 
 header nav {
     display: flex;
-    gap: 1rem; /* Reduced gap between buttons */
+    gap: 1.5rem; /* Increased gap between buttons */
 }
 
 header nav a {
     text-decoration: none;
-    padding: 0.5rem 1rem; /* Smaller padding */
-    font-size: 0.9rem; /* Smaller font size */
+    padding: 0.75rem 1.5rem; /* Increased padding for larger buttons */
+    font-size: 1rem; /* Increased font size for better readability */
     font-weight: bold;
     color: var(--white);
     background-color: rgba(255, 255, 255, 0.2);
@@ -110,14 +110,14 @@ header nav a:focus {
     flex-direction: column;
     gap: 1.5rem;
     padding: 2rem 1rem;
-    max-width: 1000px; /* Reduced max-width for a more compact layout */
+    max-width: 1000px;
     margin: 0 auto;
 }
 
 .list-item {
     display: grid;
-    grid-template-columns: 150px 3fr 1fr; /* Adjusted column widths */
-    gap: 3rem; /* Increased gap for better spacing */
+    grid-template-columns: 150px 3fr 1fr;
+    gap: 3rem;
     align-items: center;
     padding: 2rem;
     background: var(--white);
@@ -132,7 +132,7 @@ header nav a:focus {
 }
 
 .list-item img {
-    max-width: 80px; /* Reduced logo size */
+    max-width: 80px;
     height: auto;
     margin: 0 auto;
     display: block;
@@ -144,7 +144,7 @@ header nav a:focus {
     color: var(--primary-color);
     font-weight: bold;
     text-align: center;
-    align-self: center; /* Align text vertically with the logo */
+    align-self: center;
 }
 
 .list-item p {
@@ -175,7 +175,7 @@ header nav a:focus {
     text-decoration: none;
     text-align: center;
     transition: background-color 0.3s;
-    margin-left: auto; /* Push the button to the right */
+    margin-left: auto;
 }
 
 .list-item .btn:hover,
@@ -210,6 +210,7 @@ header nav a:focus {
     width: 100%;
     height: 200px;
     object-fit: cover;
+    border-radius: 12px 12px 0 0;
 }
 
 #articles .card h2 {
@@ -219,68 +220,60 @@ header nav a:focus {
     color: var(--primary-color);
 }
 
-/* Footer */
-footer {
-    background: linear-gradient(90deg, #21282e, #19331a);
-    color: var(--white);
+#articles .card p {
+    padding: 0 1rem 1rem;
+    font-size: 1rem;
+    color: #666;
     text-align: center;
-    padding: 1rem; /* Reduced padding */
-    margin-top: 2rem;
-    font-size: 0.8rem; /* Smaller font size */
-    box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
-    border-top: 2px solid var(--secondary-color); /* Thinner border */
 }
 
-footer p {
-    margin: 0.25rem 0; /* Reduced margin */
+/* Featured Articles Section */
+#featured-articles {
+    padding: 1rem 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
-/* Load More Button */
-#load-more {
-    display: block;
-    margin: 2rem auto;
-    padding: 0.75rem 1.5rem;
+#featured-articles h2 {
+    text-align: center;
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+}
+
+#featured-articles .card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 12px 12px 0 0;
+}
+
+#featured-articles .card h3 {
+    font-size: 1.25rem;
+    color: var(--primary-color);
+    margin: 1rem 0 0.5rem;
+}
+
+#featured-articles .card p {
+    font-size: 1rem;
+    color: #666;
+    margin: 0.5rem 0;
+}
+
+#featured-articles .btn {
+    display: inline-block;
     background-color: var(--primary-color);
     color: var(--white);
-    border: none;
+    padding: 0.75rem 1.5rem;
     border-radius: 5px;
     font-size: 1rem;
     font-weight: bold;
-    cursor: pointer;
+    text-decoration: none;
     transition: background-color 0.3s;
 }
 
-#load-more:hover {
+#featured-articles .btn:hover {
     background-color: var(--secondary-color);
-}
-
-/* Back to Top Button */
-.back-to-top {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: rgb(243, 247, 20);
-    color: rgb(60, 6, 255);
-    padding: 5px;
-    border-radius: 50%;
-    text-decoration: none;
-    box-shadow: var(--shadow);
-    transition: all 0.3s ease;
-    font-size: 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 50px;
-    height: 50px;
-    border: 2px solid black;
-    cursor: pointer;
-}
-
-.back-to-top:hover {
-    color: rgb(252, 252, 252);
-    border-color: white;
-    background-color: rgba(82, 236, 51, 0.8);
-    transform: translateY(-5px);
 }
 
 /* Article Page Specific Styles */
@@ -355,8 +348,107 @@ footer p {
     text-decoration: underline;
 }
 
+/* Footer */
+footer {
+    background: linear-gradient(90deg, #21282e, #19331a);
+    color: var(--white);
+    text-align: center;
+    padding: 1rem;
+    margin-top: 2rem;
+    font-size: 0.8rem;
+    box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+    border-top: 2px solid var(--secondary-color);
+}
+
+footer p {
+    margin: 0.25rem 0;
+}
+
+/* Load More Button */
+#load-more {
+    display: block;
+    margin: 2rem auto;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#load-more:hover {
+    background-color: var(--secondary-color);
+}
+
+/* Back to Top Button */
+.back-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: rgb(243, 247, 20);
+    color: rgb(60, 6, 255);
+    padding: 5px;
+    border-radius: 50%;
+    text-decoration: none;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border: 2px solid black;
+    cursor: pointer;
+}
+
+.back-to-top:hover {
+    color: rgb(252, 252, 252);
+    border-color: white;
+    background-color: rgba(82, 236, 51, 0.8);
+    transform: translateY(-5px);
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
+    /* Adjust header for mobile */
+    header {
+        flex-direction: column;
+        padding: 0.5rem;
+    }
+
+    header p {
+        font-size: 1rem;
+        margin: 0.5rem 0;
+    }
+
+    header nav {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem; /* Adjusted gap for mobile */
+    }
+
+    header nav a {
+        font-size: 0.9rem; /* Slightly smaller font size for mobile */
+        padding: 0.5rem 1rem; /* Adjusted padding for mobile */
+    }
+
+    /* Adjust grid layout for mobile */
+    .grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    /* Adjust card padding for mobile */
+    .card {
+        padding: 1rem;
+    }
+
+    /* Adjust article content for mobile */
     .article-content {
         margin: 1rem;
         padding: 1rem;
@@ -382,19 +474,7 @@ footer p {
         font-size: 1rem;
     }
 
-    .logo {
-        height: 30px; /* Smaller logo for mobile */
-    }
-
-    header {
-        padding: 0.5rem 1rem; /* Reduce padding for mobile */
-    }
-
-    header nav a {
-        padding: 0.5rem; /* Smaller padding for mobile */
-        font-size: 0.8rem; /* Smaller font size for mobile */
-    }
-
+    /* Stack columns for list items on mobile */
     .list-item {
         grid-template-columns: 1fr;
         gap: 1rem;
@@ -423,9 +503,5 @@ footer p {
 
     .list-item .btn {
         margin: 1rem auto 0;
-    }
-
-    .grid {
-        padding: 1rem;
     }
 }
