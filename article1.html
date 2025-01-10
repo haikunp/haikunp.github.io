@@ -1,57 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Understanding Blockchain Technology - Cryptohama Blog">
-    <meta name="keywords" content="blockchain, cryptocurrency, crypto technology">
-    <meta name="author" content="Cryptohama">
-    <meta property="og:title" content="Understanding Blockchain Technology - Cryptohama Blog">
-    <meta property="og:description" content="Learn the basics of blockchain and how it powers cryptocurrencies.">
-    <meta property="og:type" content="article">
-    <meta property="og:url" content="https://www.cryptohama.com/article1.html">
-    <meta property="og:image" content="https://www.cryptohama.com/images/article1-thumbnail.jpg">
-    <link rel="canonical" href="https://www.cryptohama.com/article1.html">
-    <link rel="stylesheet" href="style.min.css" media="print" onload="this.media='all'">
-    <title>Understanding Blockchain Technology - Cryptohama Blog</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Learn about Bitcoin, the world's first cryptocurrency. Discover how it works, its history, and why it's revolutionary.">
+  <meta name="keywords" content="Bitcoin, cryptocurrency, blockchain, Bitcoin history">
+  <meta name="author" content="Cryptohama">
+  <title>What is Bitcoin? - Cryptohama</title>
+  <link rel="stylesheet" href="styles.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="images/favicon.png">
 </head>
 <body>
-    <header>
-        <a href="index.html">
-            <img src="images/cryptohama.png" alt="Cryptohama Logo" class="logo">
+  <!-- Navbar -->
+  <header>
+    <nav>
+      <div class="container">
+        <a href="index.html" class="logo">
+          <img src="images/cryptohama.png" alt="Cryptohama Logo" width="120" height="30">
         </a>
-        <p>Understanding Blockchain Technology</p>
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="blog.html">Blog</a>
-            <a href="about.html">About</a>
-        </nav>
-    </header>
+      </div>
+    </nav>
+  </header>
 
-    <main>
-        <article class="article-content">
-            <img src="images/article1-thumbnail.jpg" alt="Article 1 Thumbnail" class="article-image">
-            <div class="article-text">
-                <h1>Understanding Blockchain Technology</h1>
-                <p>Blockchain technology is the backbone of cryptocurrencies like Bitcoin and Ethereum. It is a decentralized ledger that records all transactions across a network of computers. This ensures transparency and security, as each transaction is verified by multiple nodes in the network.</p>
-                <h2>How Does Blockchain Work?</h2>
-                <p>When a transaction is made, it is grouped with other transactions into a block. This block is then added to the chain of previous blocks, hence the name "blockchain." Each block contains a unique code called a hash, which ensures the integrity of the data.</p>
-                <h3>Benefits of Blockchain</h3>
-                <ul>
-                    <li><strong>Decentralization:</strong> No single entity controls the blockchain, making it resistant to censorship and fraud.</li>
-                    <li><strong>Transparency:</strong> All transactions are publicly recorded, ensuring accountability.</li>
-                    <li><strong>Security:</strong> The use of cryptographic hashes makes it nearly impossible to alter past transactions.</li>
-                </ul>
-                <p>Blockchain technology has the potential to revolutionize various industries, from finance to supply chain management. By understanding how it works, you can better appreciate the innovation behind cryptocurrencies.</p>
-            </div>
-        </article>
-    </main>
+  <!-- Main Content -->
+  <main>
+    <article class="article-container">
+      <h1>What is Bitcoin?</h1>
+      <p class="article-meta">Published on October 1, 2023</p>
+      <img src="images/bitcoin.jpg" alt="Bitcoin Illustration" class="article-image">
+      <p>Bitcoin is the world's first decentralized digital currency, created in 2009 by an unknown person or group using the pseudonym Satoshi Nakamoto. It operates on a technology called blockchain, which is a distributed ledger enforced by a network of computers (nodes).</p>
 
-    <footer>
-        <p>© 2024 Cryptohama. All rights reserved.</p>
-    </footer>
+      <h2>How Does Bitcoin Work?</h2>
+      <p>Bitcoin transactions are verified by network nodes through cryptography and recorded in a public ledger called a blockchain. Bitcoin is unique in that there are a finite number of them: only 21 million bitcoins will ever exist.</p>
 
-    <!-- Back to Top Button -->
-    <a href="#top" class="back-to-top" aria-label="Back to top">🔝</a>
+      <h3>Key Features of Bitcoin</h3>
+      <ul>
+        <li><strong>Decentralized:</strong> No central authority controls Bitcoin.</li>
+        <li><strong>Transparent:</strong> All transactions are recorded on the blockchain.</li>
+        <li><strong>Secure:</strong> Cryptographic algorithms ensure the security of transactions.</li>
+        <li><strong>Limited Supply:</strong> Only 21 million bitcoins will ever be mined.</li>
+      </ul>
+
+      <h2>Why is Bitcoin Revolutionary?</h2>
+      <p>Bitcoin eliminates the need for intermediaries like banks, allowing for peer-to-peer transactions. It also provides financial inclusion to people without access to traditional banking systems.</p>
+
+      <h3>The Future of Bitcoin</h3>
+      <p>As the first cryptocurrency, Bitcoin has paved the way for thousands of other digital currencies. Its impact on finance, technology, and society continues to grow, making it a revolutionary force in the modern world.</p>
+    </article>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <ul class="footer-links">
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="terms.html">Terms of Service</a></li>
+        <li><a href="privacy.html">Privacy Policy</a></li>
+      </ul>
+      <p>&copy; 2023 Cryptohama. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Back to Top Button -->
+  <button id="back-to-top" class="back-to-top-btn" aria-label="Back to top">↑</button>
+
+  <!-- Embedded JavaScript -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const backToTopButton = document.getElementById('back-to-top');
+
+      // Back to Top Button
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+          backToTopButton.classList.add('visible');
+        } else {
+          backToTopButton.classList.remove('visible');
+        }
+      });
+
+      backToTopButton.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+  </script>
 </body>
 </html>

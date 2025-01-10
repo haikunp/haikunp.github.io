@@ -1,0 +1,380 @@
+:root {
+  --primary-color: #4a90e2; /* Soft blue for primary actions */
+  --primary-hover: #357abd; /* Darker blue for hover states */
+  --background-light: #f9fafb; /* Light gray for background */
+  --background-dark: #1a1f2b; /* Dark navy for dark sections */
+  --text-light: #ffffff; /* White for text on dark backgrounds */
+  --text-dark: #2d3748; /* Dark gray for text on light backgrounds */
+  --text-muted: #1b1d20; /* Muted gray for secondary text */
+  --heading-color: #2c3e50; /* Dark blue-gray for headings */
+  --navbar-gradient: linear-gradient(90deg, #1c2b4f, #2a3a5e); /* Dark navy gradient for navbar */
+  --body-gradient: linear-gradient(135deg, #f0f4f8, #e2e8f0); /* Subtle light gradient for body */
+  --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow for cards */
+  --card-hover-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); /* Stronger shadow for hover states */
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+  background: var(--body-gradient); /* Subtle light gradient */
+  color: var(--text-dark);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+h1, h2, h3 {
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 1rem;
+  color: var(--heading-color); /* Dark blue-gray for headings */
+}
+
+h1 {
+  font-size: 2.5rem;
+}
+
+h2 {
+  font-size: 2rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+p {
+  margin: 0 0 1.5rem;
+  color: var(--text-muted); /* Muted gray for paragraphs */
+}
+
+.containernav, .container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px 0;
+}
+
+nav {
+  background: var(--navbar-gradient); /* Dark navy gradient */
+  padding: 8px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+nav .logo img {
+  height: 40px;
+  width: auto;
+}
+
+.best {
+  padding: 20px 0;
+}
+
+.best h2, .articles h2 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+/* Home page grid - 3 cards per row on large screens */
+.home-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 1024px) {
+  .home-grid {
+      grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .home-grid {
+      grid-template-columns: 1fr;
+  }
+}
+
+/* Default grid - 2 cards per row on large screens */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .grid {
+      grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  background: var(--text-light); /* White background for cards */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: var(--card-shadow); /* Soft shadow */
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--card-hover-shadow); /* Stronger shadow on hover */
+  background: #f8f9fa; /* Slightly lighter background on hover */
+}
+
+.card h3 {
+  font-size: 1.5rem;
+  margin: 0 0 10px;
+  color: var(--heading-color); /* Dark blue-gray for card titles */
+}
+
+.card p {
+  font-size: 1rem;
+  color: var(--text-muted); /* Muted gray for card text */
+}
+
+.articles {
+  padding: 20px 0;
+}
+
+.article-container {
+  background: var(--text-light); /* White background for articles */
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: var(--card-shadow); /* Soft shadow */
+  max-width: 800px;
+  margin: 0 auto;
+  margin-top: 10px;
+}
+
+.article-image {
+  max-width: 100%; /* Ensures the image does not exceed the width of its container */
+  height: auto; /* Maintains the image's aspect ratio */
+  display: block; /* Ensures the image behaves as a block element */
+  margin: 0 auto 30px; /* Centers the image horizontally and adds more margin at the bottom */
+  border-radius: 10px; /* Optional: Adds rounded corners for a polished look */
+}
+
+.article-container h1 {
+  font-size: 2rem; /* Adjusted size */
+  margin-bottom: 20px;
+  color: #2c3e50; /* Dark blue-gray for H1 */
+}
+
+.article-container h2 {
+  font-size: 1.8rem; /* Adjusted size */
+  margin-bottom: 15px;
+  color: #4a90e2; /* Soft blue for H2 */
+}
+
+.article-container h3 {
+  font-size: 1.6rem; /* Adjusted size */
+  margin-bottom: 10px;
+  color: #357abd; /* Darker blue for H3 */
+}
+
+.article-container p {
+  line-height: 1.8;
+  margin-bottom: 20px;
+}
+
+.article-container ul {
+  list-style: disc;
+  padding-left: 20px;
+  margin-bottom: 20px;
+}
+
+.article-container ul li {
+  margin-bottom: 10px;
+}
+
+.load-more-btn {
+  display: block;
+  margin: 20px auto 0;
+  padding: 12px 24px;
+  background: var(--primary-color); /* Soft blue for buttons */
+  color: var(--text-light); /* White text */
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.load-more-btn:hover {
+  background: var(--primary-hover); /* Darker blue on hover */
+  transform: translateY(-2px);
+}
+
+footer {
+  background: var(--background-dark); /* Dark navy for footer */
+  color: var(--text-light); /* White text */
+  padding: 10px 0;
+  margin-top: 20px;
+}
+
+footer .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+footer .footer-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 15px;
+}
+
+footer .footer-links a {
+  color: var(--text-light); /* White text */
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+footer .footer-links a:hover {
+  color: var(--primary-color); /* Soft blue on hover */
+}
+
+footer p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-light); /* White text */
+}
+
+.back-to-top-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px 15px;
+  background: var(--primary-color); /* Soft blue for button */
+  color: var(--text-light); /* White text */
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s ease, background 0.3s ease;
+}
+
+.back-to-top-btn.visible {
+  opacity: 1;
+}
+
+.back-to-top-btn:hover {
+  background: var(--primary-hover); /* Darker blue on hover */
+}
+
+.exchange-list h1 {
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.exchange-list .subtitle {
+  text-align: center;
+  font-size: 1.1rem;
+  color: var(--text-muted); /* Muted gray for subtitles */
+  margin-bottom: 40px;
+}
+
+.exchange-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.exchange-card {
+  background: var(--text-light); /* White background for cards */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: var(--card-shadow); /* Soft shadow */
+  border: 1px solid #e2e8f0; /* Light border */
+}
+
+.exchange-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.exchange-header h2 {
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.exchange-header .rating {
+  font-size: 1rem;
+  color: var(--primary-color); /* Soft blue for ratings */
+}
+
+.exchange-logo {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+.features {
+  list-style: disc;
+  padding-left: 20px;
+  margin: 15px 0;
+}
+
+.features li {
+  margin-bottom: 10px;
+}
+
+.best-for {
+  margin: 15px 0;
+  font-size: 0.9rem;
+  color: var(--text-muted); /* Muted gray for best-for text */
+}
+
+.exchange-link {
+  display: inline-block;
+  padding: 8px 16px;
+  background: var(--primary-color); /* Soft blue for links */
+  color: var(--text-light); /* White text */
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background 0.3s ease;
+}
+
+.exchange-link:hover {
+  background: var(--primary-hover); /* Darker blue on hover */
+}
+
+@media (max-width: 1024px) {
+  .grid {
+      grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .grid, .exchange-grid {
+      grid-template-columns: 1fr;
+  }
+
+  h2 {
+      font-size: 1.75rem;
+  }
+
+  footer .container {
+      flex-direction: column;
+      text-align: center;
+  }
+
+  footer .footer-links {
+      flex-direction: column;
+      gap: 10px;
+  }
+}
