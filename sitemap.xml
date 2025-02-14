@@ -1,20 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://cryptohama.com/</loc>
-    <lastmod>2023-10-01</lastmod>
-  </url>
-  <url>
-    <loc>https://cryptohama.com/best-exchanges.html</loc>
-    <lastmod>2023-10-01</lastmod>
-  </url>
-  <url>
-    <loc>https://cryptohama.com/best-casinos.html</loc>
-    <lastmod>2023-10-01</lastmod>
-  </url>
-  <url>
-    <loc>https://cryptohama.com/best-faucets.html</loc>
-    <lastmod>2023-10-01</lastmod>
-  </url>
-  <!-- Add more URLs -->
+    <url>
+        <loc>https://www.yourdomain.com/</loc>
+        <lastmod>2023-10-01</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>https://www.yourdomain.com/lyrics/song1-nepali.html</loc>
+        <lastmod>2023-10-01</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://www.yourdomain.com/lyrics/song1-english.html</loc>
+        <lastmod>2023-10-01</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://www.yourdomain.com/lyrics/song1-hindi.html</loc>
+        <lastmod>2023-10-01</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
 </urlset>
