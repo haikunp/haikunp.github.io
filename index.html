@@ -2,60 +2,74 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta viewport="width=device-width, initial-scale=1.0">
-    <title>Nepali Song Lyrics - Lyrics in Nepali, English, and Hindi</title>
-    <meta name="description" content="Discover thousands of Nepali song lyrics with English and Hindi translations. Search for your favorite songs by artists, genres, and albums.">
-    <meta name="keywords" content="Nepali song lyrics, Nepali lyrics, English translations, Hindi translations, Nepali songs, lyrics collection">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A website to explore and search for Nepali song lyrics in multiple languages.">
+    <meta name="keywords" content="Nepali lyrics, Nepali songs, song lyrics, Nepali music">
+    <title>Nepali Lyrics Website</title>
+    <link rel="stylesheet" href="src/css/styles.css">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Nepali Lyrics Website",
+      "url": "https://www.example.com",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://www.example.com/search?query={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
 </head>
 <body>
     <header>
-        <div class="container">
-            <nav class="navbar">
-                <div class="logo">
-                    <h1>नेपाली गीत</h1>
-                </div>
-                <div class="search-bar">
-                    <input type="text" id="searchInput" placeholder="Search for songs...">
-                    <button id="searchBtn"><i class="fas fa-search"></i></button>
-                </div>
-                <div class="nav-links">
-                    <a href="#" class="active">Home</a>
-                    <a href="#">All Songs</a>
-                    <a href="#">Genres</a>
-                    <a href="#">Artists</a>
-                    <a href="#">About</a>
-                </div>
-            </nav>
-        </div>
+        <h1><a href="index.html">Nepali Lyrics</a></h1>
+        <nav>
+            <ul>
+                <li><a href="about.html">About</a></li>
+            </ul>
+        </nav>
     </header>
-
-    <main class="container">
-        <section class="song-grid">
-            <div class="filters">
-                <button class="filter-btn active" data-genre="all">All</button>
-                <button class="filter-btn" data-genre="pop">Pop</button>
-                <button class="filter-btn" data-genre="folk">Folk</button>
-                <button class="filter-btn" data-genre="classical">Classical</button>
-                <button class="filter-btn" data-genre="movie-songs">Movie Songs</button>
-            </div>
-            <div id="songList">
-                <!-- Songs will be dynamically loaded here -->
+    <main>
+        <section id="welcome">
+            <h2>Welcome to the Nepali Lyrics Website</h2>
+            <p>Search for your favorite Nepali songs and explore their lyrics in various languages.</p>
+        </section>
+        <section id="search">
+            <form id="search-form" action="index.html" method="get">
+                <input type="text" id="search-bar" placeholder="Search for a song..." name="search" required>
+            </form>
+        </section>
+        <section id="popular-songs">
+            <h3>Popular Songs</h3>
+            <div id="song-list">
+                <div class="card">
+                    <h4>Nepal Haseko</h4>
+                    <p>Singer: Balendra Shah (Balen), chorus by various artists.</p>
+                    <a href="src/pages/nepal-haseko-nepali.html">Nepali</a> | 
+                    <a href="src/pages/nepal-haseko-english.html">English</a> | 
+                    <a href="src/pages/nepal-haseko-hindi.html">Hindi</a>
+                </div>
+                <div class="card">
+                    <h4>Song 2</h4>
+                    <p>Singer: Singer 2</p>
+                    <a href="src/pages/song2-nepali.html">Nepali</a> | 
+                    <a href="src/pages/song2-english.html">English</a> | 
+                    <a href="src/pages/song2-hindi.html">Hindi</a>
+                </div>
+                <div class="card">
+                    <h4>Song 3</h4>
+                    <p>Singer: Singer 3</p>
+                    <a href="src/pages/song3-nepali.html">Nepali</a> | 
+                    <a href="src/pages/song3-english.html">English</a> | 
+                    <a href="src/pages/song3-hindi.html">Hindi</a>
+                </div>
             </div>
         </section>
     </main>
-
-    <template id="songCard">
-        <div class="song-card">
-            <h3 class="song-title"></h3>
-            <p class="song-artist"></p>
-            <p class="song-genre"></p>
-            <a href="#" class="view-lyrics">View Lyrics</a>
-        </div>
-    </template>
-
-    <script src="script.js"></script>
+    <footer>
+        <p>&copy; 2023 Nepali Lyrics Website</p>
+    </footer>
+    <script src="src/js/scripts.js"></script>
 </body>
 </html>
