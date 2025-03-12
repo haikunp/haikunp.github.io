@@ -1,75 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" itemscope itemtype="https://schema.org/NewsMediaOrganization">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="A website to explore and search for Nepali song lyrics in multiple languages.">
-    <meta name="keywords" content="Nepali lyrics, Nepali songs, song lyrics, Nepali music">
-    <title>Nepali Lyrics Website</title>
-    <link rel="stylesheet" href="src/css/styles.css">
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "Nepali Lyrics Website",
-      "url": "https://www.example.com",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://www.example.com/search?query={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
-    }
-    </script>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>CryptoHama - Blockchain News</title>
+    <meta name="description" content="Latest cryptocurrency news and blockchain analysis">
+    <link rel="stylesheet" href="main.css">
+    <link rel="preload" href="images/bitcoin-update.webp" as="image">
 </head>
 <body>
-    <header>
-        <h1><a href="index.html">Nepali Lyrics</a></h1>
-        <nav>
-            <ul>
-                <li><a href="about.html">About</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <section id="welcome">
-            <h2>Welcome to the Nepali Lyrics Website</h2>
-            <p>Search for your favorite Nepali songs and explore their lyrics in various languages.</p>
-        </section>
-        <section id="search">
-            <form id="search-form" action="index.html" method="get">
-                <input type="text" id="search-bar" placeholder="Search for a song..." name="search" required>
-            </form>
-        </section>
-        <section id="popular-songs">
-            <h3>Popular Songs</h3>
-            <div id="song-list">
-                <div class="card">
-                    <h4>Nepal Haseko</h4>
-                    <p>Singer: Balendra Shah (Balen), chorus by various artists.</p>
-                    <a href="src/pages/nepal-haseko-nepali.html">Nepali</a> | 
-                    <a href="src/pages/nepal-haseko-english.html">English</a> | 
-                    <a href="src/pages/nepal-haseko-hindi.html">Hindi</a>
-                </div>
-                <div class="card">
-                    <h4>Song 2</h4>
-                    <p>Singer: Singer 2</p>
-                    <a href="src/pages/song2-nepali.html">Nepali</a> | 
-                    <a href="src/pages/song2-english.html">English</a> | 
-                    <a href="src/pages/song2-hindi.html">Hindi</a>
-                </div>
-                <div class="card">
-                    <h4>Song 3</h4>
-                    <p>Singer: Singer 3</p>
-                    <a href="src/pages/song3-nepali.html">Nepali</a> | 
-                    <a href="src/pages/song3-english.html">English</a> | 
-                    <a href="src/pages/song3-hindi.html">Hindi</a>
-                </div>
-            </div>
-        </section>
+    <nav aria-label="Main navigation">
+        <div class="container nav-content">
+            <a href="/" class="logo" aria-label="CryptoHama homepage">CRYPTOHAMA</a>
+        </div>
+        <div class="nav-ticker-container">
+            <div id="nav-ticker" class="nav-ticker"></div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="article-grid">
+            <!-- Article 1 -->
+            <article class="article-card" itemscope itemtype="https://schema.org/NewsArticle">
+                <a href="article.html" class="card-link">
+                    <img src="images/bitcoin-update.webp" 
+                         alt="Bitcoin protocol update details"
+                         width="600"
+                         height="400"
+                         loading="lazy"
+                         decoding="async"
+                         itemprop="image">
+                    <div class="card-content">
+                        <h2 itemprop="headline">Bitcoin Protocol Update Changes Mining Landscape</h2>
+                        <p class="excerpt" itemprop="description">Major consensus algorithm changes reshape global mining operations...</p>
+                    </div>
+                </a>
+            </article>
+
+            <!-- Article 2 -->
+            <article class="article-card" itemscope itemtype="https://schema.org/NewsArticle">
+                <a href="article.html" class="card-link">
+                    <img src="images/eth-staking.webp"
+                         alt="Ethereum staking growth chart"
+                         width="600"
+                         height="400"
+                         loading="lazy"
+                         decoding="async"
+                         itemprop="image">
+                    <div class="card-content">
+                        <h2 itemprop="headline">ETH 2.0 Staking Milestone Reached</h2>
+                        <p class="excerpt" itemprop="description">15% of ETH supply now locked in staking contracts...</p>
+                    </div>
+                </a>
+            </article>
+
+            <!-- Article 3 -->
+            <article class="article-card" itemscope itemtype="https://schema.org/NewsArticle">
+                <a href="article.html" class="card-link">
+                    <img src="images/nft-regulation.webp"
+                         alt="EU NFT regulation meeting"
+                         width="600"
+                         height="400"
+                         loading="lazy"
+                         decoding="async"
+                         itemprop="image">
+                    <div class="card-content">
+                        <h2 itemprop="headline">EU Finalizes NFT Market Rules</h2>
+                        <p class="excerpt" itemprop="description">New regulations for NFT trading across member states...</p>
+                    </div>
+                </a>
+            </article>
+        </div>
     </main>
-    <footer>
-        <p>&copy; 2023 Nepali Lyrics Website</p>
+
+    <footer aria-label="Site footer">
+        <div class="container footer-content">
+            <p>&copy; 2023 CryptoHama</p>
+            <nav aria-label="Legal links">
+                <a href="/privacy.html">Privacy</a>
+                <a href="/terms.html">Terms</a>
+                <a href="/contact.html">Contact</a>
+            </nav>
+        </div>
     </footer>
-    <script src="src/js/scripts.js"></script>
 </body>
 </html>

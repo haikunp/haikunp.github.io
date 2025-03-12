@@ -1,5 +1,3 @@
-<!-- filepath: /c:/lyrics/nepali-lyrics-website/robots.txt -->
 User-agent: *
-Disallow: /src/
-Allow: /src/pages/
-Sitemap: https://www.example.com/sitemap.xml
+Allow: /
+Sitemap: https://cryptohama.com/sitemap.xml

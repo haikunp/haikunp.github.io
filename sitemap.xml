@@ -1,24 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>https://www.example.com/</loc>
-        <lastmod>2023-02-14</lastmod>
-        <priority>1.00</priority>
+        <loc>https://cryptohama.com/</loc>
+        <lastmod>2023-08-25</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://www.example.com/src/pages/song-nepali.html</loc>
-        <lastmod>2023-02-14</lastmod>
-        <priority>0.80</priority>
+        <loc>https://cryptohama.com/article/bitcoin-update.html</loc>
+        <lastmod>2023-08-25</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
     </url>
-    <url>
-        <loc>https://www.example.com/src/pages/song-english.html</loc>
-        <lastmod>2023-02-14</lastmod>
-        <priority>0.80</priority>
-    </url>
-    <url>
-        <loc>https://www.example.com/src/pages/song-hindi.html</loc>
-        <lastmod>2023-02-14</lastmod>
-        <priority>0.80</priority>
-    </url>
-    <!-- Add more URLs as needed -->
+    <!-- Add other articles -->
 </urlset>
