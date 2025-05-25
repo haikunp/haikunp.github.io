@@ -1,209 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Compare countries side-by-side using real-time data and national flags">
-    <title>Country Comparison Tool</title>
-    <link rel="preconnect" href="https://flagcdn.com">
-    <link rel="stylesheet" href="homepage.css">
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "Country Comparison Tool",
-        "description": "Interactive tool for comparing country statistics with full-name URLs",
-        "applicationCategory": "Reference"
-    }
-    </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="CryptoHama - Articles and guides about cryptocurrency and earning through crypto faucets." />
+  <link rel="canonical" href="https://yourdomain.com/index.html" />
+  <title>CryptoHama - Home</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <main>
-        <div class="container">
-            <h1>Country Comparison Tool</h1>
-            <p class="intro-text">Compare key statistics between nations using full country names in URLs for better SEO.</p>
-            
-            <div class="inputs-wrapper">
-                <div class="input-group">
-                    <input type="text" 
-                           id="country1" 
-                           placeholder="First country"
-                           autocomplete="off"
-                           aria-label="Select first country">
-                    <div class="suggestions" 
-                         id="suggestions1" 
-                         role="listbox" 
-                         aria-labelledby="country1"></div>
-                </div>
-                
-                <div class="input-group">
-                    <input type="text" 
-                           id="country2" 
-                           placeholder="Second country"
-                           autocomplete="off"
-                           aria-label="Select second country">
-                    <div class="suggestions" 
-                         id="suggestions2" 
-                         role="listbox" 
-                         aria-labelledby="country2"></div>
-                </div>
-            </div>
+  <main class="container">
+    <header>
+      <h1><span class="brand-crypto">Crypto</span><span class="brand-hama">Hama</span></h1>
+    </header>
 
-            <div id="error-message" class="error-message" aria-live="polite"></div>
-            <button id="compare-btn" class="compare-button">
-                <span class="button-text">Generate Comparison</span>
-            </button>
-        </div>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="index.html">Home</a>
+      <a href="faucets.html">Top Faucets</a>
+    </nav>
 
-        <section class="changelog" aria-label="Version history">
-            <h2>Recent Updates</h2>
-            <ul class="changelog-list">
-                <li class="changelog-item">
-                    <strong>v2.0:</strong> Implemented SEO-friendly URLs with full country names
-                </li>
-                <li class="changelog-item">
-                    <strong>v1.3:</strong> Added national flag display
-                </li>
-            </ul>
-        </section>
-    </main>
+    <section>
+      <a class="card" href="article/placeholder.html">
+        <h2>What Are Crypto Faucets?</h2>
+        <p>Learn how crypto faucets work and how to earn free crypto safely.</p>
+        <span class="read-more">Read More</span>
+      </a>
 
-    <script>
-        const countries = [
-            { name: "China", code: "cn" },
-            { name: "India", code: "in" },
-            { name: "United States", code: "us" },
-            { name: "Japan", code: "jp" },
-            { name: "Germany", code: "de" },
-            { name: "France", code: "fr" },
-            { name: "United Kingdom", code: "gb" },
-            { name: "Brazil", code: "br" },
-            { name: "Russia", code: "ru" },
-            { name: "Canada", code: "ca" }
-        ];
-
-        // Convert country names to URL-friendly slugs
-        function toSlug(name) {
-            return name.toLowerCase()
-                       .replace(/\s+/g, '-')
-                       .replace(/[^a-z0-9-]/g, '');
-        }
-
-        function setupAutocomplete(inputId, suggestionsId) {
-            const input = document.getElementById(inputId);
-            const suggestions = document.getElementById(suggestionsId);
-            let currentIndex = -1;
-
-            input.addEventListener("input", () => {
-                const query = input.value.toLowerCase().trim();
-                suggestions.innerHTML = "";
-                currentIndex = -1;
-
-                if (!query) {
-                    suggestions.style.display = "none";
-                    return;
-                }
-
-                const filtered = countries.filter(c => 
-                    c.name.toLowerCase().includes(query)
-                );
-
-                if (filtered.length === 0) {
-                    suggestions.style.display = "none";
-                    return;
-                }
-
-                filtered.forEach((country, index) => {
-                    const item = document.createElement("div");
-                    item.className = "suggestion-item";
-                    item.innerHTML = `
-                        <img src="https://flagcdn.com/w40/${country.code}.png" 
-                             alt="${country.name} flag" 
-                             class="flag-icon">
-                        ${country.name}
-                    `;
-                    item.onclick = () => {
-                        input.value = country.name;
-                        input.dataset.slug = toSlug(country.name);
-                        suggestions.style.display = "none";
-                    };
-                    item.setAttribute("role", "option");
-                    suggestions.appendChild(item);
-                });
-
-                suggestions.style.display = "block";
-            });
-
-            input.addEventListener("keydown", (e) => {
-                const items = suggestions.querySelectorAll(".suggestion-item");
-                if (items.length === 0) return;
-
-                switch(e.key) {
-                    case "ArrowDown":
-                        e.preventDefault();
-                        currentIndex = (currentIndex + 1) % items.length;
-                        break;
-                    case "ArrowUp":
-                        e.preventDefault();
-                        currentIndex = (currentIndex - 1 + items.length) % items.length;
-                        break;
-                    case "Enter":
-                        e.preventDefault();
-                        if (currentIndex >= 0) items[currentIndex].click();
-                        if (inputId === "country2") document.getElementById("compare-btn").click();
-                        break;
-                    case "Tab":
-                        if (currentIndex >= 0) {
-                            e.preventDefault();
-                            items[currentIndex].click();
-                            document.getElementById(inputId === "country1" ? "country2" : "compare-btn")?.focus();
-                        }
-                        break;
-                }
-                
-                items.forEach(item => item.classList.remove("active"));
-                if (items[currentIndex]) {
-                    items[currentIndex].classList.add("active");
-                    items[currentIndex].scrollIntoView({ block: "nearest" });
-                }
-            });
-
-            input.addEventListener("blur", () => {
-                setTimeout(() => suggestions.style.display = "none", 200);
-            });
-        }
-
-        function showError(message) {
-            const errorDiv = document.getElementById("error-message");
-            errorDiv.textContent = message;
-            errorDiv.style.display = "block";
-            setTimeout(() => errorDiv.style.display = "none", 5000);
-        }
-
-        function compareCountries() {
-            const slug1 = document.getElementById("country1").dataset.slug;
-            const slug2 = document.getElementById("country2").dataset.slug;
-
-            if (!slug1 || !slug2) {
-                showError("Please select both countries from the suggestions");
-                return;
-            }
-
-            const btn = document.getElementById("compare-btn");
-            btn.classList.add("loading");
-            btn.disabled = true;
-            
-            setTimeout(() => {
-                window.location.href = `${slug1}-vs-${slug2}.html`;
-                btn.classList.remove("loading");
-                btn.disabled = false;
-            }, 800);
-        }
-
-        // Initialize
-        document.getElementById("compare-btn").addEventListener("click", compareCountries);
-        setupAutocomplete("country1", "suggestions1");
-        setupAutocomplete("country2", "suggestions2");
-    </script>
+      <a class="card" href="article/placeholder.html">
+        <h2>Getting Started With Bitcoin</h2>
+        <p>Beginner guide to wallets, addresses, and earning your first satoshis.</p>
+        <span class="read-more">Read More</span>
+      </a>
+    </section>
+  </main>
 </body>
 </html>
