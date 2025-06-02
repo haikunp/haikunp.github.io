@@ -1,0 +1,448 @@
+/* CSS Variables */
+:root {
+  --primary-dark: #0f172a;
+  --primary: #1e293b;
+  --primary-light: #334155;
+  --accent-blue: #0ea5e9;
+  --accent-gold: #f5cd08;
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --card-bg: rgba(30, 41, 59, 0.7);
+  --card-hover: rgba(56, 78, 112, 0.7);
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --transition: all 0.3s ease;
+}
+
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+  background-attachment: fixed;
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* Layout */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* Header */
+header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.brand-link {
+  display: inline-block;
+  text-decoration: none;
+}
+
+.brand-crypto {
+  color: var(--accent-blue);
+  font-weight: 700;
+  font-size: clamp(2rem, 5vw, 2.5rem);
+}
+
+.brand-hama {
+  color: var(--accent-gold);
+  font-weight: 700;
+  font-size: clamp(2rem, 5vw, 2.5rem);
+}
+
+.tagline {
+  color: var(--text-secondary);
+  font-size: clamp(0.9rem, 2vw, 1rem);
+  margin-top: 0.3rem;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  background: rgba(30, 41, 59, 0.8);
+  padding: 0.8rem;
+  border-radius: 10px;
+}
+
+.tab-button {
+  padding: 0.7rem 1.2rem;
+  background: var(--primary-light);
+  border: none;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: clamp(0.85rem, 2vw, 0.95rem);
+  cursor: pointer;
+  transition: var(--transition);
+  min-width: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.tab-button:hover {
+  background: rgba(59, 130, 246, 0.2);
+  color: var(--text-primary);
+}
+
+.tab-button.active {
+  background: var(--accent-blue);
+  color: white;
+}
+
+.tab-button:focus-visible {
+  outline: 2px solid var(--accent-gold);
+  outline-offset: 2px;
+}
+
+.tab-button i {
+  font-size: 1rem;
+}
+
+/* Tab Content */
+.tab-content {
+  display: none;
+  animation: fadeIn 0.4s ease;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Card Grid */
+.card-grid {
+  display: grid;
+  gap: 1.2rem;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: 10px;
+  padding: 1.2rem;
+  text-decoration: none;
+  transition: var(--transition);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.card:hover {
+  background: var(--card-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.8rem;
+}
+
+.card-icon {
+  width: 50px;
+  height: 50px;
+  background: rgba(14, 165, 233, 0.1);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.8rem;
+  flex-shrink: 0;
+  overflow: hidden;
+  padding: 3px;
+  background: transparent;
+}
+
+.card-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.card-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-top: 0.2rem;
+}
+
+.card-rating {
+  display: flex;
+  align-items: center;
+  margin: 0.5rem 0;
+}
+
+.stars {
+  color: var(--accent-gold);
+  margin-right: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.rating-value {
+  background: rgba(245, 205, 8, 0.15);
+  color: var(--accent-gold);
+  padding: 0.2rem 0.5rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.card-features {
+  list-style: none;
+  margin: 0.8rem 0;
+  padding-left: 0;
+}
+
+.card-features li {
+  padding: 0.3rem 0;
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.card-features li:last-child {
+  border-bottom: none;
+}
+
+.card-features li::before {
+  content: "•";
+  color: var(--accent-blue);
+  margin-right: 0.6rem;
+  font-weight: bold;
+}
+
+.card-footer {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bonus-badge {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--success);
+  padding: 0.3rem 0.7rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.visit-button {
+  background: var(--accent-blue);
+  color: white;
+  padding: 0.4rem 0.9rem;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.visit-button:hover {
+  background: #0284c7;
+  transform: translateY(-2px);
+}
+
+.rank-badge {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: var(--accent-gold);
+  color: var(--primary-dark);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  z-index: 2;
+}
+
+.tab-intro {
+  text-align: center;
+  margin-bottom: 1.2rem;
+  color: var(--text-secondary);
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: clamp(0.9rem, 2vw, 0.95rem);
+  line-height: 1.6;
+  background: rgba(30, 41, 59, 0.5);
+  padding: 0.8rem;
+  border-radius: 8px;
+}
+
+.tab-intro i {
+  color: var(--accent-blue);
+  margin-right: 0.3rem;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+.footer a {
+  color: var(--accent-blue);
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .tabs {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .tab-button {
+    width: 100%;
+    min-width: 0;
+    padding: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 1rem;
+  }
+  
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .card {
+    padding: 1rem;
+  }
+  
+  .footer {
+    font-size: 0.75rem;
+  }
+
+  .rank-badge {
+    top: 8px;
+    right: 10px;
+  }
+  
+  .card-icon {
+    width: 40px;
+    height: 40px;
+  }
+}
+/* Add to existing styles */
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.category-card {
+  background: var(--card-bg);
+  border-radius: 10px;
+  padding: 2rem;
+  text-align: center;
+  text-decoration: none;
+  transition: var(--transition);
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.category-card:hover {
+  background: var(--card-hover);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.category-card i {
+  margin-bottom: 1rem;
+  color: var(--accent-blue);
+}
+
+.category-card h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.category-card p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* Update existing tab styles */
+.tab-button {
+  padding: 0.7rem 1.2rem;
+  background: var(--primary-light);
+  border: none;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: clamp(0.85rem, 2vw, 0.95rem);
+  cursor: pointer;
+  transition: var(--transition);
+  min-width: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+.tab-button.active {
+  background: var(--accent-blue);
+  color: white;
+}

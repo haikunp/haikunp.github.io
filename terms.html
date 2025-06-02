@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CryptoHama - Terms of Service</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    :root {
+      --primary-dark: #0f172a;
+      --primary: #1e293b;
+      --primary-light: #334155;
+      --accent-blue: #0ea5e9;
+      --accent-gold: #f5cd08;
+      --text-primary: #f1f5f9;
+      --text-secondary: #cbd5e1;
+      --card-bg: rgba(30, 41, 59, 0.65);
+      --card-hover: rgba(56, 78, 112, 0.7);
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --transition: all 0.3s ease;
+    }
+    
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      background-attachment: fixed;
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .brand-link {
+      display: inline-block;
+      text-decoration: none;
+    }
+    
+    .brand-crypto {
+      color: var(--accent-blue);
+      font-weight: 700;
+      font-size: 2.5rem;
+    }
+    
+    .brand-hama {
+      color: var(--accent-gold);
+      font-weight: 700;
+      font-size: 2.5rem;
+    }
+    
+    .tagline {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      margin-top: 0.3rem;
+    }
+    
+    .legal-nav {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    
+    .legal-nav a {
+      background: var(--primary-light);
+      color: var(--text-primary);
+      text-decoration: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 6px;
+      font-weight: 600;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .legal-nav a:hover {
+      background: var(--accent-blue);
+      transform: translateY(-2px);
+    }
+    
+    .legal-nav a.active {
+      background: var(--accent-blue);
+    }
+    
+    .legal-content {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      padding: 2rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .legal-content h2 {
+      color: var(--accent-blue);
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .legal-content h3 {
+      color: var(--accent-gold);
+      margin: 1.5rem 0 0.8rem;
+    }
+    
+    .legal-content p {
+      margin-bottom: 1rem;
+      color: var(--text-secondary);
+    }
+    
+    .legal-content ul {
+      padding-left: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .legal-content li {
+      margin-bottom: 0.5rem;
+      color: var(--text-secondary);
+    }
+    
+    .footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+    
+    .footer a {
+      color: var(--accent-blue);
+      text-decoration: none;
+    }
+    
+    .footer a:hover {
+      text-decoration: underline;
+    }
+    
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--primary-light);
+      color: var(--text-primary);
+      text-decoration: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      font-weight: 600;
+      transition: var(--transition);
+      margin-top: 1.5rem;
+    }
+    
+    .back-button:hover {
+      background: var(--accent-blue);
+      transform: translateY(-2px);
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 1.5rem;
+      }
+      
+      .legal-nav {
+        flex-direction: column;
+      }
+      
+      .legal-content {
+        padding: 1.5rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .container {
+        padding: 1rem;
+      }
+      
+      .brand-crypto, .brand-hama {
+        font-size: 2rem;
+      }
+      
+      .legal-content {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>
+        <a href="index.html" class="brand-link" aria-label="CryptoHama Home">
+          <span class="brand-crypto">Crypto</span><span class="brand-hama">Hama</span>
+        </a>
+      </h1>
+      <p class="tagline">Your Trusted Source for Crypto Resources</p>
+    </header>
+
+    <!-- Navigation between legal pages -->
+    <nav class="legal-nav">
+      <a href="privacy.html"><i class="fas fa-shield-alt"></i> Privacy Policy</a>
+      <a href="terms.html" class="active"><i class="fas fa-file-contract"></i> Terms of Service</a>
+    </nav>
+
+    <main class="legal-content">
+      <h2><i class="fas fa-file-contract"></i> Terms of Service</h2>
+      <p>Last Updated: October 15, 2023</p>
+      
+      <p>Welcome to CryptoHama! These Terms of Service govern your use of our website and services. By accessing or using CryptoHama, you agree to be bound by these terms.</p>
+      
+      <h3>1. Acceptance of Terms</h3>
+      <p>By accessing or using CryptoHama, you confirm that you accept these Terms and that you agree to comply with them. If you do not agree to these Terms, you must not use our site.</p>
+      
+      <h3>2. Eligibility</h3>
+      <p>You must be at least 18 years old to use our services. By using CryptoHama, you represent and warrant that you meet this age requirement.</p>
+      
+      <h3>3. Services Provided</h3>
+      <p>CryptoHama provides information and reviews about cryptocurrency-related services, including:</p>
+      <ul>
+        <li>Crypto casinos and gambling platforms</li>
+        <li>Cryptocurrency exchanges</li>
+        <li>Crypto faucets</li>
+        <li>Play-to-earn games</li>
+      </ul>
+      
+      <h3>4. User Responsibilities</h3>
+      <p>When using CryptoHama, you agree to:</p>
+      <ul>
+        <li>Comply with all applicable laws and regulations</li>
+        <li>Use the site only for lawful purposes</li>
+        <li>Not engage in any activity that may disrupt our services</li>
+        <li>Not attempt to gain unauthorized access to our systems</li>
+      </ul>
+      
+      <h3>5. Intellectual Property</h3>
+      <p>All content on CryptoHama, including text, graphics, logos, and reviews, is our property or licensed to us and is protected by copyright laws. You may not reproduce, distribute, or create derivative works without our permission.</p>
+      
+      <h3>6. Affiliate Disclosure</h3>
+      <p>We may receive compensation when you sign up for services through links on our site. This does not affect our reviews or recommendations, which are based on independent research.</p>
+      
+      <h3>7. Disclaimer of Warranties</h3>
+      <p>Our services are provided "as is" without warranties of any kind. We do not guarantee:</p>
+      <ul>
+        <li>The accuracy or completeness of information</li>
+        <li>The availability of our site</li>
+        <li>That the site will be error-free or secure</li>
+      </ul>
+      
+      <h3>8. Limitation of Liability</h3>
+      <p>To the maximum extent permitted by law, CryptoHama shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of our services.</p>
+      
+      <h3>9. Third-Party Services</h3>
+      <p>Our site contains links to third-party websites and services. We are not responsible for the content or practices of these third parties. Use them at your own risk.</p>
+      
+      <h3>10. Changes to Terms</h3>
+      <p>We may update these Terms from time to time. We will notify you of significant changes by posting the new Terms on our site.</p>
+      
+      <h3>11. Governing Law</h3>
+      <p>These Terms shall be governed by and construed in accordance with the laws of the State of Delaware, without regard to its conflict of law provisions.</p>
+      
+      <h3>12. Contact Information</h3>
+      <p>If you have any questions about these Terms, please contact us at:</p>
+      <p>Email: legal@cryptohama.com</p>
+      
+      <a href="index.html" class="back-button"><i class="fas fa-arrow-left"></i> Back to Home</a>
+    </main>
+    
+    <footer class="footer">
+      <p>&copy; 2023 CryptoHama. All rights reserved. | <a href="privacy.html">Privacy</a> | <a href="terms.html">Terms</a></p>
+      <p>CryptoHama is an independent review site. We may receive compensation from featured platforms.</p>
+    </footer>
+  </div>
+</body>
+</html>
