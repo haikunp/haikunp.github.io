@@ -1,162 +1,328 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stream Viewer</title>
+<title>Mexico vs South Africa - Live Stream</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-
+  /* --- CSS Variables for Light/Dark Mode --- */
   :root {
-    --bg: #f4f4f4;
-    --text: #222;
-    --tab-bg: #fff;
-    --tab-border: #ccc;
-    --tab-active-bg: #2563eb;
-    --tab-active-text: #fff;
-    --frame-bg: #000;
-    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    --bg-primary: #f8fafc;
+    --bg-secondary: #ffffff;
+    --text-primary: #0f172a;
+    --text-secondary: #64748b;
+    --accent: #3b82f6;
+    --accent-glow: rgba(59, 130, 246, 0.3);
+    --border: #e2e8f0;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   }
 
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #121212;
-      --text: #eaeaea;
-      --tab-bg: #1e1e1e;
-      --tab-border: #333;
-      --tab-active-bg: #3b82f6;
-      --tab-active-text: #fff;
-      --frame-bg: #000;
-      --shadow: 0 2px 8px rgba(0,0,0,0.5);
-    }
+  [data-theme="dark"] {
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --accent: #60a5fa;
+    --accent-glow: rgba(96, 165, 250, 0.3);
+    --border: #334155;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
   }
 
+  /* --- Global Reset & Base --- */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: var(--bg);
-    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
     min-height: 100vh;
-    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    transition: background 0.3s ease, color 0.3s ease;
   }
 
-  .container {
+  /* --- Header --- */
+  header {
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-secondary);
+  }
+  .logo { font-weight: 800; font-size: 1.25rem; color: var(--accent); letter-spacing: -0.5px; }
+  
+  .theme-toggle {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+  }
+  .theme-toggle:hover { transform: rotate(20deg); border-color: var(--accent); }
+
+  /* --- Main Content --- */
+  main {
+    flex: 1;
     max-width: 1100px;
     margin: 0 auto;
+    padding: 2rem 1.5rem;
+    width: 100%;
   }
 
-  h1 {
-    font-size: 1.4rem;
-    margin-bottom: 16px;
+  /* --- Match Card --- */
+  .match-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 1.5rem;
+    padding: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--shadow);
+    margin-bottom: 2rem;
+  }
+  .team { text-align: center; flex: 1; }
+  .team img {
+    width: 110px; height: 110px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid var(--border);
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow);
+    background: #fff;
+  }
+  .team h2 { font-size: 1.5rem; font-weight: 700; }
+  
+  .vs { text-align: center; padding: 0 1.5rem; }
+  .vs .badge {
+    background: var(--accent);
+    color: white;
+    padding: 0.35rem 0.85rem;
+    border-radius: 2rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 10px var(--accent-glow);
+  }
+  .vs h1 { font-size: 2.5rem; font-weight: 800; margin: 0.75rem 0; color: var(--text-secondary); }
+  .vs .time { font-size: 0.9rem; color: var(--text-secondary); font-weight: 500; }
+
+  /* --- Countdown --- */
+  .countdown {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .time-box {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    padding: 1rem 1.5rem;
     text-align: center;
+    min-width: 85px;
+    box-shadow: var(--shadow);
   }
+  .time-box span { display: block; font-size: 2rem; font-weight: 800; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .time-box small { font-size: 0.7rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600; letter-spacing: 1px; }
 
+  /* --- Tabs --- */
   .tabs {
     display: flex;
-    gap: 6px;
-    margin-bottom: 12px;
-    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    background: var(--bg-secondary);
+    padding: 0.5rem;
+    border-radius: 1rem;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
   }
-
   .tab {
     flex: 1;
-    min-width: 110px;
-    padding: 10px 16px;
-    background: var(--tab-bg);
-    color: var(--text);
-    border: 1px solid var(--tab-border);
-    border-radius: 6px;
-    cursor: pointer;
+    padding: 0.85rem 1rem;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-weight: 600;
     font-size: 0.95rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    box-shadow: var(--shadow);
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+  }
+  .tab:hover { color: var(--text-primary); background: var(--bg-primary); }
+  .tab.active { 
+    background: var(--accent); 
+    color: white; 
+    box-shadow: 0 4px 10px var(--accent-glow); 
   }
 
-  .tab:hover {
-    transform: translateY(-1px);
-  }
-
-  .tab.active {
-    background: var(--tab-active-bg);
-    color: var(--tab-active-text);
-    border-color: var(--tab-active-bg);
-  }
-
-  .frame-wrapper {
+  /* --- Video Player --- */
+  .player-wrapper {
     position: relative;
     width: 100%;
-    padding-top: 56.25%; /* 16:9 aspect ratio */
-    background: var(--frame-bg);
-    border-radius: 8px;
+    padding-top: 56.25%; /* 16:9 Aspect Ratio */
+    background: #000;
+    border-radius: 1.5rem;
     overflow: hidden;
-    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
   }
-
-  iframe {
+  .player-wrapper iframe {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: 0;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    border: none;
   }
 
-  .loading {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #888;
-    font-size: 0.9rem;
+  /* --- Footer --- */
+  footer {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    border-top: 1px solid var(--border);
+    background: var(--bg-secondary);
   }
 
-  @media (max-width: 480px) {
-    .tab {
-      font-size: 0.85rem;
-      padding: 9px 10px;
-    }
-    h1 { font-size: 1.15rem; }
+  /* --- Responsive Design --- */
+  @media (max-width: 768px) {
+    header { padding: 1rem; }
+    main { padding: 1.5rem 1rem; }
+    .match-card { flex-direction: column; gap: 1.5rem; padding: 1.5rem; }
+    .team img { width: 80px; height: 80px; }
+    .vs h1 { font-size: 2rem; }
+    .countdown { gap: 0.5rem; flex-wrap: wrap; }
+    .time-box { padding: 0.75rem 1rem; min-width: 70px; flex: 1; }
+    .time-box span { font-size: 1.5rem; }
+    .tabs { flex-direction: column; }
+    .tab { padding: 0.75rem; }
   }
 </style>
 </head>
 <body>
-  <div class="container">
-    <h1>📺 Stream Viewer</h1>
 
-    <div class="tabs" role="tablist">
-      <button class="tab active" data-src="https://gooz.aapmains.net/new-stream-embed/51875" role="tab">Server 1</button>
-      <button class="tab" data-src="https://gooz.aapmains.net/new-stream-embed/51184" role="tab">Server 2</button>
-      <button class="tab" data-src="https://gooz.aapmains.net/new-stream-embed/51865" role="tab">Server 3</button>
+  <!-- Header -->
+  <header>
+    <div class="logo">⚽ StreamHub</div>
+    <button class="theme-toggle" id="theme-toggle" title="Toggle Theme">🌙</button>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Match Info Card -->
+    <div class="match-card">
+      <div class="team">
+        <img src="https://flagcdn.com/w320/mx.png" alt="Mexico Flag">
+        <h2>Mexico</h2>
+      </div>
+      <div class="vs">
+        <span class="badge">FIFA World Cup 2026</span>
+        <h1>VS</h1>
+        <span class="time">Group A • June 11, 2026</span>
+      </div>
+      <div class="team">
+        <img src="https://flagcdn.com/w320/za.png" alt="South Africa Flag">
+        <h2>South Africa</h2>
+      </div>
     </div>
 
-    <div class="frame-wrapper">
-      <div class="loading" id="loading">Loading stream…</div>
-      <iframe id="player" src="https://gooz.aapmains.net/new-stream-embed/51875" allowfullscreen allow="autoplay; encrypted-media; fullscreen"></iframe>
+    <!-- Countdown Timer -->
+    <div class="countdown" id="countdown">
+      <div class="time-box"><span id="days">00</span><small>Days</small></div>
+      <div class="time-box"><span id="hours">00</span><small>Hours</small></div>
+      <div class="time-box"><span id="minutes">00</span><small>Minutes</small></div>
+      <div class="time-box"><span id="seconds">00</span><small>Seconds</small></div>
     </div>
-  </div>
 
-<script>
-  const tabs = document.querySelectorAll('.tab');
-  const player = document.getElementById('player');
-  const loading = document.getElementById('loading');
+    <!-- Stream Tabs -->
+    <div class="tabs">
+      <button class="tab active" data-src="https://gooz.aapmains.net/new-stream-embed/51184">Server 1</button>
+      <button class="tab" data-src="https://gooz.aapmains.net/new-stream-embed/51865">Server 2</button>
+      <button class="tab" data-src="https://gooz.aapmains.net/new-stream-embed/51875">Server 3 (ITV)</button>
+    </div>
 
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
+    <!-- Video Player -->
+    <div class="player-wrapper">
+      <iframe id="player" src="https://gooz.aapmains.net/new-stream-embed/51184" allowfullscreen allow="autoplay; encrypted-media; fullscreen"></iframe>
+    </div>
+  </main>
 
-      loading.style.display = 'block';
-      player.src = tab.dataset.src;
+  <!-- Footer -->
+  <footer>
+    <p>© 2026 StreamHub. All rights reserved. | Live Sports Streaming</p>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    // --- Theme Toggle Logic ---
+    const themeToggle = document.getElementById('theme-toggle');
+    const html = document.documentElement;
+
+    // Load saved theme or default to dark
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    html.setAttribute('data-theme', savedTheme);
+    themeToggle.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', newTheme);
+      themeToggle.textContent = newTheme === 'dark' ? '🌙' : '☀️';
+      localStorage.setItem('theme', newTheme);
     });
-  });
 
-  player.addEventListener('load', () => {
-    loading.style.display = 'none';
-  });
-</script>
+    // --- Tab Switching Logic ---
+    const tabs = document.querySelectorAll('.tab');
+    const iframe = document.getElementById('player');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        // Remove active class from all tabs
+        tabs.forEach(t => t.classList.remove('active'));
+        // Add active class to clicked tab
+        tab.classList.add('active');
+        // Change iframe source
+        iframe.src = tab.dataset.src;
+      });
+    });
+
+    // --- Countdown Timer Logic ---
+    // Target Date: June 11, 2026, 19:00 UTC
+    const countDownDate = new Date("2026-06-11T19:00:00Z").getTime();
+    
+    const timerInterval = setInterval(function() {
+      const now = new Date().getTime();
+      const distance = countDownDate - now;
+
+      // If the match is live or passed
+      if (distance < 0) {
+        clearInterval(timerInterval);
+        document.getElementById('countdown').innerHTML = '<h2 style="color:var(--accent); font-size: 1.5rem; font-weight: 700;">🔴 MATCH IS LIVE NOW</h2>';
+        return;
+      }
+
+      // Time calculations
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      // Display the result with leading zeros
+      document.getElementById('days').innerText = String(days).padStart(2, '0');
+      document.getElementById('hours').innerText = String(hours).padStart(2, '0');
+      document.getElementById('minutes').innerText = String(minutes).padStart(2, '0');
+      document.getElementById('seconds').innerText = String(seconds).padStart(2, '0');
+    }, 1000);
+  </script>
 </body>
 </html>
