@@ -7,8 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<!-- HLS.js is the magic library that allows us to play .m3u8 streams in any browser -->
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <style>
   /* --- CSS Variables for Light/Dark Mode --- */
   :root {
@@ -168,7 +166,7 @@
     box-shadow: 0 4px 10px var(--accent-glow); 
   }
 
-  /* --- Video Player --- */
+  /* --- Embedded Player --- */
   .player-wrapper {
     position: relative;
     width: 100%;
@@ -180,14 +178,13 @@
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
   }
 
-  .player-wrapper video {
+  .player-wrapper iframe {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: #000;
-    outline: none;
+    border: 0;
   }
 
   /* --- Footer --- */
@@ -252,14 +249,13 @@
 
     <!-- Stream Tabs -->
     <div class="tabs">
-      <button class="tab" data-server="1">Server 1</button>
+      <button class="tab active" data-server="1">Server 1</button>
       <button class="tab" data-server="2">Server 2</button>
-      <button class="tab active" data-server="3">Server 3 (ITV)</button>
     </div>
 
-    <!-- Native Video Player -->
+    <!-- Embedded Player -->
     <div class="player-wrapper">
-      <video id="video-player" controls playsinline></video>
+      <iframe id="video-player" src="https://junkieembeds.pages.dev/embed/tubi-1" frameborder="0" scrolling="no" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>
     </div>
   </main>
 
@@ -286,65 +282,19 @@
       localStorage.setItem('theme', newTheme);
     });
 
-    // --- Direct HLS Stream URLs (Extracted from their source code) ---
+    // --- Embedded Stream URLs ---
     const streams = {
-      1: 'https://chatgpt.hereisman.net/playlist/51184/load-playlist',
-      2: 'https://chatgpt.hereisman.net/playlist/51865/load-playlist',
-      3: 'https://chatgpt.hereisman.net/playlist/51875/load-playlist'
+      1: 'https://junkieembeds.pages.dev/embed/tubi-1',
+      2: 'https://ipl-e2c.pages.dev/skysports1nzhdipllink2026newhd'
     };
 
-    const video = document.getElementById('video-player');
-    let hls = null;
+    const iframe = document.getElementById('video-player');
 
     // --- Stream Loading Logic ---
     function loadStream(serverId) {
       const url = streams[serverId];
-      
-      // Clean up previous instance
-      if (hls) {
-        hls.destroy();
-        hls = null;
-      }
-
-      // Use HLS.js for browsers that support it (Chrome, Firefox, Edge, etc.)
-      if (Hls.isSupported()) {
-        hls = new Hls({
-          enableWorker: true,
-          lowLatencyMode: true,
-          backBufferLength: 90
-        });
-        hls.loadSource(url);
-        hls.attachMedia(video);
-        hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          video.play().catch(e => console.log("Autoplay prevented by browser:", e));
-        });
-        
-        // Auto-recover from network/media errors
-        hls.on(Hls.Events.ERROR, (event, data) => {
-          if (data.fatal) {
-            switch (data.type) {
-              case Hls.ErrorTypes.NETWORK_ERROR:
-                console.log("Fatal network error, trying to recover...");
-                hls.startLoad();
-                break;
-              case Hls.ErrorTypes.MEDIA_ERROR:
-                console.log("Fatal media error, trying to recover...");
-                hls.recoverMediaError();
-                break;
-              default:
-                console.log("Fatal error, cannot recover");
-                hls.destroy();
-                break;
-            }
-          }
-        });
-      } 
-      // Fallback for Safari and iOS devices which natively support HLS
-      else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        video.src = url;
-        video.addEventListener('loadedmetadata', () => {
-          video.play().catch(e => console.log("Autoplay prevented by browser:", e));
-        });
+      if (url) {
+        iframe.src = url;
       }
     }
 
@@ -358,9 +308,9 @@
       });
     });
 
-    // Load default stream (Server 3) on page load
+    // Load default stream (Server 1) on page load
     window.addEventListener('DOMContentLoaded', () => {
-      loadStream(3);
+      loadStream(1);
     });
 
     // --- Countdown Timer Logic ---
