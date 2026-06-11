@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mexico vs South Africa - Live Stream</title>
+<title>South Korea vs Czechia - Live Stream</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -225,8 +225,8 @@
     <!-- Match Info Card -->
     <div class="match-card">
       <div class="team">
-        <img src="https://flagcdn.com/w320/mx.png" alt="Mexico Flag">
-        <h2>Mexico</h2>
+        <img src="https://flagcdn.com/w320/kr.png" alt="South Korea Flag">
+        <h2>South Korea</h2>
       </div>
       <div class="vs">
         <span class="badge">FIFA World Cup 2026</span>
@@ -234,8 +234,8 @@
         <span class="time">Group A • June 11, 2026</span>
       </div>
       <div class="team">
-        <img src="https://flagcdn.com/w320/za.png" alt="South Africa Flag">
-        <h2>South Africa</h2>
+        <img src="https://flagcdn.com/w320/cz.png" alt="Czechia Flag">
+        <h2>Czechia</h2>
       </div>
     </div>
 
@@ -255,7 +255,7 @@
 
     <!-- Embedded Player -->
     <div class="player-wrapper">
-      <iframe id="video-player" src="https://junkieembeds.pages.dev/embed/tubi-1" frameborder="0" scrolling="no" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>
+      <iframe id="video-player" src="https://prabashsapkota.github.io/willo/" frameborder="0" scrolling="no" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>
     </div>
   </main>
 
@@ -290,7 +290,7 @@
 
     // --- Embedded Stream URLs ---
     const streams = {
-      1: 'https://junkieembeds.pages.dev/embed/tubi-1',
+      1: 'https://prabashsapkota.github.io/willo/',
       2: 'https://ipl-e2c.pages.dev/skysports1nzhdipllink2026newhd'
     };
 
@@ -320,7 +320,8 @@
     });
 
     // --- Countdown Timer Logic ---
-    const countDownDate = new Date("2026-06-11T19:00:00Z").getTime();
+    // Match 2: South Korea vs Czechia (June 11, 2026, 8:00 PM local time / 10:00 PM EDT)
+    const countDownDate = new Date("2026-06-12T02:00:00Z").getTime();
     
     const timerInterval = setInterval(function() {
       const now = new Date().getTime();
