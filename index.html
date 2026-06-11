@@ -1,44 +1,162 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CryptoHama - Trusted Crypto Resources</title>
-  <meta name="description" content="Unbiased reviews of top crypto casinos, exchanges, faucets and play-to-earn games">
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stream Viewer</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  :root {
+    --bg: #f4f4f4;
+    --text: #222;
+    --tab-bg: #fff;
+    --tab-border: #ccc;
+    --tab-active-bg: #2563eb;
+    --tab-active-text: #fff;
+    --frame-bg: #000;
+    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121212;
+      --text: #eaeaea;
+      --tab-bg: #1e1e1e;
+      --tab-border: #333;
+      --tab-active-bg: #3b82f6;
+      --tab-active-text: #fff;
+      --frame-bg: #000;
+      --shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 16px;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-size: 1.4rem;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+
+  .tab {
+    flex: 1;
+    min-width: 110px;
+    padding: 10px 16px;
+    background: var(--tab-bg);
+    color: var(--text);
+    border: 1px solid var(--tab-border);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow);
+  }
+
+  .tab:hover {
+    transform: translateY(-1px);
+  }
+
+  .tab.active {
+    background: var(--tab-active-bg);
+    color: var(--tab-active-text);
+    border-color: var(--tab-active-bg);
+  }
+
+  .frame-wrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 aspect ratio */
+    background: var(--frame-bg);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+
+  iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #888;
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 480px) {
+    .tab {
+      font-size: 0.85rem;
+      padding: 9px 10px;
+    }
+    h1 { font-size: 1.15rem; }
+  }
+</style>
 </head>
 <body>
-  <main class="container">
-    <header>
-      <h1>
-        <a href="index.html" class="brand-link">
-          <span class="brand-crypto">Crypto</span><span class="brand-hama">Hama</span>
-        </a>
-      </h1>
-      <p class="tagline">Your Trusted Source for Crypto Resources</p>
-    </header>
+  <div class="container">
+    <h1>📺 Stream Viewer</h1>
 
-    <div class="category-grid">
-      <a href="casinos.html" class="category-card">
-        <i class="fas fa-dice fa-3x"></i>
-        <h3>Top Casinos</h3>
-        <p>Crypto casinos with generous bonuses</p>
-      </a>
-      
-      <a href="exchanges.html" class="category-card">
-        <i class="fas fa-exchange-alt fa-3x"></i>
-        <h3>Top Exchanges</h3>
-        <p>Trusted crypto trading platforms</p>
-      </a>
-      
-    
-    <footer class="footer">
-      <p>&copy; 2025 CryptoHama. All rights reserved. Email:cryptohama@gmail.com</p>
-    </footer>
-  </main>
-  <script data-goatcounter="https://cryptohama.goatcounter.com/count"
-        async src="//gc.zgo.at/count.js"></script>
-  <script src="script.js"></script>
+    <div class="tabs" role="tablist">
+      <button class="tab active" data-src="https://gooz.aapmains.net/new-stream-embed/51875" role="tab">Server 1</button>
+      <button class="tab" data-src="https://gooz.aapmains.net/new-stream-embed/51184" role="tab">Server 2</button>
+      <button class="tab" data-src="https://gooz.aapmains.net/new-stream-embed/51865" role="tab">Server 3</button>
+    </div>
+
+    <div class="frame-wrapper">
+      <div class="loading" id="loading">Loading stream…</div>
+      <iframe id="player" src="https://gooz.aapmains.net/new-stream-embed/51875" allowfullscreen allow="autoplay; encrypted-media; fullscreen"></iframe>
+    </div>
+  </div>
+
+<script>
+  const tabs = document.querySelectorAll('.tab');
+  const player = document.getElementById('player');
+  const loading = document.getElementById('loading');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      loading.style.display = 'block';
+      player.src = tab.dataset.src;
+    });
+  });
+
+  player.addEventListener('load', () => {
+    loading.style.display = 'none';
+  });
+</script>
 </body>
 </html>
