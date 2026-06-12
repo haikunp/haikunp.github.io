@@ -3,12 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>South Korea vs Czechia - Live Stream</title>
+<title>StreamHub - FIFA World Cup 2026 Live Streams</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  /* --- CSS Variables for Light/Dark Mode --- */
   :root {
     --bg-primary: #f8fafc;
     --bg-secondary: #ffffff;
@@ -31,7 +30,6 @@
     --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
   }
 
-  /* --- Global Reset & Base --- */
   * { margin: 0; padding: 0; box-sizing: border-box; }
   
   body {
@@ -44,7 +42,6 @@
     transition: background 0.3s ease, color 0.3s ease;
   }
 
-  /* --- Header --- */
   header {
     padding: 1rem 2rem;
     display: flex;
@@ -68,7 +65,6 @@
   }
   .theme-toggle:hover { transform: rotate(20deg); border-color: var(--accent); }
 
-  /* --- Main Content --- */
   main {
     flex: 1;
     max-width: 1100px;
@@ -77,32 +73,49 @@
     width: 100%;
   }
 
-  /* --- Match Card --- */
-  .match-card {
+  h1 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+  }
+
+  .subtitle {
+    text-align: center;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    font-size: 1rem;
+  }
+
+  .games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .game-card {
     background: var(--bg-secondary);
     border: 1px solid var(--border);
     border-radius: 1.5rem;
-    padding: 2.5rem;
+    padding: 2rem;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow);
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    box-shadow: var(--shadow);
-    margin-bottom: 2rem;
+    text-align: center;
   }
-  .team { text-align: center; flex: 1; }
-  .team img {
-    width: 110px; height: 110px;
-    object-fit: cover;
-    border-radius: 50%;
-    border: 4px solid var(--border);
-    margin-bottom: 1rem;
-    box-shadow: var(--shadow);
-    background: #fff;
+
+  .game-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent);
+    box-shadow: 0 10px 25px -5px var(--accent-glow);
   }
-  .team h2 { font-size: 1.5rem; font-weight: 700; }
-  
-  .vs { text-align: center; padding: 0 1.5rem; }
-  .vs .badge {
+
+  .game-card .badge {
     background: var(--accent);
     color: white;
     padding: 0.35rem 0.85rem;
@@ -111,83 +124,65 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    box-shadow: 0 4px 10px var(--accent-glow);
+    margin-bottom: 1rem;
   }
-  .vs h1 { font-size: 2.5rem; font-weight: 800; margin: 0.75rem 0; color: var(--text-secondary); }
-  .vs .time { font-size: 0.9rem; color: var(--text-secondary); font-weight: 500; }
 
-  /* --- Countdown --- */
-  .countdown {
+  .game-card .match-teams {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .game-card .match-info {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+
+  .game-card .status {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .status.live {
+    background: #ef4444;
+    color: white;
+  }
+
+  .status.upcoming {
+    background: var(--accent);
+    color: white;
+  }
+
+  .status.soon {
+    background: var(--text-secondary);
+    color: white;
+  }
+
+  .ad-section {
     display: flex;
     justify-content: center;
     gap: 1rem;
-    margin-bottom: 2rem;
-  }
-  .time-box {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border);
-    border-radius: 1rem;
-    padding: 1rem 1.5rem;
-    text-align: center;
-    min-width: 85px;
-    box-shadow: var(--shadow);
-  }
-  .time-box span { display: block; font-size: 2rem; font-weight: 800; color: var(--accent); font-variant-numeric: tabular-nums; }
-  .time-box small { font-size: 0.7rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600; letter-spacing: 1px; }
-
-  /* --- Tabs --- */
-  .tabs {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-    background: var(--bg-secondary);
-    padding: 0.5rem;
-    border-radius: 1rem;
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow);
-  }
-  .tab {
-    flex: 1;
-    padding: 0.85rem 1rem;
-    background: transparent;
-    border: none;
-    color: var(--text-secondary);
-    font-weight: 600;
-    font-size: 0.95rem;
-    border-radius: 0.75rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-family: inherit;
-  }
-  .tab:hover { color: var(--text-primary); background: var(--bg-primary); }
-  .tab.active { 
-    background: var(--accent); 
-    color: white; 
-    box-shadow: 0 4px 10px var(--accent-glow); 
+    flex-wrap: wrap;
+    margin: 2rem auto;
+    max-width: 700px;
   }
 
-  /* --- Embedded Player --- */
-  .player-wrapper {
-    position: relative;
-    width: 100%;
-    padding-top: 56.25%; /* 16:9 Aspect Ratio */
-    background: #000;
-    border-radius: 1.5rem;
-    overflow: hidden;
-    border: 1px solid var(--border);
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+  .ad-section a {
+    display: inline-block;
   }
 
-  .player-wrapper iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: 0;
+  .ad-section img {
+    border-radius: 0.5rem;
+    transition: transform 0.3s ease;
   }
 
-  /* --- Footer --- */
+  .ad-section img:hover {
+    transform: scale(1.05);
+  }
+
   footer {
     text-align: center;
     padding: 2rem;
@@ -197,82 +192,58 @@
     background: var(--bg-secondary);
   }
 
-  /* --- Responsive Design --- */
   @media (max-width: 768px) {
     header { padding: 1rem; }
     main { padding: 1.5rem 1rem; }
-    .match-card { flex-direction: column; gap: 1.5rem; padding: 1.5rem; }
-    .team img { width: 80px; height: 80px; }
-    .vs h1 { font-size: 2rem; }
-    .countdown { gap: 0.5rem; flex-wrap: wrap; }
-    .time-box { padding: 0.75rem 1rem; min-width: 70px; flex: 1; }
-    .time-box span { font-size: 1.5rem; }
-    .tabs { flex-direction: column; }
-    .tab { padding: 0.75rem; }
+    h1 { font-size: 1.5rem; }
+    .games-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
 
-  <!-- Header -->
   <header>
     <div class="logo">⚽ StreamHub</div>
     <button class="theme-toggle" id="theme-toggle" title="Toggle Theme">🌙</button>
   </header>
 
-  <!-- Main Content -->
   <main>
-    <!-- Match Info Card -->
-    <div class="match-card">
-      <div class="team">
-        <img src="https://flagcdn.com/w320/kr.png" alt="South Korea Flag">
-        <h2>South Korea</h2>
-      </div>
-      <div class="vs">
-        <span class="badge">FIFA World Cup 2026</span>
-        <h1>VS</h1>
-        <span class="time">Group A • June 11, 2026</span>
-      </div>
-      <div class="team">
-        <img src="https://flagcdn.com/w320/cz.png" alt="Czechia Flag">
-        <h2>Czechia</h2>
-      </div>
+    <h1>FIFA World Cup 2026 - Live Streams</h1>
+    <p class="subtitle">Select a match to watch live streaming</p>
+
+    <div class="games-grid">
+      <a href="game1.html" class="game-card">
+        <span class="badge">Group B • Today</span>
+        <div class="match-teams">Canada vs Bosnia & Herzegovina</div>
+        <div class="match-info">June 12, 2026 • 19:00 UTC</div>
+        <div class="match-info">Toronto Stadium, Canada</div>
+        <span class="status upcoming">⏳ Watch Now</span>
+      </a>
+
+      <a href="game2.html" class="game-card">
+        <span class="badge">Group A • Tonight</span>
+        <div class="match-teams">USA vs Paraguay</div>
+        <div class="match-info">June 13, 2026 • 01:00 UTC</div>
+        <div class="match-info">Los Angeles Stadium, USA</div>
+        <span class="status soon">🔜 Coming Soon</span>
+      </a>
     </div>
 
-    <!-- Countdown Timer -->
-    <div class="countdown" id="countdown">
-      <div class="time-box"><span id="days">00</span><small>Days</small></div>
-      <div class="time-box"><span id="hours">00</span><small>Hours</small></div>
-      <div class="time-box"><span id="minutes">00</span><small>Minutes</small></div>
-      <div class="time-box"><span id="seconds">00</span><small>Seconds</small></div>
-    </div>
-
-    <!-- Stream Tabs -->
-    <div class="tabs">
-      <button class="tab active" data-server="1">Server 1</button>
-      <button class="tab" data-server="2">Server 2</button>
-    </div>
-
-    <!-- Embedded Player -->
-    <div class="player-wrapper">
-      <iframe id="video-player" src="https://prabashsapkota.github.io/willo/" frameborder="0" scrolling="no" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>
+    <div class="ad-section">
+      <a href="https://viefaucet.com?r=61e83d585cc8356fa4bda9a9" target="_blank">
+        <img src="https://viefaucet.com/banners/300x250.gif" alt="VieFaucet" border="0" />
+      </a>
+      <a href="https://earnbitmoon.club/?ref=145452" target="_blank">
+        <img src="https://earnbitmoon.club/promo/EBM-300x250.gif" alt="Earnbitmoon - ultimate faucet !" border="0" />
+      </a>
     </div>
   </main>
 
-  <!-- BEGIN AADS AD UNIT 2443372 -->
-  <div id="frame" style="width: 100%;margin: 2rem auto;position: relative; z-index: 99998; text-align: center;">
-    <iframe data-aa='2443372' src='//acceptable.a-ads.com/2443372/?size=Adaptive' style='border:0; padding:0; width:70%; max-width: 900px; height:auto; overflow:hidden;display: block;margin: auto'></iframe>
-  </div>
-  <!-- END AADS AD UNIT 2443372 -->
-
-  <!-- Footer -->
   <footer>
     <p>© 2026 StreamHub. All rights reserved. | Live Sports Streaming</p>
   </footer>
 
-  <!-- JavaScript -->
   <script>
-    // --- Theme Toggle Logic ---
     const themeToggle = document.getElementById('theme-toggle');
     const html = document.documentElement;
 
@@ -287,62 +258,6 @@
       themeToggle.textContent = newTheme === 'dark' ? '🌙' : '☀️';
       localStorage.setItem('theme', newTheme);
     });
-
-    // --- Embedded Stream URLs ---
-    const streams = {
-      1: 'https://prabashsapkota.github.io/willo/',
-      2: 'https://ipl-e2c.pages.dev/skysports1nzhdipllink2026newhd'
-    };
-
-    const iframe = document.getElementById('video-player');
-
-    // --- Stream Loading Logic ---
-    function loadStream(serverId) {
-      const url = streams[serverId];
-      if (url) {
-        iframe.src = url;
-      }
-    }
-
-    // --- Tab Switching Logic ---
-    const tabs = document.querySelectorAll('.tab');
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        tabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        loadStream(tab.dataset.server);
-      });
-    });
-
-    // Load default stream (Server 1) on page load
-    window.addEventListener('DOMContentLoaded', () => {
-      loadStream(1);
-    });
-
-    // --- Countdown Timer Logic ---
-    // Match 2: South Korea vs Czechia (June 11, 2026, 8:00 PM local time / 10:00 PM EDT)
-    const countDownDate = new Date("2026-06-12T02:00:00Z").getTime();
-    
-    const timerInterval = setInterval(function() {
-      const now = new Date().getTime();
-      const distance = countDownDate - now;
-
-      if (distance < 0) {
-        clearInterval(timerInterval);
-        document.getElementById('countdown').innerHTML = '<h2 style="color:var(--accent); font-size: 1.5rem; font-weight: 700;">🔴 MATCH IS LIVE NOW</h2>';
-        return;
-      }
-
-      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-      document.getElementById('days').innerText = String(days).padStart(2, '0');
-      document.getElementById('hours').innerText = String(hours).padStart(2, '0');
-      document.getElementById('minutes').innerText = String(minutes).padStart(2, '0');
-      document.getElementById('seconds').innerText = String(seconds).padStart(2, '0');
-    }, 1000);
   </script>
 </body>
 </html>
