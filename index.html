@@ -87,13 +87,7 @@
     font-size: 1rem;
   }
 
-  .games-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-  }
-
+  /* Match Cards */
   .game-card {
     background: var(--bg-secondary);
     border: 1px solid var(--border);
@@ -101,67 +95,75 @@
     padding: 2rem;
     text-decoration: none;
     color: var(--text-primary);
-    transition: all 0.3s ease;
     box-shadow: var(--shadow);
+    margin-bottom: 1.5rem;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    text-align: center;
+    justify-content: space-between;
+    transition: all 0.3s ease;
   }
 
   .game-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-3px);
     border-color: var(--accent);
     box-shadow: 0 10px 25px -5px var(--accent-glow);
   }
 
-  .game-card .badge {
+  .team {
+    text-align: center;
+    flex: 1;
+  }
+
+  .team img {
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid var(--border);
+    margin-bottom: 0.75rem;
+    box-shadow: var(--shadow);
+    background: #fff;
+  }
+
+  .team h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  .vs {
+    text-align: center;
+    padding: 0 1.5rem;
+  }
+
+  .vs .badge {
     background: var(--accent);
     color: white;
     padding: 0.35rem 0.85rem;
     border-radius: 2rem;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-bottom: 1rem;
-  }
-
-  .game-card .match-teams {
-    font-size: 1.5rem;
-    font-weight: 700;
+    box-shadow: 0 4px 10px var(--accent-glow);
+    display: inline-block;
     margin-bottom: 0.5rem;
   }
 
-  .game-card .match-info {
+  .vs h3 {
+    font-size: 1.75rem;
+    font-weight: 800;
     color: var(--text-secondary);
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
+    margin: 0.25rem 0;
   }
 
-  .game-card .status {
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
+  .vs .time {
     font-size: 0.85rem;
-    font-weight: 600;
+    color: var(--text-secondary);
+    font-weight: 500;
   }
 
-  .status.live {
-    background: #ef4444;
-    color: white;
-  }
-
-  .status.upcoming {
-    background: var(--accent);
-    color: white;
-  }
-
-  .status.soon {
-    background: var(--text-secondary);
-    color: white;
-  }
-
-  .ad-section {
+  /* Ad Sections */
+  .affiliate-ads {
     display: flex;
     justify-content: center;
     gap: 1rem;
@@ -170,16 +172,16 @@
     max-width: 700px;
   }
 
-  .ad-section a {
+  .affiliate-ads a {
     display: inline-block;
   }
 
-  .ad-section img {
+  .affiliate-ads img {
     border-radius: 0.5rem;
     transition: transform 0.3s ease;
   }
 
-  .ad-section img:hover {
+  .affiliate-ads img:hover {
     transform: scale(1.05);
   }
 
@@ -196,7 +198,15 @@
     header { padding: 1rem; }
     main { padding: 1.5rem 1rem; }
     h1 { font-size: 1.5rem; }
-    .games-grid { grid-template-columns: 1fr; }
+    .game-card {
+      flex-direction: column;
+      gap: 1rem;
+      padding: 1.5rem;
+    }
+    .team img { width: 70px; height: 70px; }
+    .team h2 { font-size: 1rem; }
+    .vs { padding: 0.5rem 0; }
+    .vs h3 { font-size: 1.5rem; }
   }
 </style>
 </head>
@@ -209,27 +219,49 @@
 
   <main>
     <h1>FIFA World Cup 2026 - Live Streams</h1>
-    <p class="subtitle">Select a match to watch live streaming</p>
+    <p class="subtitle">Click on a match to watch live streaming</p>
 
-    <div class="games-grid">
-      <a href="game1.html" class="game-card">
-        <span class="badge">Group B • Today</span>
-        <div class="match-teams">Canada vs Bosnia & Herzegovina</div>
-        <div class="match-info">June 12, 2026 • 19:00 UTC</div>
-        <div class="match-info">Toronto Stadium, Canada</div>
-        <span class="status upcoming">⏳ Watch Now</span>
-      </a>
+    <!-- Match 1: Canada vs Bosnia & Herzegovina -->
+    <a href="game1.html" class="game-card">
+      <div class="team">
+        <img src="https://flagcdn.com/w320/ca.png" alt="Canada Flag">
+        <h2>Canada</h2>
+      </div>
+      <div class="vs">
+        <span class="badge">Group B</span>
+        <h3>VS</h3>
+        <span class="time">June 12, 2026 • 19:00 UTC</span>
+      </div>
+      <div class="team">
+        <img src="https://flagcdn.com/w320/ba.png" alt="Bosnia and Herzegovina Flag">
+        <h2>Bosnia & Herzegovina</h2>
+      </div>
+    </a>
 
-      <a href="game2.html" class="game-card">
-        <span class="badge">Group A • Tonight</span>
-        <div class="match-teams">USA vs Paraguay</div>
-        <div class="match-info">June 13, 2026 • 01:00 UTC</div>
-        <div class="match-info">Los Angeles Stadium, USA</div>
-        <span class="status soon">🔜 Coming Soon</span>
-      </a>
+    <!-- Match 2: USA vs Paraguay -->
+    <a href="game2.html" class="game-card">
+      <div class="team">
+        <img src="https://flagcdn.com/w320/us.png" alt="USA Flag">
+        <h2>USA</h2>
+      </div>
+      <div class="vs">
+        <span class="badge">Group A</span>
+        <h3>VS</h3>
+        <span class="time">June 13, 2026 • 01:00 UTC</span>
+      </div>
+      <div class="team">
+        <img src="https://flagcdn.com/w320/py.png" alt="Paraguay Flag">
+        <h2>Paraguay</h2>
+      </div>
+    </a>
+
+    <!-- A-Ads -->
+    <div id="frame" style="width: 100%;margin: 2rem auto;position: relative; z-index: 99998; text-align: center;">
+      <iframe data-aa='2443372' src='//acceptable.a-ads.com/2443372/?size=Adaptive' style='border:0; padding:0; width:70%; max-width: 900px; height:auto; overflow:hidden;display: block;margin: auto'></iframe>
     </div>
 
-    <div class="ad-section">
+    <!-- Affiliate Banner Ads -->
+    <div class="affiliate-ads">
       <a href="https://viefaucet.com?r=61e83d585cc8356fa4bda9a9" target="_blank">
         <img src="https://viefaucet.com/banners/300x250.gif" alt="VieFaucet" border="0" />
       </a>
