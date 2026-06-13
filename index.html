@@ -34,7 +34,7 @@
             box-shadow: 0 20px 40px -10px rgba(59, 130, 246, 0.5);
         }
         
-        /* Line clamp for news titles */
+        /* Line clamp for text truncation */
         .line-clamp-2 {
             display: -webkit-box;
             -webkit-line-clamp: 2;
@@ -166,27 +166,27 @@
         </div>
     </section>
 
-    <!-- Schedule & Standings Section (Iframe) -->
+    <!-- Schedule & Scores Section (Live ESPN API) -->
     <section id="schedule" class="py-16 px-4 bg-gray-900/30">
         <div class="max-w-6xl mx-auto">
             <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Live Schedule & Groups</h2>
-                <p class="text-gray-400 max-w-2xl mx-auto">Real-time match fixtures, group standings, and knockout brackets powered by SportBusy.</p>
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Live Schedule & Scores</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">Real-time match fixtures, live scores, and updates powered directly by ESPN data.</p>
             </div>
             
-            <div class="bg-gray-900 rounded-2xl p-2 md:p-4 border border-gray-800 shadow-2xl">
-                <!-- World Cup 2026 Widget Iframe -->
-                <iframe src="https://www.sportbusy.com/world-cup-2026-widget/" width="100%" height="650" frameborder="0" class="rounded-xl bg-gray-950" title="FIFA World Cup 2026 Schedule"></iframe>
+            <div id="schedule-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Loading state -->
+                <div class="col-span-full text-center text-gray-500 py-8">Loading live matches...</div>
             </div>
         </div>
     </section>
 
-    <!-- Latest News Section (RSS Feed) -->
+    <!-- Latest News Section (Live ESPN API) -->
     <section id="news" class="py-16 px-4">
         <div class="max-w-6xl mx-auto">
             <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Latest Football News</h2>
-                <p class="text-gray-400 max-w-2xl mx-auto">Stay updated with the latest headlines, transfers, and match reports.</p>
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Latest World Cup News</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">Stay updated with the latest headlines, match reports, and tournament updates.</p>
             </div>
             
             <div id="news-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -217,37 +217,114 @@
         <p class="text-xs text-gray-600">We do not host any video files. All streams are provided by third-party websites.</p>
     </footer>
 
-    <!-- JavaScript for RSS Feed -->
+    <!-- JavaScript for Live Data -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const newsContainer = document.getElementById('news-container');
-            // Using rss2json to fetch ESPN Soccer RSS feed
-            const rssUrl = 'https://www.espn.com/espn/rss/soccer/news';
-            const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+            fetchSchedule();
+            fetchNews();
+        });
 
-            fetch(apiUrl)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'ok' && data.items.length > 0) {
-                        newsContainer.innerHTML = data.items.slice(0, 6).map(item => `
-                            <a href="${item.link}" target="_blank" class="bg-gray-900 rounded-xl p-5 hover:bg-gray-800 transition border border-gray-800 hover:border-blue-500/50 block group shadow-lg">
-                                <h4 class="font-bold text-white mb-3 line-clamp-2 group-hover:text-blue-400 transition">${item.title}</h4>
-                                <p class="text-gray-400 text-sm line-clamp-3 mb-4">${item.description.replace(/<[^>]*>/g, '')}</p>
-                                <div class="flex items-center justify-between text-xs text-gray-500 mt-auto pt-4 border-t border-gray-800">
-                                    <span>${new Date(item.pubDate).toLocaleDateString()}</span>
+        // Fetch Live Schedule from ESPN API
+        async function fetchSchedule() {
+            const container = document.getElementById('schedule-container');
+            try {
+                const res = await fetch('https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard');
+                const data = await res.json();
+                
+                if (data.events && data.events.length > 0) {
+                    container.innerHTML = data.events.map(event => {
+                        const comp = event.competitions[0];
+                        const home = comp.competitors.find(c => c.homeAway === 'home');
+                        const away = comp.competitors.find(c => c.homeAway === 'away');
+                        
+                        const status = comp.status.type.shortDetail; 
+                        const statusState = comp.status.type.state; // "pre", "in", "post"
+                        const date = new Date(event.date);
+                        const venue = event.venue ? event.venue.displayName : 'TBD';
+                        const group = event.altGameNote || 'FIFA World Cup 2026';
+                        
+                        // Dynamic styling based on match state
+                        let statusColor = 'text-gray-400';
+                        let statusBg = 'bg-gray-800 border-gray-700';
+                        if (statusState === 'in') {
+                            statusColor = 'text-red-400';
+                            statusBg = 'bg-red-900/30 border-red-800 animate-pulse';
+                        } else if (statusState === 'post') {
+                            statusColor = 'text-blue-400';
+                            statusBg = 'bg-blue-900/30 border-blue-800';
+                        }
+
+                        // Show "VS" if match hasn't started, otherwise show score
+                        const scoreDisplay = statusState === 'pre' ? 'VS' : `${home.score || 0} - ${away.score || 0}`;
+
+                        return `
+                        <div class="bg-gray-900 rounded-xl p-5 border border-gray-800 hover:border-blue-500/50 transition shadow-lg">
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">${group}</span>
+                                <span class="text-xs font-bold px-2 py-1 rounded-full border ${statusBg} ${statusColor}">${status}</span>
+                            </div>
+                            <div class="flex items-center justify-between gap-4">
+                                <div class="flex items-center gap-3 flex-1">
+                                    <img src="${home.team.logo}" alt="${home.team.displayName}" class="w-10 h-10 object-contain">
+                                    <span class="font-bold text-white text-sm md:text-base truncate">${home.team.displayName}</span>
+                                </div>
+                                <div class="text-center px-2">
+                                    <span class="text-2xl font-black text-white">${scoreDisplay}</span>
+                                </div>
+                                <div class="flex items-center gap-3 flex-1 justify-end text-right">
+                                    <span class="font-bold text-white text-sm md:text-base truncate">${away.team.displayName}</span>
+                                    <img src="${away.team.logo}" alt="${away.team.displayName}" class="w-10 h-10 object-contain">
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-gray-800 text-xs text-gray-500 flex justify-between">
+                                <span>🏟️ ${venue}</span>
+                                <span>🕒 ${date.toLocaleDateString()} ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                            </div>
+                        </div>
+                        `;
+                    }).join('');
+                } else {
+                    container.innerHTML = '<p class="col-span-full text-center text-gray-500">No matches scheduled at the moment.</p>';
+                }
+            } catch (err) {
+                console.error('Error fetching schedule:', err);
+                container.innerHTML = '<p class="col-span-full text-center text-gray-500">Unable to load schedule.</p>';
+            }
+        }
+
+        // Fetch Latest News from ESPN API
+        async function fetchNews() {
+            const container = document.getElementById('news-container');
+            try {
+                const res = await fetch('https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/news');
+                const data = await res.json();
+                
+                if (data.articles && data.articles.length > 0) {
+                    container.innerHTML = data.articles.slice(0, 6).map(article => {
+                        const img = article.images && article.images.length > 0 ? article.images[0].url : '';
+                        const date = new Date(article.published);
+                        return `
+                        <a href="${article.links.web.href}" target="_blank" class="bg-gray-900 rounded-xl overflow-hidden hover:bg-gray-800 transition border border-gray-800 hover:border-blue-500/50 block group shadow-lg">
+                            ${img ? `<img src="${img}" alt="${article.headline}" class="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-500">` : ''}
+                            <div class="p-5">
+                                <h4 class="font-bold text-white mb-2 line-clamp-2 group-hover:text-blue-400 transition">${article.headline}</h4>
+                                <p class="text-gray-400 text-sm line-clamp-3 mb-4">${article.description}</p>
+                                <div class="flex items-center justify-between text-xs text-gray-500 mt-auto pt-3 border-t border-gray-800">
+                                    <span>${date.toLocaleDateString()}</span>
                                     <span class="text-blue-400 font-semibold group-hover:translate-x-1 transition-transform">Read More →</span>
                                 </div>
-                            </a>
-                        `).join('');
-                    } else {
-                        newsContainer.innerHTML = '<p class="col-span-full text-center text-gray-500">Unable to load news at this moment.</p>';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching news:', error);
-                    newsContainer.innerHTML = '<p class="col-span-full text-center text-gray-500">Unable to load news at this moment.</p>';
-                });
-        });
+                            </div>
+                        </a>
+                        `;
+                    }).join('');
+                } else {
+                    container.innerHTML = '<p class="col-span-full text-center text-gray-500">No news available.</p>';
+                }
+            } catch (err) {
+                console.error('Error fetching news:', err);
+                container.innerHTML = '<p class="col-span-full text-center text-gray-500">Unable to load news.</p>';
+            }
+        }
     </script>
 </body>
 </html>
