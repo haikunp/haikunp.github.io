@@ -25,12 +25,15 @@ Track completed and pending stages. Update after each stage passes testing.
 - [x] Local build + type check verified (27 pages, ads emit nothing)
 - [x] Mobile & desktop visual check (Chromium screenshots)
 
-## Stage 3 — GitHub deployment ⬜
-- [ ] Create private GitHub repo
-- [ ] `.github/workflows/deploy.yml`
-- [ ] Enable GitHub Pages
-- [ ] Custom domain `miniadda.com` + DNS
-- [ ] Verify live site
+## Stage 3 — GitHub deployment 🟡
+- [x] Repo `haikunp/haikunp.github.io` (public)
+- [x] `.github/workflows/deploy.yml` (build → artifact → deploy-pages)
+- [x] Push to `main` (commit "Initial commit: Astro public site")
+- [x] Workflow deployed successfully → live at https://haikunp.github.io/
+- [x] `public/CNAME` = miniadda.com added
+- [ ] Set custom domain + Enforce HTTPS in GitHub Pages settings (manual)
+- [ ] Configure DNS: apex A records + www CNAME (manual, user's DNS provider)
+- [ ] Verify miniadda.com serves the site
 
 ## Stage 4 — Admin interface ⬜
 - [ ] `admin/` Cloudflare Pages SPA

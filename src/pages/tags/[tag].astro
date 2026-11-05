@@ -5,7 +5,7 @@ import ArticleCard from '../../components/ArticleCard.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import { getAllArticles, tagCounts } from '../../lib/content';
 import { regionName } from '../../lib/constants';
-import { breadcrumbList } from '../../lib/seo';
+import { breadcrumbList, itemListSchema } from '../../lib/seo';
 
 export const getStaticPaths = (async () => {
   const articles = await getAllArticles();
@@ -25,8 +25,12 @@ const crumbs = [
   { name, url: `/tags/${slug}` },
 ];
 const description = `Quick answers tagged ${name} on MiniAdda.`;
+const ld = [
+  itemListSchema(articles, { name: `${name} answers`, url: `/tags/${slug}` }),
+  breadcrumbList(crumbs),
+];
 ---
-<PageLayout title={`${name} — Answers`} description={description} jsonLd={breadcrumbList(crumbs)}>
+<PageLayout title={`${name} — Answers`} description={description} jsonLd={ld}>
   <div class="container">
     <Breadcrumbs items={crumbs} />
     <header class="page-header">

@@ -9,6 +9,7 @@ import {
   articleUrl,
   tagCounts,
 } from '../lib/content';
+import { itemListSchema } from '../lib/seo';
 
 const articles = await getAllArticles();
 const us = await getSectionArticles('us');
@@ -21,48 +22,42 @@ const latest = articles.slice(0, 6);
 const counts = tagCounts(articles);
 const activeTags = REGIONS.filter((r) => (counts.get(r.slug) ?? 0) > 0);
 
-const websiteLd = {
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  name: SITE.name,
-  url: SITE.url,
-  description: SITE.description,
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: `${SITE.url}/search?q={search_term_string}`,
-    'query-input': 'required name=search_term_string',
-  },
-};
+const homeLd = itemListSchema(trendingList, {
+  name: 'Trending questions on MiniAdda',
+  url: '/',
+});
+
+const metaTitle = `${SITE.name} — ${SITE.tagline}`;
+const metaDescription = SITE.description;
 ---
-<PageLayout title={`${SITE.name} — ${SITE.tagline}`} description={SITE.description} jsonLd={websiteLd}>
-  <section class="hero">
+<PageLayout title={metaTitle} description={metaDescription} path="/" jsonLd={homeLd}>
+  <section class="ticker" aria-label="Search">
     <div class="container">
-      <span class="hero-eyebrow">No fluff. Just the answer.</span>
-      <h1>Quick answers to <em>everything</em> people are googling.</h1>
-      <p>Short, straight answers about the US and the world — politics, tech, money, science and more. Updated as the news moves.</p>
       <SearchBar placeholder="What are you curious about?" />
     </div>
   </section>
 
-  {trendingList.length > 0 && (
-    <section class="section" aria-labelledby="trending-heading">
-      <div class="container">
-        <div class="section-head">
-          <h2 id="trending-heading"><span class="tag-bar" aria-hidden="true"></span>Trending right now</h2>
-        </div>
+  <section class="section section--first" aria-labelledby="trending-heading">
+    <div class="container">
+      <div class="section-head">
+        <h1 id="trending-heading" class="section-title"><span class="tag-bar" aria-hidden="true"></span>Trending right now</h1>
+      </div>
+      {trendingList.length > 0 ? (
         <ol class="trending-list">
           {trendingList.map((a) => (
             <li><a href={articleUrl(a)}>{a.data.title}</a></li>
           ))}
         </ol>
-      </div>
-    </section>
-  )}
+      ) : (
+        <p class="empty-state">No answers yet. Check back soon.</p>
+      )}
+    </div>
+  </section>
 
   <section class="section" aria-labelledby="us-heading">
     <div class="container">
       <div class="section-head">
-        <h2 id="us-heading"><span class="tag-bar" aria-hidden="true"></span>US</h2>
+        <h2 id="us-heading" class="section-title"><span class="tag-bar" aria-hidden="true"></span>US</h2>
         <a href="/us">See all →</a>
       </div>
       {us.length ? (
@@ -78,7 +73,7 @@ const websiteLd = {
   <section class="section" aria-labelledby="intl-heading">
     <div class="container">
       <div class="section-head">
-        <h2 id="intl-heading"><span class="tag-bar" aria-hidden="true"></span>International</h2>
+        <h2 id="intl-heading" class="section-title"><span class="tag-bar" aria-hidden="true"></span>International</h2>
         <a href="/international">See all →</a>
       </div>
       {international.length ? (
@@ -95,7 +90,7 @@ const websiteLd = {
     <section class="section" aria-labelledby="tags-heading">
       <div class="container">
         <div class="section-head">
-          <h2 id="tags-heading"><span class="tag-bar" aria-hidden="true"></span>Jump to a place</h2>
+          <h2 id="tags-heading" class="section-title"><span class="tag-bar" aria-hidden="true"></span>Jump to a place</h2>
         </div>
         <div class="chip-row">
           {activeTags.map((r) => (
@@ -112,7 +107,7 @@ const websiteLd = {
   <section class="section" aria-labelledby="topics-heading">
     <div class="container">
       <div class="section-head">
-        <h2 id="topics-heading"><span class="tag-bar" aria-hidden="true"></span>By topic</h2>
+        <h2 id="topics-heading" class="section-title"><span class="tag-bar" aria-hidden="true"></span>By topic</h2>
       </div>
       <div class="chip-row">
         {TOPICS.map((t) => (
@@ -125,7 +120,7 @@ const websiteLd = {
   <section class="section" aria-labelledby="latest-heading">
     <div class="container">
       <div class="section-head">
-        <h2 id="latest-heading"><span class="tag-bar" aria-hidden="true"></span>Latest answers</h2>
+        <h2 id="latest-heading" class="section-title"><span class="tag-bar" aria-hidden="true"></span>Latest answers</h2>
       </div>
       {latest.length ? (
         <div class="card-grid">

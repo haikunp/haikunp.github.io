@@ -13,7 +13,7 @@ import {
   formatDate,
   readingTime,
 } from '../../lib/content';
-import { breadcrumbList, articleSchema } from '../../lib/seo';
+import { breadcrumbList, articleSchema, wordCount } from '../../lib/seo';
 import { ads } from '../../lib/ads';
 
 export const getStaticPaths = (async () => {
@@ -49,6 +49,9 @@ const ld = [
     publishedAt: data.publishedAt,
     updatedAt: data.updatedAt,
     author: data.author,
+    section: data.section,
+    tags: data.tags,
+    wordCount: wordCount(article.body),
   }),
   breadcrumbList(crumbs.map((c) => ({ name: c.name, url: c.url }))),
 ];
@@ -59,10 +62,14 @@ const bannerAfterAnswer = ads.placements.banner.position === 'after-answer';
   title={seoTitle}
   description={seoDescription}
   image={data.featuredImage}
+  imageAlt={data.featuredImageAlt}
   type="article"
   publishedAt={data.publishedAt}
   updatedAt={data.updatedAt}
+  lastVerified={data.lastVerified}
   author={data.author}
+  section={data.section}
+  tags={data.tags}
   jsonLd={ld}
 >
   <div class="container">

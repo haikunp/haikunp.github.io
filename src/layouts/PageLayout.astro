@@ -6,28 +6,54 @@ import Footer from '../components/Footer.astro';
 interface Props {
   title: string;
   description: string;
+  path?: string;
   image?: string;
+  imageAlt?: string;
   type?: 'website' | 'article';
   publishedAt?: Date;
   updatedAt?: Date;
+  lastVerified?: Date;
   author?: string;
+  section?: string;
+  tags?: string[];
   noindex?: boolean;
+  nofollow?: boolean;
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
-const { title, description, image, type, publishedAt, updatedAt, author, noindex, jsonLd } =
-  Astro.props;
+const {
+  title,
+  description,
+  path,
+  image,
+  imageAlt,
+  type,
+  publishedAt,
+  updatedAt,
+  lastVerified,
+  author,
+  section,
+  tags,
+  noindex,
+  nofollow,
+  jsonLd,
+} = Astro.props;
 ---
 <BaseLayout
   title={title}
   description={description}
-  path={Astro.url.pathname}
+  path={path ?? Astro.url.pathname}
   image={image}
+  imageAlt={imageAlt}
   type={type}
   publishedAt={publishedAt}
   updatedAt={updatedAt}
+  lastVerified={lastVerified}
   author={author}
+  section={section}
+  tags={tags}
   noindex={noindex}
+  nofollow={nofollow}
   jsonLd={jsonLd}
 >
   <Header />
