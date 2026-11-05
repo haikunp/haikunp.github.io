@@ -1,0 +1,20 @@
+---
+import { SITE, SECTIONS } from '../lib/constants';
+const path = Astro.url.pathname;
+---
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="/" class="logo" aria-label="MiniAdda home">
+      <span class="logo-mark" aria-hidden="true">M</span>
+      {SITE.name}
+    </a>
+    <nav class="section-nav" aria-label="Sections">
+      {SECTIONS.map((s) => (
+        <a
+          href={`/${s.slug}`}
+          aria-current={path.startsWith(`/${s.slug}`) ? 'page' : undefined}
+        >{s.name}</a>
+      ))}
+    </nav>
+  </div>
+</header>

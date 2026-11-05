@@ -1,0 +1,41 @@
+---
+import type { GetStaticPaths } from 'astro';
+import PageLayout from '../../layouts/PageLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { TOPICS, topicName } from '../../lib/constants';
+import { getAllArticles } from '../../lib/content';
+import { breadcrumbList } from '../../lib/seo';
+
+export const getStaticPaths = (async () => {
+  return TOPICS.map((t) => ({ params: { topic: t.slug }, props: { slug: t.slug } }));
+}) satisfies GetStaticPaths;
+
+const { slug } = Astro.props;
+const name = topicName(slug);
+const all = await getAllArticles();
+const articles = all.filter((a) => a.data.topic === slug);
+const crumbs = [
+  { name: 'Home', url: '/' },
+  { name, url: `/topics/${slug}` },
+];
+const description = `Quick ${name.toLowerCase()} answers on MiniAdda.`;
+---
+<PageLayout title={`${name} — Answers`} description={description} jsonLd={breadcrumbList(crumbs)}>
+  <div class="container">
+    <Breadcrumbs items={crumbs} />
+    <header class="page-header">
+      <h1>{name}</h1>
+      <p>{articles.length} answer{articles.length === 1 ? '' : 's'}</p>
+    </header>
+    <section class="section">
+      {articles.length ? (
+        <div class="card-grid">
+          {articles.map((a, i) => <ArticleCard article={a} featured={i === 0} />)}
+        </div>
+      ) : (
+        <p class="empty-state">No {name} answers yet.</p>
+      )}
+    </section>
+  </div>
+</PageLayout>

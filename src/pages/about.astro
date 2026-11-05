@@ -1,0 +1,40 @@
+---
+import ContentPageLayout from '../layouts/ContentPageLayout.astro';
+import { SITE } from '../lib/constants';
+---
+<ContentPageLayout
+  title="About MiniAdda"
+  description="MiniAdda publishes short, sourced answers to the questions everyone is asking."
+  heading="About MiniAdda"
+  crumb="About"
+>
+  <p>
+    {SITE.name} is a fast, focused information site. Instead of long, padded articles, we give you
+    a clear answer near the top, a short explanation, and links to the sources we used — then get
+    out of your way.
+  </p>
+  <p>
+    We cover the questions people actually search for: who won an election, what the latest product
+    is, why a market moved, who owns a company, and similar everyday questions across politics,
+    technology, business, finance, entertainment, science, sports and general knowledge.
+  </p>
+
+  <h2>How we work</h2>
+  <p>
+    Every article is reviewed by an editor before it is published. We state what is known, mark what
+    is uncertain, and update answers when the facts change. Each answer shows a <em>last verified</em>
+    date so you know how current it is.
+  </p>
+
+  <h2>What we don't do</h2>
+  <ul>
+    <li>We don't invent authors, quotes, reviews or citations.</li>
+    <li>We don't publish unverified claims as fact.</li>
+    <li>We don't pad answers to chase word counts.</li>
+  </ul>
+
+  <p>
+    Read our <a href="/editorial">Editorial Policy</a> for the full standard, or
+    <a href="/contact">contact us</a> with a correction.
+  </p>
+</ContentPageLayout>

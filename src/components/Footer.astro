@@ -1,0 +1,41 @@
+---
+import { SITE, SECTIONS, TOPICS } from '../lib/constants';
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="logo">
+          <span class="logo-mark" aria-hidden="true">M</span>
+          {SITE.name}
+        </a>
+        <p>{SITE.tagline}</p>
+      </div>
+      <div>
+        <h3>Sections</h3>
+        <ul>
+          {SECTIONS.map((s) => (
+            <li><a href={`/${s.slug}`}>{s.name}</a></li>
+          ))}
+          {TOPICS.slice(0, 4).map((t) => (
+            <li><a href={`/topics/${t.slug}`}>{t.name}</a></li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <h3>Site</h3>
+        <ul>
+          <li><a href="/about">About</a></li>
+          <li><a href="/contact">Contact</a></li>
+          <li><a href="/privacy">Privacy Policy</a></li>
+          <li><a href="/editorial">Editorial Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© {year} {SITE.name}</span>
+      <span>Fast, factual answers — verified &amp; sourced.</span>
+    </div>
+  </div>
+</footer>

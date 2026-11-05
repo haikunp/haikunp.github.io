@@ -1,0 +1,148 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { render } from 'astro:content';
+import PageLayout from '../../layouts/PageLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import { sectionName, topicName, regionName } from '../../lib/constants';
+import {
+  getAllArticles,
+  getRelated,
+  articleUrl,
+  formatDate,
+  readingTime,
+} from '../../lib/content';
+import { breadcrumbList, articleSchema } from '../../lib/seo';
+import { ads } from '../../lib/ads';
+
+export const getStaticPaths = (async () => {
+  const articles = await getAllArticles();
+  return articles.map((article) => ({
+    params: { section: article.data.section, slug: article.id },
+    props: { article },
+  }));
+}) satisfies GetStaticPaths;
+
+const { article } = Astro.props;
+const { data } = article;
+const { Content } = await render(article);
+const related = await getRelated(article, 3);
+const secName = sectionName(data.section);
+
+const crumbs = [
+  { name: 'Home', url: '/' },
+  { name: secName, url: `/${data.section}` },
+  { name: data.title, url: articleUrl(article) },
+];
+
+const seoTitle = data.seoTitle ?? data.title;
+const seoDescription = data.seoDescription ?? data.description;
+const cardTags = data.tags.filter((t) => t !== 'global').slice(0, 3);
+
+const ld = [
+  articleSchema({
+    title: data.title,
+    description: seoDescription,
+    url: articleUrl(article),
+    image: data.featuredImage,
+    publishedAt: data.publishedAt,
+    updatedAt: data.updatedAt,
+    author: data.author,
+  }),
+  breadcrumbList(crumbs.map((c) => ({ name: c.name, url: c.url }))),
+];
+
+const bannerAfterAnswer = ads.placements.banner.position === 'after-answer';
+---
+<PageLayout
+  title={seoTitle}
+  description={seoDescription}
+  image={data.featuredImage}
+  type="article"
+  publishedAt={data.publishedAt}
+  updatedAt={data.updatedAt}
+  author={data.author}
+  jsonLd={ld}
+>
+  <div class="container">
+    <Breadcrumbs items={crumbs} />
+
+    <div class="article-layout">
+      <div>
+        <header class="article-header">
+          <div class="card-top">
+            <span class="topic-pill">{topicName(data.topic)}</span>
+            {cardTags.map((t) => <span class="tag-pill">{regionName(t)}</span>)}
+          </div>
+          <h1>{data.title}</h1>
+          <div class="article-meta">
+            <span>By {data.author}</span>
+            <span class="dot" aria-hidden="true"></span>
+            <span><time datetime={data.publishedAt.toISOString()}>{formatDate(data.publishedAt)}</time></span>
+            <span class="dot" aria-hidden="true"></span>
+            <span>{readingTime(article.body ?? '')} min read</span>
+          </div>
+        </header>
+
+        <div class="answer-box">
+          <div class="label">Quick answer</div>
+          <p>{data.answer}</p>
+        </div>
+
+        {bannerAfterAnswer && <AdSlot placement="banner" />}
+
+        {data.featuredImage && (
+          <figure class="featured-figure">
+            <img
+              src={data.featuredImage}
+              alt={data.featuredImageAlt ?? ''}
+              loading="eager"
+              width="720"
+              height="405"
+            />
+            {data.featuredImageAlt && <figcaption>{data.featuredImageAlt}</figcaption>}
+          </figure>
+        )}
+
+        <div class="prose">
+          <Content />
+        </div>
+
+        {data.lastVerified && (
+          <p class="verified">
+            Last verified <time datetime={data.lastVerified.toISOString()}>{formatDate(data.lastVerified)}</time>
+          </p>
+        )}
+
+        {data.sources.length > 0 && (
+          <section class="sources" aria-labelledby="sources-heading">
+            <h2 id="sources-heading">Sources</h2>
+            <ul>
+              {data.sources.map((s) => (
+                <li>
+                  <a href={s.url} rel="nofollow noopener noreferrer" target="_blank">{s.label}</a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {related.length > 0 && (
+          <section class="related" aria-labelledby="related-heading">
+            <div class="section-head">
+              <h2 id="related-heading"><span class="tag-bar" aria-hidden="true"></span>Related questions</h2>
+            </div>
+            <div class="card-grid">
+              {related.map((a) => <ArticleCard article={a} />)}
+            </div>
+          </section>
+        )}
+      </div>
+
+      <aside class="article-aside">
+        <AdSlot placement="sidebar" />
+      </aside>
+    </div>
+  </div>
+</PageLayout>

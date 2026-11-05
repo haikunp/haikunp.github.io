@@ -1,0 +1,19 @@
+---
+interface Props {
+  placeholder?: string;
+  id?: string;
+}
+const { placeholder = 'Ask anything…', id = 'site-search' } = Astro.props;
+---
+<form class="search-form" role="search" action="/search" method="get">
+  <label for={id} class="sr-only">Search MiniAdda</label>
+  <input
+    id={id}
+    type="search"
+    name="q"
+    placeholder={placeholder}
+    autocomplete="off"
+    enterkeyhint="search"
+  />
+  <button class="btn btn--accent" type="submit">Go</button>
+</form>

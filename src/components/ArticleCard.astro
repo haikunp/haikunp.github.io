@@ -1,0 +1,25 @@
+---
+import { topicName, regionName } from '../lib/constants';
+import { articleUrl, formatDate, type Article } from '../lib/content';
+
+interface Props {
+  article: Article;
+  featured?: boolean;
+}
+const { article, featured = false } = Astro.props;
+const { data } = article;
+const tags = data.tags.slice(0, 3);
+---
+<a class:list={['article-card', featured && 'is-featured']} href={articleUrl(article)}>
+  <div class="card-top">
+    <span class="topic-pill">{topicName(data.topic)}</span>
+    {tags.map((t) => <span class="tag-pill">{regionName(t)}</span>)}
+  </div>
+  <h3>{data.title}</h3>
+  <p>{data.answer}</p>
+  <div class="card-meta">
+    <span>{formatDate(data.publishedAt)}</span>
+    <span class="dot" aria-hidden="true"></span>
+    <span>{data.author}</span>
+  </div>
+</a>

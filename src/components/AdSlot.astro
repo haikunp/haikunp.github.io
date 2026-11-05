@@ -1,0 +1,31 @@
+---
+import { ads, type AdPlacement } from '../lib/ads';
+
+interface Props {
+  placement: AdPlacement;
+}
+const { placement } = Astro.props;
+const conf = ads.placements[placement];
+const show = ads.enabled && conf.enabled && conf.slotId && ads.publisherId;
+
+// Renders only when fully configured. Until then, nothing is emitted.
+---
+{show && (
+  <div
+    class:list={['ad-slot', placement === 'sidebar' ? 'ad-sidebar' : '']}
+    data-ad-placement={placement}
+    aria-label="Advertisement"
+  >
+    <ins
+      class="adsbygoogle"
+      style="display:block"
+      data-ad-client={ads.publisherId}
+      data-ad-slot={conf.slotId}
+      data-ad-format="auto"
+      data-full-width-responsive="true"
+    ></ins>
+    <script is:inline>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+)}

@@ -1,0 +1,25 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  heading: string;
+  crumb: string;
+}
+const { title, description, heading } = Astro.props;
+const crumbs = [
+  { name: 'Home', url: '/' },
+  { name: heading, url: Astro.url.pathname },
+];
+---
+<PageLayout title={title} description={description}>
+  <div class="container">
+    <Breadcrumbs items={crumbs} />
+    <article class="static-page">
+      <h1>{heading}</h1>
+      <slot />
+    </article>
+  </div>
+</PageLayout>

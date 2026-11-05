@@ -1,0 +1,44 @@
+---
+import type { GetStaticPaths } from 'astro';
+import PageLayout from '../../layouts/PageLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { SECTIONS, sectionName } from '../../lib/constants';
+import { getSectionArticles } from '../../lib/content';
+import { breadcrumbList } from '../../lib/seo';
+
+export const getStaticPaths = (async () => {
+  return SECTIONS.map((s) => ({
+    params: { section: s.slug },
+    props: { slug: s.slug },
+  }));
+}) satisfies GetStaticPaths;
+
+const { slug } = Astro.props;
+const name = sectionName(slug);
+const sec = SECTIONS.find((s) => s.slug === slug)!;
+const articles = await getSectionArticles(slug);
+const crumbs = [
+  { name: 'Home', url: '/' },
+  { name, url: `/${slug}` },
+];
+const description = `${sec.blurb} Browse every ${name} answer on MiniAdda.`;
+---
+<PageLayout title={`${name} — Quick Answers`} description={description} jsonLd={breadcrumbList(crumbs)}>
+  <div class="container">
+    <Breadcrumbs items={crumbs} />
+    <header class="page-header">
+      <h1>{name}</h1>
+      <p>{articles.length} answer{articles.length === 1 ? '' : 's'} · {sec.blurb}</p>
+    </header>
+    <section class="section">
+      {articles.length ? (
+        <div class="card-grid">
+          {articles.map((a, i) => <ArticleCard article={a} featured={i === 0} />)}
+        </div>
+      ) : (
+        <p class="empty-state">No answers in this section yet.</p>
+      )}
+    </section>
+  </div>
+</PageLayout>

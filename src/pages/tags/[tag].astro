@@ -1,0 +1,46 @@
+---
+import type { GetStaticPaths } from 'astro';
+import PageLayout from '../../layouts/PageLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { getAllArticles, tagCounts } from '../../lib/content';
+import { regionName } from '../../lib/constants';
+import { breadcrumbList } from '../../lib/seo';
+
+export const getStaticPaths = (async () => {
+  const articles = await getAllArticles();
+  const counts = tagCounts(articles);
+  return [...counts.keys()].map((slug) => ({
+    params: { tag: slug },
+    props: { slug },
+  }));
+}) satisfies GetStaticPaths;
+
+const { slug } = Astro.props;
+const all = await getAllArticles();
+const articles = all.filter((a) => a.data.tags.includes(slug));
+const name = regionName(slug);
+const crumbs = [
+  { name: 'Home', url: '/' },
+  { name, url: `/tags/${slug}` },
+];
+const description = `Quick answers tagged ${name} on MiniAdda.`;
+---
+<PageLayout title={`${name} — Answers`} description={description} jsonLd={breadcrumbList(crumbs)}>
+  <div class="container">
+    <Breadcrumbs items={crumbs} />
+    <header class="page-header">
+      <h1># {name}</h1>
+      <p>{articles.length} answer{articles.length === 1 ? '' : 's'} tagged {name}</p>
+    </header>
+    <section class="section">
+      {articles.length ? (
+        <div class="card-grid">
+          {articles.map((a, i) => <ArticleCard article={a} featured={i === 0} />)}
+        </div>
+      ) : (
+        <p class="empty-state">Nothing tagged {name} yet.</p>
+      )}
+    </section>
+  </div>
+</PageLayout>
