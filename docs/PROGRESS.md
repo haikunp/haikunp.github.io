@@ -25,6 +25,21 @@ Track completed and pending stages. Update after each stage passes testing.
 - [x] Local build + type check verified (27 pages, ads emit nothing)
 - [x] Mobile & desktop visual check (Chromium screenshots)
 
+## Design pass ✅
+- [x] Brutalist/tactile, mobile-first style
+- [x] Homepage: **no hero** — leads with "Trending right now"
+- [x] Two sections (US / International) + topic chips + region tags
+- [x] Optional image fields (most articles have none)
+- [x] Configurable ad slots (banner + sidebar, off by default)
+
+## SEO overhaul ✅
+See [`SEO.md`](SEO.md) for the full checklist.
+- [x] Organization + WebSite + SearchAction schema (site-wide)
+- [x] Article schema (articleSection, keywords, wordCount, publisher @id)
+- [x] ItemList schema on homepage/sections/tags/topics
+- [x] BreadcrumbList everywhere; robots max-image-preview; full OG article tags
+- [x] hreflang, sitemap link, canonical everywhere
+
 ## Stage 3 — GitHub deployment 🟡
 - [x] Repo `haikunp/haikunp.github.io` (public)
 - [x] `.github/workflows/deploy.yml` (build → artifact → deploy-pages)
