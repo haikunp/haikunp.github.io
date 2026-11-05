@@ -2,6 +2,16 @@
 
 Track completed and pending stages. Update after each stage passes testing.
 
+> **Resuming?** Read [`PLAN.md`](PLAN.md) first — it has the full remaining plan,
+> DNS change, and the country-based taxonomy redesign.
+
+## Upcoming taxonomy change (Stage 4 prep)
+- [ ] Replace US/International sections with **country** primary categories
+- [ ] Countries with content appear in nav (US, Belgium, … not fixed to two)
+- [ ] **Place/state tags** under each country (Florida, Brussels, …)
+- [ ] Migrate 9 sample articles to `country` + `place` + `topic`
+- [ ] Update routes: `/country/`, `/country/place/`, `/country/<slug>/`
+
 ## Stage 1 — Planning ✅
 - [x] Inspect environment (Node 24, npm 12, git, gh not authed)
 - [x] Propose architecture and repo structure

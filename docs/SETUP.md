@@ -17,6 +17,18 @@ Instructions for connecting the site to GitHub Pages, Cloudflare Pages, Workers 
 - **Admin:** Cloudflare Pages, random `*.pages.dev` URL (free), behind Cloudflare Access.
 - **API:** Cloudflare Worker with the PAT stored as a secret (free).
 - **No drafts:** the admin publishes final articles directly.
+- **DNS:** moved from Namecheap to **Cloudflare DNS** (free) because Namecheap rejected the
+  four GitHub A records. Cloudflare then points to GitHub Pages. See `docs/PLAN.md`.
+
+## Stage 3 — GitHub Pages / DNS (in progress)
+
+See `docs/PLAN.md` §1 for the full Cloudflare-DNS → GitHub Pages steps.
+
+Summary:
+1. Namecheap nameservers → Cloudflare's two nameservers.
+2. Cloudflare DNS: four A records (`185.199.108-111.153`) + `www` CNAME → `haikunp.github.io`,
+   all **DNS only (grey cloud)**; optional AAAA records.
+3. GitHub Settings → Pages → Custom domain `miniadda.com` → Enforce HTTPS.
 
 ## Stage 3 — GitHub Pages (pending)
 
