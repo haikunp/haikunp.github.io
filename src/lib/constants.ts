@@ -9,6 +9,15 @@ export const SITE = {
   defaultAuthor: 'MiniAdda Editorial',
 } as const;
 
+// Live price feed (Cloudflare Worker). Empty string = baked prices only.
+// Set after `wrangler deploy` (see worker/). The browser polls this; pages also
+// ship baked prices so crawlers/no-JS users still see numbers.
+export const PRICE_FEED = {
+  endpoint: 'https://miniadda-prices.miniadda.workers.dev/prices.json',
+  pollSeconds: 15,
+  clientCacheSeconds: 10,
+} as const;
+
 // Two top-level sections replace traditional categories.
 export const SECTIONS = [
   { slug: 'us', name: 'US', blurb: 'What America is searching for.' },

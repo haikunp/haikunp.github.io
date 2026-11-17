@@ -1,108 +1,79 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
-import SearchBar from '../components/SearchBar.astro';
 import ArticleCard from '../components/ArticleCard.astro';
-import { SITE, REGIONS, TOPICS } from '../lib/constants';
-import {
-  getAllArticles,
-  getSectionArticles,
-  articleUrl,
-  tagCounts,
-} from '../lib/content';
+import PriceConverter from '../components/PriceConverter.astro';
+import { SITE, TOPICS } from '../lib/constants';
+import { COINS } from '../lib/coins';
+import { fetchPrices, fmtUsd } from '../lib/prices';
+import { getAllArticles, articleUrl } from '../lib/content';
 import { itemListSchema } from '../lib/seo';
 
+const { prices } = await fetchPrices();
 const articles = await getAllArticles();
-const us = await getSectionArticles('us');
-const international = await getSectionArticles('international');
+const latest = articles.slice(0, 3);
+const first = COINS[0];
 
-const trending = articles.filter((a) => a.data.trending).slice(0, 6);
-const trendingList = (trending.length ? trending : articles).slice(0, 6);
-const latest = articles.slice(0, 6);
-
-const counts = tagCounts(articles);
-const activeTags = REGIONS.filter((r) => (counts.get(r.slug) ?? 0) > 0);
-
-const homeLd = itemListSchema(trendingList, {
-  name: 'Trending questions on MiniAdda',
-  url: '/',
-});
-
-const metaTitle = `${SITE.name} — ${SITE.tagline}`;
-const metaDescription = SITE.description;
+const homeLd = itemListSchema(latest, { name: 'Latest on MiniAdda', url: '/' });
+const metaTitle = `${SITE.name} — Crypto Prices, Converters & Quick Answers`;
+const metaDescription =
+  'Live crypto prices, instant USD converters and quick answers. Bitcoin, Ethereum, TRON and more — plus the day’s crypto news and active BitcoinTalk signature campaigns.';
 ---
 <PageLayout title={metaTitle} description={metaDescription} path="/" jsonLd={homeLd}>
-  <section class="ticker" aria-label="Search">
+  <section class="section section--first" aria-labelledby="tool-heading">
     <div class="container">
-      <SearchBar placeholder="What are you curious about?" />
+      <header class="page-header">
+        <h1 id="tool-heading">Crypto to USD Converter</h1>
+        <p>Pick a coin, convert both ways, check live prices.</p>
+      </header>
+      <PriceConverter active={first.symbol} price={prices[first.symbol]} prices={prices} />
     </div>
   </section>
 
-  <section class="section section--first" aria-labelledby="trending-heading">
+  <section class="section" aria-labelledby="prices-heading">
     <div class="container">
       <div class="section-head">
-        <h1 id="trending-heading" class="section-title"><span class="tag-bar" aria-hidden="true"></span>Trending right now</h1>
+        <h2 id="prices-heading" class="section-title"><span class="tag-bar" aria-hidden="true"></span>Live prices</h2>
+        <a href="/prices">All prices →</a>
       </div>
-      {trendingList.length > 0 ? (
-        <ol class="trending-list">
-          {trendingList.map((a) => (
-            <li><a href={articleUrl(a)}>{a.data.title}</a></li>
+      <table class="price-table">
+        <thead><tr><th>Coin</th><th>Price (USD)</th></tr></thead>
+        <tbody>
+          {COINS.map((c) => (
+            <tr>
+              <td><a href={`/prices/${c.name.toLowerCase()}-to-usd`}>{c.name} ({c.symbol})</a></td>
+              <td>{fmtUsd(prices[c.symbol])}</td>
+            </tr>
           ))}
-        </ol>
-      ) : (
-        <p class="empty-state">No answers yet. Check back soon.</p>
-      )}
+        </tbody>
+      </table>
     </div>
   </section>
 
-  <section class="section" aria-labelledby="us-heading">
+  <section class="section" aria-labelledby="articles-heading">
     <div class="container">
       <div class="section-head">
-        <h2 id="us-heading" class="section-title"><span class="tag-bar" aria-hidden="true"></span>US</h2>
-        <a href="/us">See all →</a>
+        <h2 id="articles-heading" class="section-title"><span class="tag-bar" aria-hidden="true"></span>Crypto news</h2>
+        <a href="/us">More →</a>
       </div>
-      {us.length ? (
+      {latest.length ? (
         <div class="card-grid">
-          {us.slice(0, 3).map((a, i) => <ArticleCard article={a} featured={i === 0} />)}
+          {latest.map((a) => <ArticleCard article={a} />)}
         </div>
       ) : (
-        <p class="empty-state">Nothing here yet.</p>
+        <p class="empty-state">No articles yet. Check back soon.</p>
       )}
     </div>
   </section>
 
-  <section class="section" aria-labelledby="intl-heading">
+  <section class="section" aria-labelledby="sigcamp-heading">
     <div class="container">
       <div class="section-head">
-        <h2 id="intl-heading" class="section-title"><span class="tag-bar" aria-hidden="true"></span>International</h2>
-        <a href="/international">See all →</a>
+        <h2 id="sigcamp-heading" class="section-title"><span class="tag-bar" aria-hidden="true"></span>Signature campaigns</h2>
+        <a href="/sigcamp">View all →</a>
       </div>
-      {international.length ? (
-        <div class="card-grid">
-          {international.slice(0, 3).map((a, i) => <ArticleCard article={a} featured={i === 0} />)}
-        </div>
-      ) : (
-        <p class="empty-state">Nothing here yet.</p>
-      )}
+      <p class="empty-state">Active BitcoinTalk signature campaigns — <a href="/sigcamp">browse Sigcamp</a>.</p>
     </div>
   </section>
-
-  {activeTags.length > 0 && (
-    <section class="section" aria-labelledby="tags-heading">
-      <div class="container">
-        <div class="section-head">
-          <h2 id="tags-heading" class="section-title"><span class="tag-bar" aria-hidden="true"></span>Jump to a place</h2>
-        </div>
-        <div class="chip-row">
-          {activeTags.map((r) => (
-            <a class="chip" href={`/tags/${r.slug}`}>
-              {r.name}
-              <span class="count">{counts.get(r.slug)}</span>
-            </a>
-          ))}
-        </div>
-      </div>
-    </section>
-  )}
 
   <section class="section" aria-labelledby="topics-heading">
     <div class="container">
@@ -110,25 +81,8 @@ const metaDescription = SITE.description;
         <h2 id="topics-heading" class="section-title"><span class="tag-bar" aria-hidden="true"></span>By topic</h2>
       </div>
       <div class="chip-row">
-        {TOPICS.map((t) => (
-          <a class="chip" href={`/topics/${t.slug}`}>{t.name}</a>
-        ))}
+        {TOPICS.map((t) => <a class="chip" href={`/topics/${t.slug}`}>{t.name}</a>)}
       </div>
-    </div>
-  </section>
-
-  <section class="section" aria-labelledby="latest-heading">
-    <div class="container">
-      <div class="section-head">
-        <h2 id="latest-heading" class="section-title"><span class="tag-bar" aria-hidden="true"></span>Latest answers</h2>
-      </div>
-      {latest.length ? (
-        <div class="card-grid">
-          {latest.map((a) => <ArticleCard article={a} />)}
-        </div>
-      ) : (
-        <p class="empty-state">No answers yet. Check back soon.</p>
-      )}
     </div>
   </section>
 </PageLayout>

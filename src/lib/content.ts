@@ -62,3 +62,20 @@ export function tagCounts(articles: Article[]): Map<string, number> {
   }
   return counts;
 }
+
+// ---- Sigcamp (BitcoinTalk signature campaigns) ----
+export type SigCamp = CollectionEntry<'sigcamp'>;
+
+export async function getAllSigCamp(): Promise<SigCamp[]> {
+  const all = await getCollection('sigcamp');
+  const rank = { active: 0, upcoming: 1, closed: 2 } as Record<string, number>;
+  return all.sort((a, b) => {
+    const r = (rank[a.data.status] ?? 9) - (rank[b.data.status] ?? 9);
+    if (r !== 0) return r;
+    return (b.data.startedAt?.getTime() ?? 0) - (a.data.startedAt?.getTime() ?? 0);
+  });
+}
+
+export function sigCampUrl(camp: SigCamp): string {
+  return `/sigcamp/${camp.id}`;
+}

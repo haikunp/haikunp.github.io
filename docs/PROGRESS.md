@@ -2,8 +2,22 @@
 
 Track completed and pending stages. Update after each stage passes testing.
 
-> **Resuming?** Read [`PLAN.md`](PLAN.md) first — it has the full remaining plan,
-> DNS change, and the country-based taxonomy redesign.
+> **Resuming?** Read [`HANDOFF.md`](HANDOFF.md) first — it has the crypto-tool pivot
+> status, exactly what was built, the PAT blocker, and resume steps.
+> [`PLAN.md`](PLAN.md) is the older plan (DNS, country taxonomy) — partly superseded.
+
+## Crypto-tool pivot (2026-11-15) ✅ built locally · ⬜ published
+- [x] Reposition site: tool-first crypto (converter + prices + Sigcamp), news smaller
+- [x] Remove search (page, index, component, schema)
+- [x] Navbar: Prices · Sigcamp · News
+- [x] PriceConverter component (2-way, coin search, editable price, baked + live)
+- [x] `/prices` hub + 150 long-tail pages (coin-to-usd, price-of-1, amount pages)
+- [x] Sigcamp collection + pages + 2 samples
+- [x] Live price Worker (`worker/`)
+- [x] Combined dashboard (`dashboard/`): prices + articles + sigcamp + publish
+- [x] `npm run build` 179 pages green · `npx astro check` 0 errors
+- [ ] **Publish to GitHub (blocked on PAT)** ← next
+- [ ] Deploy Worker (optional live prices)
 
 ## Upcoming taxonomy change (Stage 4 prep)
 - [ ] Replace US/International sections with **country** primary categories

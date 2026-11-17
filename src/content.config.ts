@@ -42,4 +42,22 @@ const articles = defineCollection({
   }),
 });
 
-export const collections = { articles };
+// BitcoinTalk signature campaigns (Sigcamp).
+const sigcamp = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/sigcamp' }),
+  schema: z.object({
+    title: z.string().min(5).max(140),
+    project: z.string().min(2).max(80),
+    // active | closed | upcoming
+    status: z.enum(['active', 'closed', 'upcoming']).default('active'),
+    reward: z.string().min(1).max(120), // e.g. "0.0002 BTC / post"
+    slots: z.string().max(60).optional(), // e.g. "20 / 50 filled"
+    startedAt: dateLike.optional(),
+    threadUrl: z.string().url().optional(),
+    description: z.string().min(10).max(320),
+    tags: z.array(z.string()).default([]),
+    featured: z.boolean().default(false),
+  }),
+});
+
+export const collections = { articles, sigcamp };

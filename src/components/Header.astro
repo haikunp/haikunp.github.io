@@ -1,5 +1,5 @@
 ---
-import { SITE, SECTIONS } from '../lib/constants';
+import { SITE } from '../lib/constants';
 const path = Astro.url.pathname;
 ---
 <header class="site-header">
@@ -9,12 +9,9 @@ const path = Astro.url.pathname;
       {SITE.name}
     </a>
     <nav class="section-nav" aria-label="Sections">
-      {SECTIONS.map((s) => (
-        <a
-          href={`/${s.slug}`}
-          aria-current={path.startsWith(`/${s.slug}`) ? 'page' : undefined}
-        >{s.name}</a>
-      ))}
+      <a href="/prices" aria-current={path.startsWith('/prices') ? 'page' : undefined}>Prices</a>
+      <a href="/sigcamp" aria-current={path.startsWith('/sigcamp') ? 'page' : undefined}>Sigcamp</a>
+      <a href="/us" aria-current={path.startsWith('/us') || path.startsWith('/international') ? 'page' : undefined}>News</a>
     </nav>
   </div>
 </header>

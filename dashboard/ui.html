@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MiniAdda Dashboard</title>
+<style>
+:root{--bg:#0b0e14;--card:#141925;--line:#232a3a;--txt:#e6e9ef;--mut:#8b93a7;--acc:#ff5c00;--acc2:#ffe600;--ok:#4ade80;--red:#f87171;--blue:#60a5fa}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--txt);line-height:1.5}
+header{padding:14px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;flex-wrap:wrap;position:sticky;top:0;background:var(--bg);z-index:10}
+h1{font-size:1.15rem;margin:0}.brand span{color:var(--acc)}
+.tabs{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+.tab{background:#1d2534;border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:8px 14px;cursor:pointer;font-size:.9rem;font-weight:600}
+.tab.active{background:var(--acc);color:#fff;border-color:var(--acc)}
+main{max-width:1000px;margin:0 auto;padding:22px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:18px}
+.card h2{font-size:.9rem;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);margin:0 0 14px}
+label{display:block;font-size:.82rem;color:var(--mut);margin:10px 0 4px}
+input,textarea,select{width:100%;background:#0f1420;border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:9px 11px;font-family:inherit;font-size:.92rem}
+textarea{resize:vertical;min-height:120px;font-family:ui-monospace,monospace}
+.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1;min-width:150px}
+.btn{background:var(--acc);color:#fff;border:0;border-radius:8px;padding:10px 16px;font-weight:700;cursor:pointer;font-size:.9rem}
+.btn:hover{filter:brightness(1.1)}
+.btn.sec{background:#1d2534;color:var(--txt);border:1px solid var(--line)}
+.btn.go{background:var(--ok);color:#04210f}
+.btn.danger{background:var(--red);color:#2a0c0c}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.list-item{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:9px;margin-bottom:8px;background:#0f1420}
+.list-item .grow{flex:1}
+.list-item b{font-size:.95rem}
+.muted{color:var(--mut);font-size:.8rem}
+.pill{display:inline-block;font-size:.7rem;padding:2px 8px;border-radius:99px;border:1px solid var(--line);margin-right:4px}
+.pill.active{background:#0c2a17;color:var(--ok);border-color:#155e34}
+.pill.closed{background:#2a0c0c;color:var(--red);border-color:#5e1515}
+.status{padding:10px 12px;border-radius:8px;margin-top:10px;display:none;font-size:.85rem}
+.status.ok{display:block;background:#0c2a17;border:1px solid #155e34;color:var(--ok)}
+.status.err{display:block;background:#2a0c0c;border:1px solid #5e1515;color:var(--red)}
+.status.info{display:block;background:#0c1a2a;border:1px solid #15405e;color:var(--blue)}
+.price-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)}
+.price-row b{color:var(--acc2);font-variant-numeric:tabular-nums}
+.hidden{display:none}
+.mono{font-family:ui-monospace,monospace}
+.toolbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.toolbar input{flex:1}
+</style>
+</head>
+<body>
+<header>
+  <h1><span class="brand">MiniAdda<span>.</span></span> Dashboard</h1>
+  <span class="muted" id="tokenState">checking token…</span>
+  <div class="tabs">
+    <button class="tab active" data-tab="prices">Prices</button>
+    <button class="tab" data-tab="articles">Articles</button>
+    <button class="tab" data-tab="sigcamp">Sigcamp</button>
+    <button class="tab" data-tab="publish">Publish</button>
+  </div>
+</header>
+<main>
+  <!-- PRICES -->
+  <section id="tab-prices">
+    <div class="card">
+      <h2>Live prices</h2>
+      <div id="priceList" class="muted">Loading…</div>
+      <button class="btn sec" style="margin-top:12px" onclick="loadPrices()">Refresh prices</button>
+      <p class="muted" style="margin-top:12px">Prices are baked into <span class="mono">/prices</span> pages at build time by GitHub Actions. Live updates come from the Cloudflare Worker.</p>
+    </div>
+  </section>
+
+  <!-- ARTICLES -->
+  <section id="tab-articles" class="hidden">
+    <div class="card">
+      <div class="toolbar">
+        <input id="articleSearch" placeholder="Search articles…" oninput="renderArticles()">
+        <button class="btn" onclick="newArticle()">New article</button>
+      </div>
+      <div id="articleList"></div>
+    </div>
+    <div class="card hidden" id="articleEditor">
+      <h2 id="articleEditorTitle">Edit article</h2>
+      <div class="row">
+        <div><label>Title</label><input id="a_title"></div>
+        <div><label>Slug</label><input id="a_slug" placeholder="auto from title"></div>
+      </div>
+      <div class="row">
+        <div><label>Section</label><select id="a_section"><option>us</option><option>international</option></select></div>
+        <div><label>Topic</label><select id="a_topic">
+          <option>politics</option><option>technology</option><option>business</option><option>finance</option>
+          <option>entertainment</option><option>science</option><option>sports</option><option>general-knowledge</option>
+        </select></div>
+      </div>
+      <div class="row">
+        <div><label>Tags (comma-separated)</label><input id="a_tags" placeholder="us, global"></div>
+        <div><label>Author</label><input id="a_author" value="MiniAdda Editorial"></div>
+      </div>
+      <label>Quick answer (short)</label><textarea id="a_answer" style="min-height:70px"></textarea>
+      <label>Description (meta)</label><input id="a_description">
+      <div class="row">
+        <div><label>Published at</label><input id="a_publishedAt" type="date"></div>
+        <div><label>Featured</label><select id="a_featured"><option value="false">No</option><option value="true">Yes</option></select></div>
+        <div><label>Trending</label><select id="a_trending"><option value="false">No</option><option value="true">Yes</option></select></div>
+      </div>
+      <label>Body (Markdown)</label><textarea id="a_body" style="min-height:240px"></textarea>
+      <div style="margin-top:14px;display:flex;gap:10px">
+        <button class="btn" onclick="saveArticle()">Save article</button>
+        <button class="btn sec" onclick="hideEditor('article')">Cancel</button>
+        <button class="btn danger" id="a_delete" onclick="deleteArticle()">Delete</button>
+      </div>
+      <div class="status" id="articleStatus"></div>
+    </div>
+  </section>
+
+  <!-- SIGCAMP -->
+  <section id="tab-sigcamp" class="hidden">
+    <div class="card">
+      <div class="toolbar">
+        <input id="sigSearch" placeholder="Search campaigns…" oninput="renderSigcamp()">
+        <button class="btn" onclick="newSigcamp()">New campaign</button>
+      </div>
+      <div id="sigList"></div>
+    </div>
+    <div class="card hidden" id="sigEditor">
+      <h2 id="sigEditorTitle">Edit campaign</h2>
+      <div class="row">
+        <div><label>Project</label><input id="s_project"></div>
+        <div><label>Slug</label><input id="s_slug" placeholder="auto from project"></div>
+      </div>
+      <div class="row">
+        <div><label>Status</label><select id="s_status"><option>active</option><option>upcoming</option><option>closed</option></select></div>
+        <div><label>Reward</label><input id="s_reward" placeholder="0.0002 BTC / post"></div>
+        <div><label>Slots</label><input id="s_slots" placeholder="20 / 50 filled"></div>
+      </div>
+      <div class="row">
+        <div><label>Started at</label><input id="s_startedAt" type="date"></div>
+        <div><label>Thread URL</label><input id="s_threadUrl" placeholder="https://bitcointalk.org/..."></div>
+      </div>
+      <label>Title (page title)</label><input id="s_title">
+      <label>Description (meta)</label><input id="s_description">
+      <div class="row">
+        <div><label>Tags (comma-separated)</label><input id="s_tags" placeholder="bitcointalk, signature"></div>
+        <div><label>Featured</label><select id="s_featured"><option value="false">No</option><option value="true">Yes</option></select></div>
+      </div>
+      <label>Body (Markdown)</label><textarea id="s_body" style="min-height:160px"></textarea>
+      <div style="margin-top:14px;display:flex;gap:10px">
+        <button class="btn" onclick="saveSigcamp()">Save campaign</button>
+        <button class="btn sec" onclick="hideEditor('sig')">Cancel</button>
+        <button class="btn danger" onclick="deleteSigcamp()">Delete</button>
+      </div>
+      <div class="status" id="sigStatus"></div>
+    </div>
+  </section>
+
+  <!-- PUBLISH -->
+  <section id="tab-publish" class="hidden">
+    <div class="card">
+      <h2>Publish to GitHub</h2>
+      <p class="muted">Commits content to <span class="mono" id="repoLabel"></span>. GitHub Actions then builds and deploys to GitHub Pages.</p>
+      <div class="row" style="margin:12px 0">
+        <label style="margin:0"><input type="checkbox" id="pub_articles" checked style="width:auto"> Articles</label>
+        <label style="margin:0"><input type="checkbox" id="pub_sigcamp" checked style="width:auto"> Sigcamp</label>
+      </div>
+      <label>Commit message</label><input id="pub_message" placeholder="Dashboard: update content">
+      <div style="margin-top:14px">
+        <button class="btn go" onclick="publishNow()">Publish now</button>
+        <button class="btn sec" onclick="checkToken()">Check token</button>
+      </div>
+      <div class="status" id="publishStatus"></div>
+    </div>
+  </section>
+</main>
+
+<script>
+let ARTICLES = [], SIGCAMP = [], currentArticle = null, currentSig = null;
+
+function $(id){return document.getElementById(id)}
+function show(el, kind, msg){ el.className='status '+kind; el.textContent=msg; }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function api(path, method, body){
+  return fetch(path, {method:method||'GET', headers:body?{'Content-Type':'application/json'}:{},
+    body: body?JSON.stringify(body):undefined})
+    .then(async r=>{ const d=await r.json().catch(()=>({})); if(!r.ok) throw new Error(d.error||('HTTP '+r.status)); return d; });
+}
+
+// Tabs
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  t.classList.add('active');
+  ['prices','articles','sigcamp','publish'].forEach(n=>$('tab-'+n).classList.toggle('hidden', n!==t.dataset.tab));
+  if(t.dataset.tab==='articles') loadArticles();
+  if(t.dataset.tab==='sigcamp') loadSigcamp();
+});
+
+// Token
+async function checkToken(){
+  try{
+    const d=await api('/api/token');
+    const el=$('tokenState');
+    if(d.ok){ el.textContent='token OK · '+d.repo; el.style.color='var(--ok)'; $('repoLabel').textContent=d.repo+' ('+d.default_branch+')'; }
+    else { el.textContent='token: '+(d.error||'not set'); el.style.color='var(--red)'; }
+    return d;
+  }catch(e){ $('tokenState').textContent='token check failed'; $('tokenState').style.color='var(--red)'; }
+}
+
+// Prices
+async function loadPrices(){
+  $('priceList').textContent='Loading…';
+  try{
+    const d=await api('/api/prices');
+    $('priceList').innerHTML=(d.coins||[]).map(c=>{
+      const p=d.prices[c.symbol];
+      const v=p!=null?'$'+p.toLocaleString('en-US',{maximumFractionDigits:p<1?8:2}):'—';
+      return '<div class="price-row"><span>'+esc(c.name)+' ('+esc(c.symbol)+')</span><b>'+v+'</b></div>';
+    }).join('')+'<div class="muted" style="margin-top:8px">source: '+esc(d.source)+'</div>';
+  }catch(e){ $('priceList').textContent='Failed: '+e.message; }
+}
+
+// Articles
+async function loadArticles(){
+  const d=await api('/api/articles');
+  ARTICLES=d.articles||[];
+  renderArticles();
+}
+function renderArticles(){
+  const q=($('articleSearch').value||'').toLowerCase();
+  const list=ARTICLES.filter(a=>!q || (a.data.title||'').toLowerCase().includes(q) || a.id.includes(q));
+  $('articleList').innerHTML = list.length ? list.map(a=>(
+    '<div class="list-item"><div class="grow"><b>'+esc(a.data.title||a.id)+'</b><div class="muted">'+
+    esc(a.data.section||'')+' · '+esc(a.data.topic||'')+' · '+esc(a.id)+'</div></div>'+
+    '<button class="btn sec" onclick="editArticle(\''+a.id+'\')">Edit</button></div>'
+  )).join('') : '<p class="muted">No articles yet.</p>';
+}
+function newArticle(){
+  currentArticle=null;
+  $('articleEditorTitle').textContent='New article';
+  ['a_title','a_slug','a_tags','a_description','a_body','a_answer'].forEach(id=>$(id).value='');
+  $('a_author').value='MiniAdda Editorial';
+  $('a_section').value='us'; $('a_topic').value='technology';
+  $('a_publishedAt').value=new Date().toISOString().slice(0,10);
+  $('a_featured').value='false'; $('a_trending').value='false';
+  $('a_delete').classList.add('hidden');
+  $('articleEditor').classList.remove('hidden');
+}
+async function editArticle(id){
+  const a=await api('/api/articles/'+id);
+  currentArticle=a;
+  const d=a.data||{};
+  $('articleEditorTitle').textContent='Edit: '+id;
+  $('a_title').value=d.title||''; $('a_slug').value=id;
+  $('a_section').value=d.section||'us'; $('a_topic').value=d.topic||'technology';
+  $('a_tags').value=(d.tags||[]).join(', ');
+  $('a_author').value=d.author||'MiniAdda Editorial';
+  $('a_answer').value=d.answer||''; $('a_description').value=d.description||'';
+  $('a_publishedAt').value=(d.publishedAt||'').toString().slice(0,10);
+  $('a_featured').value=String(!!d.featured); $('a_trending').value=String(!!d.trending);
+  $('a_body').value=a.body||'';
+  $('a_delete').classList.remove('hidden');
+  $('articleEditor').classList.remove('hidden');
+}
+function selBool(id){ return $(id).value==='true'; }
+async function saveArticle(){
+  const data={
+    title:$('a_title').value, section:$('a_section').value, topic:$('a_topic').value,
+    tags:($('a_tags').value||'').split(',').map(s=>s.trim()).filter(Boolean),
+    author:$('a_author').value||'MiniAdda Editorial', answer:$('a_answer').value,
+    description:$('a_description').value, publishedAt:$('a_publishedAt').value,
+    featured:selBool('a_featured'), trending:selBool('a_trending'),
+  };
+  try{
+    show($('articleStatus'),'info','Saving…');
+    const d=await api('/api/articles','POST',{slug:$('a_slug').value||undefined, data, body:$('a_body').value});
+    show($('articleStatus'),'ok','Saved '+d.slug+'.');
+    await loadArticles();
+  }catch(e){ show($('articleStatus'),'err','Save failed: '+e.message); }
+}
+async function deleteArticle(){
+  if(!currentArticle || !confirm('Delete this article?')) return;
+  await api('/api/articles/'+currentArticle.id,'DELETE');
+  hideEditor('article'); await loadArticles();
+}
+function hideEditor(kind){
+  if(kind==='article'){ $('articleEditor').classList.add('hidden'); currentArticle=null; }
+  else { $('sigEditor').classList.add('hidden'); currentSig=null; }
+}
+
+// Sigcamp
+async function loadSigcamp(){
+  const d=await api('/api/sigcamp');
+  SIGCAMP=d.campaigns||[];
+  renderSigcamp();
+}
+function renderSigcamp(){
+  const q=($('sigSearch').value||'').toLowerCase();
+  const list=SIGCAMP.filter(c=>!q || (c.data.project||'').toLowerCase().includes(q));
+  $('sigList').innerHTML = list.length ? list.map(c=>(
+    '<div class="list-item"><div class="grow"><b>'+esc(c.data.project||c.id)+'</b> '+
+    '<span class="pill '+(c.data.status||'')+'">'+esc(c.data.status||'')+'</span>'+
+    '<div class="muted">'+esc(c.data.reward||'')+(c.data.slots?' · '+esc(c.data.slots):'')+' · '+esc(c.id)+'</div></div>'+
+    '<button class="btn sec" onclick="editSigcamp(\''+c.id+'\')">Edit</button></div>'
+  )).join('') : '<p class="muted">No campaigns yet.</p>';
+}
+function newSigcamp(){
+  currentSig=null;
+  $('sigEditorTitle').textContent='New campaign';
+  ['s_project','s_slug','s_reward','s_slots','s_threadUrl','s_title','s_description','s_tags','s_body'].forEach(id=>$(id).value='');
+  $('s_status').value='active'; $('s_startedAt').value=new Date().toISOString().slice(0,10);
+  $('s_featured').value='false';
+  $('sigEditor').classList.remove('hidden');
+}
+async function editSigcamp(id){
+  const c=await api('/api/sigcamp/'+id);
+  currentSig=c;
+  const d=c.data||{};
+  $('sigEditorTitle').textContent='Edit: '+id;
+  $('s_project').value=d.project||''; $('s_slug').value=id; $('s_status').value=d.status||'active';
+  $('s_reward').value=d.reward||''; $('s_slots').value=d.slots||'';
+  $('s_startedAt').value=(d.startedAt||'').toString().slice(0,10);
+  $('s_threadUrl').value=d.threadUrl||''; $('s_title').value=d.title||'';
+  $('s_description').value=d.description||''; $('s_tags').value=(d.tags||[]).join(', ');
+  $('s_featured').value=String(!!d.featured); $('s_body').value=c.body||'';
+  $('sigEditor').classList.remove('hidden');
+}
+async function saveSigcamp(){
+  const data={
+    project:$('s_project').value, title:$('s_title').value||($('s_project').value+' — Signature Campaign'),
+    status:$('s_status').value, reward:$('s_reward').value, slots:$('s_slots').value,
+    startedAt:$('s_startedAt').value, threadUrl:$('s_threadUrl').value||undefined,
+    description:$('s_description').value,
+    tags:($('s_tags').value||'').split(',').map(s=>s.trim()).filter(Boolean),
+    featured:selBool('s_featured'),
+  };
+  try{
+    show($('sigStatus'),'info','Saving…');
+    const d=await api('/api/sigcamp','POST',{slug:$('s_slug').value||undefined, data, body:$('s_body').value});
+    show($('sigStatus'),'ok','Saved '+d.slug+'.');
+    await loadSigcamp();
+  }catch(e){ show($('sigStatus'),'err','Save failed: '+e.message); }
+}
+async function deleteSigcamp(){
+  if(!currentSig || !confirm('Delete this campaign?')) return;
+  await api('/api/sigcamp/'+currentSig.id,'DELETE');
+  hideEditor('sig'); await loadSigcamp();
+}
+
+// Publish
+async function publishNow(){
+  const what=[];
+  if($('pub_articles').checked) what.push('articles');
+  if($('pub_sigcamp').checked) what.push('sigcamp');
+  try{
+    show($('publishStatus'),'info','Publishing…');
+    const d=await api('/api/publish','POST',{what, message:$('pub_message').value||undefined});
+    if(d.ok){ show($('publishStatus'),'ok','Published '+d.published.files+' files · commit '+d.published.commit.slice(0,7)); }
+  }catch(e){ show($('publishStatus'),'err','Publish failed: '+e.message); }
+}
+
+// init
+checkToken(); loadPrices();
+</script>
+</body>
+</html>

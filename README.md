@@ -1,12 +1,26 @@
 # MiniAdda
 
-**Quick answers to the questions everyone is asking.**
+**Crypto prices, converters & quick answers.**
 
-A fast, mobile-first information site with a brutalist/tactile Gen-Z-friendly design. Public site is fully static (GitHub Pages, free). Content is published from a private, Cloudflare-Access-protected admin panel through a Cloudflare Worker that commits to the public GitHub repo.
+A fast, mobile-first crypto tool + news site with a brutalist/tactile design. The
+public site is fully static (GitHub Pages). It leads with a **crypto ↔ USD
+converter**, live **`/prices`** pages (long-tail SEO), a **Sigcamp** directory of
+BitcoinTalk signature campaigns, and a smaller **news / quick-answers** section.
+
+Manage everything from one local dashboard (`dashboard/`) that publishes to GitHub
+via the GitHub API; GitHub Actions builds and deploys.
+
+- **Tool first**: converter on the homepage and every price page.
+- **`/prices`**: auto-generated long-tail pages (`bitcoin-to-usd`, `trx-to-usd`,
+  `tron-to-usd`, `price-of-1-btc`, `1000-bitcoin-to-usd`, `100-usd-to-tron`, …).
+- **Sigcamp**: `/sigcamp` lists active BitcoinTalk signature campaigns.
+- **News**: articles live under the existing sections (a smaller part of the site).
+- **Dashboard**: `dashboard/` — Prices · Articles · Sigcamp · Publish.
 
 ## Status
 
-See [`docs/PROGRESS.md`](docs/PROGRESS.md) for the stage checklist.
+See [`docs/HANDOFF.md`](docs/HANDOFF.md) for the current state + resume steps (read first),
+and [`docs/PROGRESS.md`](docs/PROGRESS.md) for the stage checklist.
 
 - [x] Stage 1 — Planning & architecture
 - [x] Design pass — brutalist/tactile, mobile-first, sections + tags, ad slots

@@ -929,6 +929,181 @@ h4 {
   font-size: 0.85rem;
 }
 
+/* ---------- Price converter ---------- */
+.convx {
+  background: var(--paper-2);
+  border: 3px solid var(--ink);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.convx-title {
+  font-size: clamp(1.2rem, 4vw, 1.6rem);
+  margin-bottom: 16px;
+}
+
+.convx-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.convx-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.convx-field > span {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+}
+
+.convx-coinwrap {
+  display: grid;
+  gap: 8px;
+}
+
+.convx-input,
+.convx-search,
+.convx-select,
+.convx-price {
+  font-family: var(--font);
+  color: var(--ink);
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius);
+  outline: none;
+}
+
+.convx-input,
+.convx-search,
+.convx-select {
+  width: 100%;
+  padding: 14px 14px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.convx-input::placeholder {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.convx-input:focus,
+.convx-search:focus,
+.convx-select:focus {
+  box-shadow: 4px 4px 0 var(--accent);
+}
+
+.convx-select {
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%230a0a0a' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 40px;
+}
+
+.convx-rate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 14px;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius);
+  background: var(--accent-2);
+  font-family: var(--mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.convx-live {
+  width: 9px;
+  height: 9px;
+  background: var(--accent-3);
+  border: 1.5px solid var(--ink);
+  border-radius: 50%;
+  animation: convx-pulse 1.6s infinite;
+}
+
+@keyframes convx-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+.convx-price-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+}
+
+.convx-price {
+  width: 9ch;
+  padding: 2px 4px;
+  font-family: var(--mono);
+  font-size: 1rem;
+  font-weight: 700;
+  text-align: center;
+  border-color: transparent;
+  background: transparent;
+}
+
+.convx-price:hover {
+  border-color: var(--ink);
+  background: var(--paper-2);
+}
+
+.convx-price:focus {
+  border-color: var(--ink);
+  background: var(--paper-2);
+}
+
+/* prices table */
+.price-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 2px solid var(--ink);
+  background: var(--paper-2);
+}
+
+.price-table th,
+.price-table td {
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.price-table th {
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.price-table td:last-child {
+  text-align: right;
+  font-family: var(--mono);
+  font-weight: 700;
+}
+
+.price-table a {
+  font-weight: 700;
+}
+
 /* ---------- Responsive: tablet/desktop ---------- */
 @media (min-width: 640px) {
   .container {
@@ -945,6 +1120,22 @@ h4 {
 
   .footer-grid {
     grid-template-columns: 1.6fr 1fr 1fr;
+  }
+
+  .convx {
+    padding: 26px;
+  }
+
+  .convx-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .convx-field:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .convx-coinwrap {
+    grid-template-columns: 1fr 1fr;
   }
 }
 

@@ -1,0 +1,120 @@
+---
+import type { GetStaticPaths } from 'astro';
+import PageLayout from '../../layouts/PageLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import PriceConverter from '../../components/PriceConverter.astro';
+import { COINS, COIN_AMOUNTS, USD_AMOUNTS, coinSlugOf } from '../../lib/coins';
+import { fetchPrices, fmtUsd, fmtCoin, fmtAmount } from '../../lib/prices';
+import { breadcrumbList, absoluteUrl } from '../../lib/seo';
+
+export const getStaticPaths = (async () => {
+  const paths = [];
+  for (const coin of COINS) {
+    paths.push({
+      params: { slug: `price-of-1-${coin.symbol.toLowerCase()}` },
+      props: { kind: 'price-of-one', coin, slug: `price-of-1-${coin.symbol.toLowerCase()}` },
+    });
+    const aliases = Array.from(new Set([coinSlugOf(coin), coin.symbol.toLowerCase()]));
+    for (const a of aliases) {
+      paths.push({
+        params: { slug: `${a}-to-usd` },
+        props: { kind: 'coin-alias', coin, slug: `${a}-to-usd` },
+      });
+    }
+    for (const amt of COIN_AMOUNTS) {
+      paths.push({
+        params: { slug: `${amt}-${coinSlugOf(coin)}-to-usd` },
+        props: { kind: 'coin-to-usd', coin, amount: amt, slug: `${amt}-${coinSlugOf(coin)}-to-usd` },
+      });
+    }
+    for (const usd of USD_AMOUNTS) {
+      paths.push({
+        params: { slug: `${usd}-usd-to-${coinSlugOf(coin)}` },
+        props: { kind: 'usd-to-coin', coin, amount: usd, slug: `${usd}-usd-to-${coinSlugOf(coin)}` },
+      });
+    }
+  }
+  return paths;
+}) satisfies GetStaticPaths;
+
+const { kind, coin, amount, slug } = Astro.props;
+const { prices } = await fetchPrices();
+const price = prices[coin.symbol];
+
+const crumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Prices', url: '/prices' },
+  { name: coin.name, url: `/prices/${coinSlugOf(coin)}-to-usd` },
+];
+
+const amt = Number(amount ?? 0);
+let h1 = '';
+let title = '';
+let description = '';
+const convProps: Record<string, any> = { active: coin.symbol, price, prices };
+
+if (kind === 'price-of-one') {
+  h1 = `Price of 1 ${coin.symbol}`;
+  title = `Price of 1 ${coin.symbol} (${coin.name}) — ${fmtUsd(price)} Live | MiniAdda`;
+  description = `The current price of 1 ${coin.name} (${coin.symbol}) is ${fmtUsd(price)}. Convert ${coin.symbol} to USD and USD to ${coin.symbol} instantly.`;
+  convProps.coinAmount = 1;
+} else if (kind === 'coin-alias') {
+  h1 = `${coin.name} (${coin.symbol}) to USD`;
+  title = `${coin.name} to USD — Live ${coin.symbol} Price | MiniAdda`;
+  description = `Convert ${coin.name} (${coin.symbol}) to USD at the live price of ${fmtUsd(price)}. Two-way converter, updated live.`;
+  convProps.coinAmount = 1;
+} else if (kind === 'coin-to-usd') {
+  h1 = `${fmtAmount(amt)} ${coin.symbol} to USD`;
+  title = `${fmtAmount(amt)} ${coin.symbol} to USD — ${fmtUsd(price != null ? price * amt : undefined)} | MiniAdda`;
+  description = `How much is ${fmtAmount(amt)} ${coin.name} (${coin.symbol}) in USD? ${fmtAmount(amt)} ${coin.symbol} equals ${fmtUsd(price != null ? price * amt : undefined)} at the live price.`;
+  convProps.coinAmount = amt;
+} else {
+  h1 = `${fmtAmount(amt)} USD to ${coin.symbol}`;
+  title = `${fmtAmount(amt)} USD to ${coin.symbol} — ${fmtCoin(price ? amt / price : undefined)} ${coin.symbol} | MiniAdda`;
+  description = `How many ${coin.name} (${coin.symbol}) is ${fmtAmount(amt)} USD? ${fmtAmount(amt)} USD buys ${fmtCoin(price ? amt / price : undefined)} ${coin.symbol} at the live price of ${fmtUsd(price)}.`;
+  convProps.usdAmount = amt;
+}
+
+const canonicalSlug = kind === 'coin-alias' ? `${coinSlugOf(coin)}-to-usd` : slug;
+const ld = [
+  breadcrumbList(crumbs),
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: coin.name,
+    description: `Live ${coin.name} (${coin.symbol}) price in USD`,
+    brand: { '@type': 'Brand', name: coin.name },
+    offers: {
+      '@type': 'Offer',
+      priceCurrency: 'USD',
+      price: price != null ? price.toFixed(8) : '0',
+      url: absoluteUrl(`/prices/${canonicalSlug}`),
+      availability: 'https://schema.org/InStock',
+    },
+  },
+];
+---
+<PageLayout title={title} description={description} path={`/prices/${canonicalSlug}`} jsonLd={ld}>
+  <div class="container">
+    <Breadcrumbs items={crumbs} />
+    <header class="page-header">
+      <h1>{h1}</h1>
+      <p>{coin.name} · live in USD</p>
+    </header>
+
+    <section class="section section--first">
+      <PriceConverter {...convProps} />
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2 class="section-title"><span class="tag-bar" aria-hidden="true"></span>Other coins</h2>
+      </div>
+      <div class="chip-row">
+        {COINS.filter((c) => c.symbol !== coin.symbol).map((c) => (
+          <a class="chip" href={`/prices/${coinSlugOf(c)}-to-usd`}>{c.name} ({c.symbol})</a>
+        ))}
+      </div>
+    </section>
+  </div>
+</PageLayout>
