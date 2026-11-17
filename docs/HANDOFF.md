@@ -1,40 +1,33 @@
 # MiniAdda — Handoff (resume tomorrow)
 
-Last updated: end of session (2026-11-15). Read this first when resuming.
+Last updated: 2026-11-17 — crypto-tool pivot **published and live**. Read this first when resuming.
 
 This doc covers the **crypto-tool pivot**: MiniAdda is now a tool-first crypto site
 (converter + `/prices` + Sigcamp) with news as a smaller section, managed by one local
-dashboard that publishes to GitHub. Everything below is **built, type-checked and
-building green locally**, but **not yet published** — see the PAT blocker.
+dashboard that publishes to GitHub. Everything below is **built, type-checked, building
+green locally, and deployed** to miniadda.com.
 
 ---
 
 ## TL;DR — current state
 
 - **Local build:** ✅ green — `npm run build` → **179 pages**. `npx astro check` → **0 errors**.
-- **Site redesign + `/prices` + Sigcamp + dashboard + worker:** ✅ built & tested locally.
-- **Published to GitHub:** ❌ **NOT YET** — needs a PAT (see blocker below).
+- **Published to GitHub:** ✅ **LIVE** — pushed `main`; Actions build + Pages deploy green.
+  miniadda.com serves the new converter/`/prices`/Sigcamp (179 sitemap URLs, 150 price pages).
 - **Repo:** `haikunp/haikunp.github.io` (branch `main`), deploys via GitHub Actions → GitHub Pages → miniadda.com.
 - **Live prices:** baked at build time (works now). Optional live feed needs the Worker deployed (see below).
 
 ---
 
-## 🔴 Do first tomorrow
+## Next up
 
-1. **Get the PAT.** Create a **fine-grained** token for `haikunp/haikunp.github.io`:
-   - Repository access: only `haikunp/haikunp.github.io`
-   - Permissions: **Contents: Read and write** (required). Add **Workflows: Read and write**
-     only if you'll ever change `.github/`.
-   - Put it in `miniadda/.env` (gitignored):
-     ```
-     MINIADDA_GITHUB_TOKEN=github_pat_xxx
-     ```
-2. **Publish.** Either run the dashboard (Publish tab) or the CLI-ish path below.
-   This commits the new source to GitHub; Actions rebuilds and deploys. Verify the
-   Actions run goes green and miniadda.com shows the new converter/prices.
-3. **(Optional) Deploy the Worker** so in-browser prices go live every ~15s:
-   `cd worker && npx wrangler deploy`, then confirm the endpoint in
-   `src/lib/constants.ts` (`PRICE_FEED.endpoint`) matches the deployed `*.workers.dev` URL.
+1. **(Optional) Deploy the Worker** so in-browser prices refresh every ~15s:
+   `cd worker && npx wrangler deploy`, then set `src/lib/constants.ts` → `PRICE_FEED.endpoint`
+   to the deployed `*.workers.dev` URL and commit.
+2. Replace the 2 sample Sigcamp campaigns / re-tag articles toward crypto news via the dashboard.
+3. Custom domain + HTTPS: Pages `https_enforced` is still `false`; enable "Enforce HTTPS"
+   in Pages settings once the certificate is provisioned.
+4. (Optional) migrate article taxonomy to country/place (`docs/PLAN.md`).
 
 ---
 

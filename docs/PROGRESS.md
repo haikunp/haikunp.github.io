@@ -6,7 +6,7 @@ Track completed and pending stages. Update after each stage passes testing.
 > status, exactly what was built, the PAT blocker, and resume steps.
 > [`PLAN.md`](PLAN.md) is the older plan (DNS, country taxonomy) — partly superseded.
 
-## Crypto-tool pivot (2026-11-15) ✅ built locally · ⬜ published
+## Crypto-tool pivot (2026-11-15) ✅ built locally · ✅ published
 - [x] Reposition site: tool-first crypto (converter + prices + Sigcamp), news smaller
 - [x] Remove search (page, index, component, schema)
 - [x] Navbar: Prices · Sigcamp · News
@@ -16,7 +16,8 @@ Track completed and pending stages. Update after each stage passes testing.
 - [x] Live price Worker (`worker/`)
 - [x] Combined dashboard (`dashboard/`): prices + articles + sigcamp + publish
 - [x] `npm run build` 179 pages green · `npx astro check` 0 errors
-- [ ] **Publish to GitHub (blocked on PAT)** ← next
+- [x] **Publish to GitHub** — pushed, Actions build + Pages deploy green; live on
+      miniadda.com (179 URLs, 150 price pages). Removed stray root `index.html`.
 - [ ] Deploy Worker (optional live prices)
 
 ## Upcoming taxonomy change (Stage 4 prep)
