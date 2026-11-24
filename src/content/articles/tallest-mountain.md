@@ -1,17 +1,17 @@
 ---
-title: "What is the tallest mountain in the world?"
-answer: "Mount Everest is the tallest mountain above sea level, at 8,848.86 metres (29,031.7 ft) according to a 2020 joint China–Nepal measurement. Measured from base to peak, Mauna Kea in Hawaii is taller, but most of it is underwater."
-section: "international"
-topic: "general-knowledge"
-tags: ["global"]
-description: "Mount Everest is the highest mountain above sea level. Mauna Kea is taller base-to-peak but mostly underwater. Here is the difference."
-seoTitle: "What Is the Tallest Mountain in the World?"
+title: What is the tallest mountain in the world?
+kind: article
+answer: Mount Everest is the tallest mountain above sea level, at 8,848.86 metres (29,031.7 ft) according to a 2020 joint China–Nepal measurement. Measured from base to peak, Mauna Kea in Hawaii is taller, but most of it is underwater.
+topic: general-knowledge
+order: 4
+description: Mount Everest is the highest mountain above sea level. Mauna Kea is taller base-to-peak but mostly underwater. Here is the difference.
+seoTitle: What Is the Tallest Mountain in the World?
 sources:
-  - label: "National Geographic — Mount Everest"
+  - label: National Geographic — Mount Everest
     url: "https://www.nationalgeographic.com/environment/article/mount-everest"
-  - label: "Britannica — Mount Everest"
+  - label: Britannica — Mount Everest
     url: "https://www.britannica.com/place/Mount-Everest"
-author: "MiniAdda Editorial"
+author: MiniAdda Editorial
 publishedAt: 2026-04-02
 lastVerified: 2026-05-25
 featured: false

@@ -1,19 +1,17 @@
 ---
-title: "What is the latest iPhone?"
-answer: "Apple typically releases new iPhone models each September. The newest model is the most recent generation announced at Apple's fall event; check Apple's official site or your regional store for the exact current model, since availability varies by country."
-section: "international"
-topic: "technology"
-tags: ["us", "global"]
-description: "Apple launches new iPhones each September. Here is how to identify the latest model and where to confirm current availability."
-seoTitle: "What Is the Latest iPhone? How to Check"
-featuredImage: ""
-featuredImageAlt: ""
+title: What is the latest iPhone?
+kind: news
+answer: Apple typically releases new iPhone models each September. The newest model is the most recent generation announced at Apple's fall event; check Apple's official site or your regional store for the exact current model, since availability varies by country.
+topic: technology
+order: 2
+description: Apple launches new iPhones each September. Here is how to identify the latest model and where to confirm current availability.
+seoTitle: What Is the Latest iPhone? How to Check
 sources:
-  - label: "Apple — iPhone"
+  - label: Apple — iPhone
     url: "https://www.apple.com/iphone/"
-  - label: "Apple Newsroom"
+  - label: Apple Newsroom
     url: "https://www.apple.com/newsroom/"
-author: "MiniAdda Editorial"
+author: MiniAdda Editorial
 publishedAt: 2026-02-10
 lastVerified: 2026-05-20
 featured: false

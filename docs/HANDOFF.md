@@ -188,3 +188,63 @@ git add -A && git commit -m "..." && git push origin main
 
 > Note: the GitHub remote push here uses your credentials; the dashboard publishes via
 > the API with the PAT instead, so you don't have to store a git credential.
+
+---
+
+## Homepage redesign (2026-11-18) ✅ build green
+
+Restructured the public site to the requested layout and simplified the content model.
+
+- **Homepage**: leads with a **single-line crypto→USD converter** (coin search/dropdown ·
+  coin amount · USD amount), then **News**, then **Articles**, then topic chips and a
+  Sigcamp teaser. No price table on the homepage (it lives on `/prices`).
+- **`/prices`**: converter + **auto table of every coin** the build-time feed returns
+  (curated list in `src/lib/coins.ts`, expanded to 29 coins; `availableCoins()` adds any
+  extras from the feed). Long-tail price pages still generated per coin.
+- **`/sigcamp`**: now a single **table** — Serial No. · Name · Manager · Payment · Link
+  with a **Visit** button per row (external `nofollow noopener`). Backed by
+  `src/data/sigcamp.yml` (was a per-file Markdown collection).
+- **Content model**: one `articles` collection with `kind: news|article` and a manual
+  `order` weight. Routes `/news`, `/article`, `/{kind}/{slug}`, `/topics/{topic}`. Removed
+  `[section]`, `tags`, and the old `sigcamp` collection + detail pages.
+- **Dashboard**: rebuilt the News/Articles tab into one editor with drag/▲▼ **reorder**
+  (persisted via `POST /api/articles/reorder`) and a **row-by-row Sigcamp table** editor
+  (`POST /api/sigcamp`). Publish now commits `src/data/sigcamp.yml` too.
+- **Footer**: 4-column fixed layout (brand · Tools · Read · Site).
+- **SEO**: every page emits `WebPage`/`Article`/`BreadcrumbList`/`ItemList` as
+  appropriate; price pages keep `Product`+`Offer`; Sigcamp adds `ItemList` of links;
+  sitemap now carries priorities; added manifest + refreshed OG image + keywords meta.
+
+**Verify**
+```bash
+npm run check      # 0 errors
+npm run build      # 545 pages
+ls dist/prices | wc -l          # ~521 price URLs
+grep -o 'Visit <span' dist/sigcamp/index.html | wc -l
+```
+Dashboard: `python3 dashboard/run.py` → News & Articles tab (drag to reorder),
+Sigcamp tab (edit rows → Save table).
+
+---
+
+## Theme switch + build fix (2026-11-24)
+
+- **Dark/light theme**: added a theme toggle in the header (`Header.astro`,
+  `.theme-toggle`). Preference is saved to `localStorage('theme')`; an inline script in
+  `BaseLayout.astro` applies it before first paint (no flash) and defaults to the OS
+  `prefers-color-scheme`. Theme is driven by `[data-theme='dark']` overrides in
+  `global.css`; the footer stays dark in both themes via `--footer-bg/--footer-fg`.
+- **Crypto styling**: Bitcoin-orange (`--btc`) + up-green (`--up`) accents, a
+  orange→green underline under page titles, a multi-color gradient bar on the converter,
+  tabular monospace price numbers, and a subtle orange glow on the dotted background.
+  Fixed low-contrast text on the yellow answer box / rate bar / topic pills.
+- **Build speed fix**: `fetchPrices()` in `src/lib/prices.ts` is now memoized (single
+  in-flight promise). Previously every one of ~500 price pages refetched the feed,
+  making `npm run build` take 5+ minutes. Build now ~6–10s.
+
+**Verify**
+```bash
+npm run check        # 0 errors
+npm run build        # 545 pages, ~6-10s
+# toggle: header sun/moon button, persists across reloads
+```

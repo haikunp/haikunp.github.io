@@ -1,6 +1,7 @@
 ---
 import PageLayout from '../layouts/PageLayout.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { breadcrumbList, webPageSchema } from '../lib/seo';
 
 interface Props {
   title: string;
@@ -9,12 +10,17 @@ interface Props {
   crumb: string;
 }
 const { title, description, heading } = Astro.props;
+const path = Astro.url.pathname;
 const crumbs = [
   { name: 'Home', url: '/' },
-  { name: heading, url: Astro.url.pathname },
+  { name: heading, url: path },
+];
+const ld = [
+  webPageSchema({ name: title, description, url: path }),
+  breadcrumbList(crumbs),
 ];
 ---
-<PageLayout title={title} description={description}>
+<PageLayout title={title} description={description} path={path} jsonLd={ld}>
   <div class="container">
     <Breadcrumbs items={crumbs} />
     <article class="static-page">

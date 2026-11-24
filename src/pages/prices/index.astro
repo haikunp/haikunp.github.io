@@ -2,27 +2,30 @@
 import PageLayout from '../../layouts/PageLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import PriceConverter from '../../components/PriceConverter.astro';
-import { COINS } from '../../lib/coins';
-import { fetchPrices, fmtUsd } from '../../lib/prices';
-import { breadcrumbList } from '../../lib/seo';
+import { PRICE_FEED } from '../../lib/constants';
+import { availableCoins, fetchPrices, fmtUsd } from '../../lib/prices';
+import { coinSlugOf } from '../../lib/coins';
+import { breadcrumbList, webPageSchema } from '../../lib/seo';
 
 const { prices } = await fetchPrices();
+const coins = availableCoins(prices);
 const crumbs = [
   { name: 'Home', url: '/' },
   { name: 'Prices', url: '/prices' },
 ];
 const title = 'Crypto Prices & USD Converter';
 const description =
-  'Live crypto prices in USD and a two-way converter. Convert Bitcoin, Ethereum, TRON, Tether, BNB and more to USD and back — instantly.';
-const ld = [breadcrumbList(crumbs)];
-const first = COINS[0];
+  'Live crypto prices in USD and a two-way converter. Convert Bitcoin, Ethereum, Solana, TRON, USDT, XRP and more to USD and back — instantly.';
+const ld = [breadcrumbList(crumbs), webPageSchema({ name: title, description, url: '/prices' })];
+const first = coins[0];
+const popular = coins.slice(0, 8);
 ---
 <PageLayout title={title} description={description} path="/prices" jsonLd={ld}>
-  <div class="container">
+  <div class="container" data-price-feed={PRICE_FEED.endpoint}>
     <Breadcrumbs items={crumbs} />
     <header class="page-header">
       <h1>Crypto Prices &amp; Converter</h1>
-      <p>Pick a coin, convert both ways, and see the live rate.</p>
+      <p>{coins.length} coins · live USD rates</p>
     </header>
 
     <section class="section section--first">
@@ -31,16 +34,17 @@ const first = COINS[0];
 
     <section class="section">
       <div class="section-head">
-        <h2 class="section-title"><span class="tag-bar" aria-hidden="true"></span>Live prices</h2>
+        <h2 class="section-title"><span class="tag-bar" aria-hidden="true"></span>All crypto prices</h2>
       </div>
       <table class="price-table">
         <thead>
-          <tr><th>Coin</th><th>Price (USD)</th></tr>
+          <tr><th>#</th><th>Coin</th><th>Price (USD)</th></tr>
         </thead>
         <tbody>
-          {COINS.map((c) => (
+          {coins.map((c, i) => (
             <tr>
-              <td><a href={`/prices/${c.name.toLowerCase()}-to-usd`}>{c.name} ({c.symbol})</a></td>
+              <td class="price-rank">{i + 1}</td>
+              <td><a href={`/prices/${coinSlugOf(c)}-to-usd`}>{c.name} ({c.symbol})</a></td>
               <td data-live-price={c.symbol}>{fmtUsd(prices[c.symbol])}</td>
             </tr>
           ))}
@@ -53,9 +57,9 @@ const first = COINS[0];
         <h2 class="section-title"><span class="tag-bar" aria-hidden="true"></span>Popular conversions</h2>
       </div>
       <div class="chip-row">
-        {COINS.flatMap((c) => [
+        {popular.flatMap((c) => [
           <a class="chip" href={`/prices/price-of-1-${c.symbol.toLowerCase()}`}>Price of 1 {c.symbol}</a>,
-          <a class="chip" href={`/prices/${c.name.toLowerCase()}-to-usd`}>{c.symbol} to USD</a>,
+          <a class="chip" href={`/prices/${coinSlugOf(c)}-to-usd`}>{c.symbol} to USD</a>,
         ])}
       </div>
     </section>

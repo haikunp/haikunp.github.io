@@ -1,38 +1,38 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 
 export type Article = CollectionEntry<'articles'>;
+export type ContentKind = 'news' | 'article';
+
+// Manual order wins (lower first); ties fall back to newest published date.
+function byOrder(a: Article, b: Article): number {
+  if (a.data.order !== b.data.order) return a.data.order - b.data.order;
+  return b.data.publishedAt.getTime() - a.data.publishedAt.getTime();
+}
 
 export async function getAllArticles(): Promise<Article[]> {
   const all = await getCollection('articles');
-  return all.sort(
-    (a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime()
-  );
+  return all.sort(byOrder);
 }
 
-export async function getSectionArticles(section: string): Promise<Article[]> {
+export async function getByKind(kind: ContentKind): Promise<Article[]> {
   const all = await getAllArticles();
-  return all.filter((a) => a.data.section === section);
+  return all.filter((a) => a.data.kind === kind);
 }
 
-export async function getArticlesByTag(tag: string): Promise<Article[]> {
-  const all = await getAllArticles();
-  return all.filter((a) => a.data.tags.includes(tag));
+export async function getOtherKind(kind: ContentKind): Promise<Article[]> {
+  return getByKind(kind === 'news' ? 'article' : 'news');
 }
 
 export function articleUrl(article: Article): string {
-  return `/${article.data.section}/${article.id}`;
+  return `/${article.data.kind}/${article.id}`;
 }
 
-export async function getRelated(article: Article, limit = 4): Promise<Article[]> {
+export async function getRelated(article: Article, limit = 3): Promise<Article[]> {
   const all = await getAllArticles();
-  const sameTopic = all.filter(
-    (a) => a.id !== article.id && a.data.topic === article.data.topic
-  );
+  const sameTopic = all.filter((a) => a.id !== article.id && a.data.topic === article.data.topic);
   if (sameTopic.length >= limit) return sameTopic.slice(0, limit);
-  const sameSection = all.filter(
-    (a) => a.id !== article.id && a.data.section === article.data.section
-  );
-  const merged = [...sameTopic, ...sameSection].filter(
+  const sameKind = all.filter((a) => a.id !== article.id && a.data.kind === article.data.kind);
+  const merged = [...sameTopic, ...sameKind].filter(
     (a, i, arr) => arr.findIndex((x) => x.id === a.id) === i
   );
   return merged.slice(0, limit);
@@ -52,30 +52,13 @@ export function formatDate(date: Date): string {
   });
 }
 
-// All tags actually in use, with counts.
-export function tagCounts(articles: Article[]): Map<string, number> {
+export async function getTopicList(): Promise<{ slug: string; name: string; count: number }[]> {
+  const all = await getAllArticles();
   const counts = new Map<string, number>();
-  for (const a of articles) {
-    for (const t of a.data.tags) {
-      counts.set(t, (counts.get(t) ?? 0) + 1);
-    }
-  }
-  return counts;
-}
-
-// ---- Sigcamp (BitcoinTalk signature campaigns) ----
-export type SigCamp = CollectionEntry<'sigcamp'>;
-
-export async function getAllSigCamp(): Promise<SigCamp[]> {
-  const all = await getCollection('sigcamp');
-  const rank = { active: 0, upcoming: 1, closed: 2 } as Record<string, number>;
-  return all.sort((a, b) => {
-    const r = (rank[a.data.status] ?? 9) - (rank[b.data.status] ?? 9);
-    if (r !== 0) return r;
-    return (b.data.startedAt?.getTime() ?? 0) - (a.data.startedAt?.getTime() ?? 0);
-  });
-}
-
-export function sigCampUrl(camp: SigCamp): string {
-  return `/sigcamp/${camp.id}`;
+  for (const a of all) counts.set(a.data.topic, (counts.get(a.data.topic) ?? 0) + 1);
+  return [...counts.entries()].map(([slug, count]) => ({
+    slug,
+    name: slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+    count,
+  }));
 }

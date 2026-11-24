@@ -11,7 +11,7 @@ def _read_ui():
 
 
 class Handler(BaseHTTPRequestHandler):
-    server_version = "MiniAddaDash/1.0"
+    server_version = "MiniAddaDash/1.1"
 
     def log_message(self, fmt, *args):
         pass
@@ -57,11 +57,7 @@ class Handler(BaseHTTPRequestHandler):
                 a = content.get_article(slug)
                 self._json(a or {"ok": False, "error": "not found"}, 200 if a else 404)
             elif self.path == "/api/sigcamp":
-                self._json({"ok": True, "campaigns": content.list_sigcamp()})
-            elif self.path.startswith("/api/sigcamp/"):
-                slug = self.path.split("/api/sigcamp/", 1)[1]
-                c = content.get_sigcamp(slug)
-                self._json(c or {"ok": False, "error": "not found"}, 200 if c else 404)
+                self._json({"ok": True, "rows": content.list_sigcamp()})
             else:
                 self._json({"error": "not found"}, 404)
         except Exception as e:  # noqa: BLE001
@@ -77,12 +73,18 @@ class Handler(BaseHTTPRequestHandler):
                 self._json({"ok": True})
             elif self.path == "/api/articles":
                 b = self._body()
-                slug, _ = content.save_article(b.get("slug"), b.get("data", {}), b.get("body", ""))
+                slug, _ = content.save_article(
+                    b.get("slug"), b.get("data", {}), b.get("body", ""), b.get("oldSlug")
+                )
                 self._json({"ok": True, "slug": slug})
+            elif self.path == "/api/articles/reorder":
+                b = self._body()
+                content.reorder_articles(b.get("ids", []))
+                self._json({"ok": True})
             elif self.path == "/api/sigcamp":
                 b = self._body()
-                slug, _ = content.save_sigcamp(b.get("slug"), b.get("data", {}), b.get("body", ""))
-                self._json({"ok": True, "slug": slug})
+                rows = content.save_sigcamp(b.get("rows", []))
+                self._json({"ok": True, "rows": rows})
             elif self.path == "/api/publish":
                 self._json(self._publish(self._body()))
             else:
@@ -95,26 +97,22 @@ class Handler(BaseHTTPRequestHandler):
             if self.path.startswith("/api/articles/"):
                 slug = self.path.split("/api/articles/", 1)[1]
                 self._json({"ok": content.delete_article(slug)})
-            elif self.path.startswith("/api/sigcamp/"):
-                slug = self.path.split("/api/sigcamp/", 1)[1]
-                self._json({"ok": content.delete_sigcamp(slug)})
             else:
                 self._json({"error": "not found"}, 404)
         except Exception as e:  # noqa: BLE001
             self._json({"ok": False, "error": str(e)}, 500)
 
     def _publish(self, b):
-        """Publish selected content types (articles, sigcamp, prices) via GitHub."""
+        """Publish selected content (articles, sigcamp) via GitHub in one commit."""
         what = b.get("what", ["articles", "sigcamp"])
         files = {}
         if "articles" in what:
             for a in content.list_articles():
-                files[content.article_repo_path(a["id"])] = (config.ARTICLES / f"{a['id']}.md").read_text(encoding="utf-8")
-        if "sigcamp" in what:
-            for c in content.list_sigcamp():
-                files[content.sigcamp_repo_path(c["id"])] = (config.SIGCAMP / f"{c['id']}.md").read_text(encoding="utf-8")
-        # prices are baked at build time by CI; nothing else to push unless the
-        # user edited src/lib/coins.ts. We just commit content here.
+                files[content.article_repo_path(a["id"])] = (
+                    config.ARTICLES / f"{a['id']}.md"
+                ).read_text(encoding="utf-8")
+        if "sigcamp" in what and config.SIGCAMP_FILE.exists():
+            files[content.sigcamp_repo_path()] = config.SIGCAMP_FILE.read_text(encoding="utf-8")
         if not files:
             return {"ok": False, "error": "Nothing to publish"}
         msg = b.get("message") or "Dashboard: update content"

@@ -1,0 +1,10 @@
+# Sigcamp rows — edited by the dashboard. Serial = row position.
+rows:
+  - name: "Sample Signature Campaign"
+    manager: "BitcoinTalk User"
+    payment: "0.0002 BTC / post"
+    link: "https://bitcointalk.org/"
+  - name: "Second Sample Campaign"
+    manager: "Campaign Manager"
+    payment: "0.0001 BTC / post"
+    link: "https://bitcointalk.org/index.php?board=52.0"

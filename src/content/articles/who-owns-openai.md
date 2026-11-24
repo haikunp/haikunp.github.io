@@ -1,19 +1,17 @@
 ---
-title: "Who owns OpenAI?"
-answer: "OpenAI is owned by a controlling nonprofit, the OpenAI Nonprofit (originally OpenAI, Inc.), which sits above a capped-profit subsidiary, OpenAI Global, LLC. Microsoft is a major investor but does not own the company. A 2024–2025 restructuring plan proposed converting the for-profit arm into a public benefit corporation, but the nonprofit retains control."
-section: "international"
-topic: "technology"
-tags: ["us", "global"]
-description: "OpenAI is controlled by a nonprofit foundation, with a capped-profit subsidiary and major investors like Microsoft. Here is how its ownership is structured."
-seoTitle: "Who Owns OpenAI? Ownership Structure Explained"
-featuredImage: ""
-featuredImageAlt: ""
+title: Who owns OpenAI?
+kind: article
+answer: OpenAI is owned by a controlling nonprofit, the OpenAI Nonprofit (originally OpenAI, Inc.), which sits above a capped-profit subsidiary, OpenAI Global, LLC. Microsoft is a major investor but does not own the company. A 2024–2025 restructuring plan proposed converting the for-profit arm into a public benefit corporation, but the nonprofit retains control.
+topic: technology
+order: 6
+description: OpenAI is controlled by a nonprofit foundation, with a capped-profit subsidiary and major investors like Microsoft. Here is how its ownership is structured.
+seoTitle: Who Owns OpenAI? Ownership Structure Explained
 sources:
-  - label: "OpenAI — Our structure"
+  - label: OpenAI — Our structure
     url: "https://openai.com/our-structure/"
-  - label: "OpenAI — Corporate structure FAQ"
+  - label: OpenAI — Corporate structure FAQ
     url: "https://openai.com/index/why-our-structure-must-evolve-to-advance-our-mission/"
-author: "MiniAdda Editorial"
+author: MiniAdda Editorial
 publishedAt: 2026-01-15
 updatedAt: 2026-06-02
 lastVerified: 2026-06-02

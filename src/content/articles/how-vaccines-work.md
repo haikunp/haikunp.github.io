@@ -1,17 +1,17 @@
 ---
-title: "How do vaccines work?"
-answer: "Vaccines train your immune system to recognize and fight a specific pathogen without you getting sick first. They expose your body to a harmless piece or blueprint of a germ, so your immune system builds memory cells that respond quickly if you encounter the real infection later."
-section: "international"
-topic: "science"
-tags: ["global"]
-description: "Vaccines teach the immune system to recognize a pathogen safely, so it can respond fast to real infection. Here is how the main types work."
-seoTitle: "How Do Vaccines Work? A Simple Explanation"
+title: How do vaccines work?
+kind: article
+answer: Vaccines train your immune system to recognize and fight a specific pathogen without you getting sick first. They expose your body to a harmless piece or blueprint of a germ, so your immune system builds memory cells that respond quickly if you encounter the real infection later.
+topic: science
+order: 1
+description: Vaccines teach the immune system to recognize a pathogen safely, so it can respond fast to real infection. Here is how the main types work.
+seoTitle: How Do Vaccines Work? A Simple Explanation
 sources:
-  - label: "WHO — Vaccines and immunization"
+  - label: WHO — Vaccines and immunization
     url: "https://www.who.int/health-topics/vaccines-and-immunization"
-  - label: "CDC — How vaccines work"
+  - label: CDC — How vaccines work
     url: "https://www.cdc.gov/vaccines/how-they-work.html"
-author: "MiniAdda Editorial"
+author: MiniAdda Editorial
 publishedAt: 2026-05-02
 lastVerified: 2026-05-30
 featured: false

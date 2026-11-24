@@ -1,10 +1,10 @@
 export const SITE = {
   name: 'MiniAdda',
-  tagline: 'Quick answers to the questions everyone is asking.',
+  tagline: 'Crypto prices, converters & quick answers.',
   domain: 'miniadda.com',
   url: 'https://miniadda.com',
   description:
-    'MiniAdda publishes short, direct answers to the questions everyone is asking about the US and the world — politics, tech, finance, science and more.',
+    'MiniAdda is a fast crypto tool and news site: convert coins to USD, check live prices, browse BitcoinTalk signature campaigns and read short, sourced crypto news and articles.',
   locale: 'en_US',
   defaultAuthor: 'MiniAdda Editorial',
 } as const;
@@ -18,58 +18,17 @@ export const PRICE_FEED = {
   clientCacheSeconds: 10,
 } as const;
 
-// Two top-level sections replace traditional categories.
-export const SECTIONS = [
-  { slug: 'us', name: 'US', blurb: 'What America is searching for.' },
-  { slug: 'international', name: 'International', blurb: 'Answers from around the world.' },
+// Two public content kinds share one editor and one URL space.
+export const KINDS = [
+  { slug: 'news', name: 'News' },
+  { slug: 'article', name: 'Articles' },
 ] as const;
 
-export type SectionSlug = (typeof SECTIONS)[number]['slug'];
-export const SECTION_SLUGS = SECTIONS.map((s) => s.slug);
+export type KindSlug = (typeof KINDS)[number]['slug'];
+export const KIND_SLUGS = KINDS.map((k) => k.slug);
 
-export function sectionName(slug: string): string {
-  return SECTIONS.find((s) => s.slug === slug)?.name ?? slug;
-}
-
-// Topic chips stay for filtering within sections.
-export const TOPICS = [
-  { slug: 'politics', name: 'Politics' },
-  { slug: 'technology', name: 'Technology' },
-  { slug: 'business', name: 'Business' },
-  { slug: 'finance', name: 'Finance' },
-  { slug: 'entertainment', name: 'Entertainment' },
-  { slug: 'science', name: 'Science' },
-  { slug: 'sports', name: 'Sports' },
-  { slug: 'general-knowledge', name: 'General Knowledge' },
-] as const;
-
-export type TopicSlug = (typeof TOPICS)[number]['slug'];
-export const TOPIC_SLUGS = TOPICS.map((t) => t.slug);
-
-export function topicName(slug: string): string {
-  return TOPICS.find((t) => t.slug === slug)?.name ?? slug;
-}
-
-// Country / region tags let readers jump to local answers.
-// `slug` is used in URLs and metadata; `name` is display text.
-export const REGIONS = [
-  { slug: 'us', name: 'United States' },
-  { slug: 'florida', name: 'Florida' },
-  { slug: 'california', name: 'California' },
-  { slug: 'new-york', name: 'New York' },
-  { slug: 'texas', name: 'Texas' },
-  { slug: 'uk', name: 'United Kingdom' },
-  { slug: 'belgium', name: 'Belgium' },
-  { slug: 'canada', name: 'Canada' },
-  { slug: 'australia', name: 'Australia' },
-  { slug: 'india', name: 'India' },
-  { slug: 'germany', name: 'Germany' },
-  { slug: 'france', name: 'France' },
-  { slug: 'global', name: 'Global' },
-] as const;
-
-export function regionName(slug: string): string {
-  return REGIONS.find((r) => r.slug === slug)?.name ?? slug;
+export function kindName(slug: string): string {
+  return KINDS.find((k) => k.slug === slug)?.name ?? slug;
 }
 
 export function slugify(input: string): string {
@@ -80,4 +39,8 @@ export function slugify(input: string): string {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
     .slice(0, 80);
+}
+
+export function topicLabel(slug: string): string {
+  return slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 }

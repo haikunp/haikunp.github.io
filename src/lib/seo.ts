@@ -121,7 +121,7 @@ export function articleSchema(input: {
   };
 }
 
-// ItemList for hub pages (section, tag, topic, homepage) to help discovery.
+// ItemList for hub pages (news, articles, topic, homepage) to help discovery.
 export function itemListSchema(
   articles: Article[],
   opts: { name: string; url: string }
@@ -137,6 +137,60 @@ export function itemListSchema(
       position: i + 1,
       url: absoluteUrl(articleUrl(a)),
       name: a.data.title,
+    })),
+  };
+}
+
+// Generic WebPage schema for tool / directory pages (prices, sigcamp, static).
+export function webPageSchema(input: {
+  name: string;
+  description: string;
+  url: string;
+  primaryImage?: string;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    '@id': `${absoluteUrl(input.url)}#webpage`,
+    name: input.name,
+    description: input.description,
+    url: absoluteUrl(input.url),
+    isPartOf: { '@id': `${SITE.url}/#website` },
+    inLanguage: 'en',
+    ...(input.primaryImage ? { primaryImageOfPage: { '@type': 'ImageObject', url: absoluteUrl(input.primaryImage) } } : {}),
+  };
+}
+
+// ItemList of external links (e.g. the Sigcamp table) for rich discovery.
+export function linkListSchema(
+  items: { name: string; url: string }[],
+  opts: { name: string; url: string }
+) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: opts.name,
+    url: absoluteUrl(opts.url),
+    numberOfItems: items.length,
+    itemListElement: items.map((it, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: it.name,
+      url: it.url,
+    })),
+  };
+}
+
+// FAQPage is intentionally NOT emitted for editorial content; this helper is
+// for genuine on-page FAQs only (currently unused by editorial answers).
+export function faqSchema(items: { q: string; a: string }[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: items.map((it) => ({
+      '@type': 'Question',
+      name: it.q,
+      acceptedAnswer: { '@type': 'Answer', text: it.a },
     })),
   };
 }

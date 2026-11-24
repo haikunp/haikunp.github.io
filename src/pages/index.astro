@@ -2,62 +2,67 @@
 import PageLayout from '../layouts/PageLayout.astro';
 import ArticleCard from '../components/ArticleCard.astro';
 import PriceConverter from '../components/PriceConverter.astro';
-import { SITE, TOPICS } from '../lib/constants';
+import { SITE, topicLabel } from '../lib/constants';
 import { COINS } from '../lib/coins';
-import { fetchPrices, fmtUsd } from '../lib/prices';
-import { getAllArticles, articleUrl } from '../lib/content';
+import { fetchPrices, availableCoins } from '../lib/prices';
+import { getByKind, getTopicList } from '../lib/content';
 import { itemListSchema } from '../lib/seo';
 
 const { prices } = await fetchPrices();
-const articles = await getAllArticles();
-const latest = articles.slice(0, 3);
-const first = COINS[0];
+const coins = availableCoins(prices);
+const news = await getByKind('news');
+const articles = await getByKind('article');
+const topics = await getTopicList();
+const first = coins[0] ?? COINS[0];
 
-const homeLd = itemListSchema(latest, { name: 'Latest on MiniAdda', url: '/' });
+const all = [...news, ...articles];
+const homeLd = itemListSchema(all.slice(0, 12), { name: 'Latest on MiniAdda', url: '/' });
 const metaTitle = `${SITE.name} — Crypto Prices, Converters & Quick Answers`;
 const metaDescription =
-  'Live crypto prices, instant USD converters and quick answers. Bitcoin, Ethereum, TRON and more — plus the day’s crypto news and active BitcoinTalk signature campaigns.';
+  'Convert crypto to USD instantly, check live Bitcoin, Ethereum and altcoin prices, browse BitcoinTalk signature campaigns and read the latest crypto news and articles.';
+const newsPreview = news.slice(0, 3);
+const articlePreview = articles.slice(0, 3);
 ---
+
 <PageLayout title={metaTitle} description={metaDescription} path="/" jsonLd={homeLd}>
-  <section class="section section--first" aria-labelledby="tool-heading">
+  <section class="section section--first" aria-labelledby="convert-heading">
     <div class="container">
-      <header class="page-header">
-        <h1 id="tool-heading">Crypto to USD Converter</h1>
-        <p>Pick a coin, convert both ways, check live prices.</p>
+      <header class="page-header convx-head">
+        <h1 id="convert-heading">Crypto to USD converter</h1>
+        <p>Pick a coin, enter an amount, get USD.</p>
       </header>
-      <PriceConverter active={first.symbol} price={prices[first.symbol]} prices={prices} />
+      <PriceConverter active={first.symbol} price={prices[first.symbol]} prices={prices} compact />
+      <p class="convx-links">
+        <a href="/prices">All crypto prices →</a>
+      </p>
     </div>
   </section>
 
-  <section class="section" aria-labelledby="prices-heading">
+  <section class="section" aria-labelledby="news-heading">
     <div class="container">
       <div class="section-head">
-        <h2 id="prices-heading" class="section-title"><span class="tag-bar" aria-hidden="true"></span>Live prices</h2>
-        <a href="/prices">All prices →</a>
+        <h2 id="news-heading" class="section-title"><span class="tag-bar" aria-hidden="true"></span>News</h2>
+        <a href="/news">More news →</a>
       </div>
-      <table class="price-table">
-        <thead><tr><th>Coin</th><th>Price (USD)</th></tr></thead>
-        <tbody>
-          {COINS.map((c) => (
-            <tr>
-              <td><a href={`/prices/${c.name.toLowerCase()}-to-usd`}>{c.name} ({c.symbol})</a></td>
-              <td>{fmtUsd(prices[c.symbol])}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {newsPreview.length ? (
+        <div class="card-grid">
+          {newsPreview.map((a) => <ArticleCard article={a} />)}
+        </div>
+      ) : (
+        <p class="empty-state">No news yet. Check back soon.</p>
+      )}
     </div>
   </section>
 
   <section class="section" aria-labelledby="articles-heading">
     <div class="container">
       <div class="section-head">
-        <h2 id="articles-heading" class="section-title"><span class="tag-bar" aria-hidden="true"></span>Crypto news</h2>
-        <a href="/us">More →</a>
+        <h2 id="articles-heading" class="section-title"><span class="tag-bar" aria-hidden="true"></span>Articles</h2>
+        <a href="/article">More articles →</a>
       </div>
-      {latest.length ? (
+      {articlePreview.length ? (
         <div class="card-grid">
-          {latest.map((a) => <ArticleCard article={a} />)}
+          {articlePreview.map((a) => <ArticleCard article={a} />)}
         </div>
       ) : (
         <p class="empty-state">No articles yet. Check back soon.</p>
@@ -65,24 +70,28 @@ const metaDescription =
     </div>
   </section>
 
+  {topics.length > 0 && (
+    <section class="section" aria-labelledby="topics-heading">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="topics-heading" class="section-title"><span class="tag-bar" aria-hidden="true"></span>By topic</h2>
+        </div>
+        <div class="chip-row">
+          {topics.map((t) => (
+            <a class="chip" href={`/topics/${t.slug}`}>{topicLabel(t.slug)} <span class="count">{t.count}</span></a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
   <section class="section" aria-labelledby="sigcamp-heading">
     <div class="container">
       <div class="section-head">
         <h2 id="sigcamp-heading" class="section-title"><span class="tag-bar" aria-hidden="true"></span>Signature campaigns</h2>
-        <a href="/sigcamp">View all →</a>
+        <a href="/sigcamp">View Sigcamp →</a>
       </div>
-      <p class="empty-state">Active BitcoinTalk signature campaigns — <a href="/sigcamp">browse Sigcamp</a>.</p>
-    </div>
-  </section>
-
-  <section class="section" aria-labelledby="topics-heading">
-    <div class="container">
-      <div class="section-head">
-        <h2 id="topics-heading" class="section-title"><span class="tag-bar" aria-hidden="true"></span>By topic</h2>
-      </div>
-      <div class="chip-row">
-        {TOPICS.map((t) => <a class="chip" href={`/topics/${t.slug}`}>{t.name}</a>)}
-      </div>
+      <p class="empty-state">Browse active BitcoinTalk signature campaigns — <a href="/sigcamp">open Sigcamp</a>.</p>
     </div>
   </section>
 </PageLayout>

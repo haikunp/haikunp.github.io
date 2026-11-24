@@ -1,4 +1,4 @@
-import { COINS, type Coin } from './coins';
+import { COINS, coinBySymbol, coinFromSymbol, type Coin } from './coins';
 
 export type PriceMap = Record<string, number>;
 
@@ -28,7 +28,7 @@ async function fromCoinMarketCapPublic(): Promise<PriceMap> {
   const out: PriceMap = {};
   let start = 1;
   const limit = 250;
-  for (let page = 0; page < 5; page++) {
+  for (let page = 0; page < 3; page++) {
     const data = await getJson(
       `https://api.coinmarketcap.com/data-api/v3/cryptocurrency/listing?start=${start}&limit=${limit}&sortBy=market_cap&sortType=desc`
     );
@@ -46,9 +46,24 @@ async function fromCoinMarketCapPublic(): Promise<PriceMap> {
   return out;
 }
 
+export interface PriceResult {
+  prices: PriceMap;
+  source: string;
+}
+
+// Module-level memo. Every /prices page calls fetchPrices() during a single
+// build; without this each page re-hit the network (hundreds of requests).
+// Cache the in-flight promise so concurrent renders share one fetch.
+let pricePromise: Promise<PriceResult> | null = null;
+
 // Fetch prices at build time. Tries CMC public listing first, CoinGecko fallback.
 // Never throws: on total failure returns an empty map so the build still succeeds.
-export async function fetchPrices(): Promise<{ prices: PriceMap; source: string }> {
+export function fetchPrices(): Promise<PriceResult> {
+  if (!pricePromise) pricePromise = loadPrices();
+  return pricePromise;
+}
+
+async function loadPrices(): Promise<PriceResult> {
   try {
     const p = await fromCoinMarketCapPublic();
     if (Object.keys(p).length) return { prices: p, source: 'coinmarketcap' };
@@ -62,6 +77,25 @@ export async function fetchPrices(): Promise<{ prices: PriceMap; source: string 
     /* fall through */
   }
   return { prices: {}, source: 'unavailable' };
+}
+
+// Ordered list of every coin available for the price tables/pages: the curated
+// catalogue first (that we have markets for), then any extra coins the feed
+// returned, in feed order. Coins with no baked price are dropped so tables and
+// auto-generated pages never show a dangling "—".
+export function availableCoins(prices: PriceMap): Coin[] {
+  const curated = COINS.filter((c) => prices[c.symbol] != null);
+  const seen = new Set(curated.map((c) => c.symbol));
+  const extras: Coin[] = [];
+  for (const symbol of Object.keys(prices)) {
+    if (seen.has(symbol)) continue;
+    const known = coinBySymbol(symbol);
+    extras.push(known ?? coinFromSymbol(symbol));
+    seen.add(symbol);
+  }
+  // No live data at all: fall back to the curated catalogue so pages still build.
+  if (!curated.length && !extras.length) return [...COINS];
+  return [...curated, ...extras];
 }
 
 // ---- formatting ----

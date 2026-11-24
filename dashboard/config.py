@@ -5,7 +5,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 CONTENT = ROOT / "src" / "content"
 ARTICLES = CONTENT / "articles"
-SIGCAMP = CONTENT / "sigcamp"
+DATA_SRC = ROOT / "src" / "data"
+SIGCAMP_FILE = DATA_SRC / "sigcamp.yml"
 DATA = ROOT / "dashboard" / "data"
 STATE_FILE = DATA / "state.json"
 
@@ -41,7 +42,7 @@ _load_dotenv()
 def ensure_dirs():
     DATA.mkdir(parents=True, exist_ok=True)
     ARTICLES.mkdir(parents=True, exist_ok=True)
-    SIGCAMP.mkdir(parents=True, exist_ok=True)
+    DATA_SRC.mkdir(parents=True, exist_ok=True)
 
 
 def load_state():

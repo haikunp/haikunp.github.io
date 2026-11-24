@@ -3,13 +3,15 @@ import type { GetStaticPaths } from 'astro';
 import PageLayout from '../../layouts/PageLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import PriceConverter from '../../components/PriceConverter.astro';
-import { COINS, COIN_AMOUNTS, USD_AMOUNTS, coinSlugOf } from '../../lib/coins';
-import { fetchPrices, fmtUsd, fmtCoin, fmtAmount } from '../../lib/prices';
+import { availableCoins, fetchPrices, fmtUsd, fmtCoin, fmtAmount } from '../../lib/prices';
+import { COIN_AMOUNTS, USD_AMOUNTS, coinSlugOf } from '../../lib/coins';
 import { breadcrumbList, absoluteUrl } from '../../lib/seo';
 
 export const getStaticPaths = (async () => {
+  const { prices } = await fetchPrices();
+  const coins = availableCoins(prices);
   const paths = [];
-  for (const coin of COINS) {
+  for (const coin of coins) {
     paths.push({
       params: { slug: `price-of-1-${coin.symbol.toLowerCase()}` },
       props: { kind: 'price-of-one', coin, slug: `price-of-1-${coin.symbol.toLowerCase()}` },
@@ -39,6 +41,7 @@ export const getStaticPaths = (async () => {
 
 const { kind, coin, amount, slug } = Astro.props;
 const { prices } = await fetchPrices();
+const coins = availableCoins(prices);
 const price = prices[coin.symbol];
 
 const crumbs = [
@@ -111,7 +114,7 @@ const ld = [
         <h2 class="section-title"><span class="tag-bar" aria-hidden="true"></span>Other coins</h2>
       </div>
       <div class="chip-row">
-        {COINS.filter((c) => c.symbol !== coin.symbol).map((c) => (
+        {coins.filter((c) => c.symbol !== coin.symbol).map((c) => (
           <a class="chip" href={`/prices/${coinSlugOf(c)}-to-usd`}>{c.name} ({c.symbol})</a>
         ))}
       </div>

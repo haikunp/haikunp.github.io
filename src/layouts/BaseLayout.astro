@@ -75,8 +75,25 @@ const robots = seo.noindex
     <meta name="robots" content={robots} />
     <meta name="googlebot" content={robots} />
     <link rel="canonical" href={seo.canonical} />
-    <meta name="theme-color" content="#ff5c00" />
+    <meta name="theme-color" content="#fbf7ef" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0c0e12" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
     <meta name="author" content={seo.author ?? SITE.defaultAuthor} />
+
+    <script is:inline>
+      // Apply theme before first paint to avoid a flash of the wrong theme.
+      (function () {
+        try {
+          var saved = localStorage.getItem('theme');
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = saved || (prefersDark ? 'dark' : 'light');
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
+
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -85,10 +102,14 @@ const robots = seo.noindex
       href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap"
     />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
     <link rel="alternate" hreflang="en" href={seo.canonical} />
     <link rel="alternate" hreflang="x-default" href={seo.canonical} />
+    <link rel="preconnect" href="https://api.coingecko.com" />
+    {tags && tags.length > 0 && <meta name="keywords" content={tags.join(', ')} />}
 
     <!-- Open Graph -->
     <meta property="og:type" content={seo.type} />
@@ -98,6 +119,7 @@ const robots = seo.noindex
     <meta property="og:url" content={seo.canonical} />
     <meta property="og:locale" content={SITE.locale} />
     <meta property="og:image" content={seo.image} />
+    <meta property="og:image:type" content={seo.image.endsWith('.svg') ? 'image/svg+xml' : 'image/png'} />
     <meta property="og:image:alt" content={seo.imageAlt} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />

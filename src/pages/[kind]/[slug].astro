@@ -5,7 +5,7 @@ import PageLayout from '../../layouts/PageLayout.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import ArticleCard from '../../components/ArticleCard.astro';
 import AdSlot from '../../components/AdSlot.astro';
-import { sectionName, topicName, regionName } from '../../lib/constants';
+import { kindName, topicLabel } from '../../lib/constants';
 import {
   getAllArticles,
   getRelated,
@@ -19,7 +19,7 @@ import { ads } from '../../lib/ads';
 export const getStaticPaths = (async () => {
   const articles = await getAllArticles();
   return articles.map((article) => ({
-    params: { section: article.data.section, slug: article.id },
+    params: { kind: article.data.kind, slug: article.id },
     props: { article },
   }));
 }) satisfies GetStaticPaths;
@@ -28,17 +28,16 @@ const { article } = Astro.props;
 const { data } = article;
 const { Content } = await render(article);
 const related = await getRelated(article, 3);
-const secName = sectionName(data.section);
+const kindLabel = kindName(data.kind);
 
 const crumbs = [
   { name: 'Home', url: '/' },
-  { name: secName, url: `/${data.section}` },
+  { name: kindLabel, url: `/${data.kind}` },
   { name: data.title, url: articleUrl(article) },
 ];
 
 const seoTitle = data.seoTitle ?? data.title;
 const seoDescription = data.seoDescription ?? data.description;
-const cardTags = data.tags.filter((t) => t !== 'global').slice(0, 3);
 
 const ld = [
   articleSchema({
@@ -49,8 +48,8 @@ const ld = [
     publishedAt: data.publishedAt,
     updatedAt: data.updatedAt,
     author: data.author,
-    section: data.section,
-    tags: data.tags,
+    section: kindLabel,
+    tags: [data.topic],
     wordCount: wordCount(article.body),
   }),
   breadcrumbList(crumbs.map((c) => ({ name: c.name, url: c.url }))),
@@ -68,8 +67,8 @@ const bannerAfterAnswer = ads.placements.banner.position === 'after-answer';
   updatedAt={data.updatedAt}
   lastVerified={data.lastVerified}
   author={data.author}
-  section={data.section}
-  tags={data.tags}
+  section={kindLabel}
+  tags={[data.topic]}
   jsonLd={ld}
 >
   <div class="container">
@@ -79,8 +78,8 @@ const bannerAfterAnswer = ads.placements.banner.position === 'after-answer';
       <div>
         <header class="article-header">
           <div class="card-top">
-            <span class="topic-pill">{topicName(data.topic)}</span>
-            {cardTags.map((t) => <span class="tag-pill">{regionName(t)}</span>)}
+            <span class="topic-pill">{topicLabel(data.topic)}</span>
+            <span class="tag-pill">{kindLabel}</span>
           </div>
           <h1>{data.title}</h1>
           <div class="article-meta">
@@ -138,7 +137,7 @@ const bannerAfterAnswer = ads.placements.banner.position === 'after-answer';
         {related.length > 0 && (
           <section class="related" aria-labelledby="related-heading">
             <div class="section-head">
-              <h2 id="related-heading"><span class="tag-bar" aria-hidden="true"></span>Related questions</h2>
+              <h2 id="related-heading"><span class="tag-bar" aria-hidden="true"></span>Related</h2>
             </div>
             <div class="card-grid">
               {related.map((a) => <ArticleCard article={a} />)}

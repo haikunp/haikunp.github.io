@@ -1,6 +1,7 @@
 ---
 import { SITE } from '../lib/constants';
 const path = Astro.url.pathname;
+const isContent = path.startsWith('/news') || path.startsWith('/article') || path.startsWith('/topics');
 ---
 <header class="site-header">
   <div class="container header-inner">
@@ -11,7 +12,40 @@ const path = Astro.url.pathname;
     <nav class="section-nav" aria-label="Sections">
       <a href="/prices" aria-current={path.startsWith('/prices') ? 'page' : undefined}>Prices</a>
       <a href="/sigcamp" aria-current={path.startsWith('/sigcamp') ? 'page' : undefined}>Sigcamp</a>
-      <a href="/us" aria-current={path.startsWith('/us') || path.startsWith('/international') ? 'page' : undefined}>News</a>
+      <a href="/news" aria-current={isContent ? 'page' : undefined}>News</a>
     </nav>
+    <button
+      type="button"
+      class="theme-toggle"
+      id="theme-toggle"
+      aria-label="Toggle dark mode"
+      aria-pressed="false"
+      title="Toggle dark / light theme"
+    >
+      <span class="theme-toggle__icon theme-toggle__icon--sun" aria-hidden="true">☀</span>
+      <span class="theme-toggle__icon theme-toggle__icon--moon" aria-hidden="true">☾</span>
+    </button>
   </div>
 </header>
+
+<script is:inline>
+  (function () {
+    var btn = document.getElementById('theme-toggle');
+    if (!btn) return;
+    function current() {
+      return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    }
+    function sync() {
+      var dark = current() === 'dark';
+      btn.setAttribute('aria-pressed', String(dark));
+      btn.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+    }
+    btn.addEventListener('click', function () {
+      var next = current() === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      try { localStorage.setItem('theme', next); } catch (e) {}
+      sync();
+    });
+    sync();
+  })();
+</script>

@@ -1,19 +1,17 @@
 ---
-title: "When does the next US election take place?"
-answer: "US federal general elections are held on the first Tuesday after the first Monday in November in even-numbered years. The next presidential election is in 2028, and the next midterm elections are in 2026. State and local elections follow their own calendars."
-section: "us"
-topic: "politics"
-tags: ["us"]
-description: "US federal elections follow a fixed calendar. Here are the key dates for presidential and midterm elections and what happens when."
-seoTitle: "When Is the Next US Election? Key Dates"
-featuredImage: ""
-featuredImageAlt: ""
+title: When does the next US election take place?
+kind: news
+answer: US federal general elections are held on the first Tuesday after the first Monday in November in even-numbered years. The next presidential election is in 2028, and the next midterm elections are in 2026. State and local elections follow their own calendars.
+topic: politics
+order: 3
+description: US federal elections follow a fixed calendar. Here are the key dates for presidential and midterm elections and what happens when.
+seoTitle: When Is the Next US Election? Key Dates
 sources:
-  - label: "USA.gov — Voting and elections"
+  - label: USA.gov — Voting and elections
     url: "https://www.usa.gov/voting-and-elections"
-  - label: "Federal Election Commission"
+  - label: Federal Election Commission
     url: "https://www.fec.gov/"
-author: "MiniAdda Editorial"
+author: MiniAdda Editorial
 publishedAt: 2026-01-20
 lastVerified: 2026-06-01
 featured: true

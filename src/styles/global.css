@@ -1,4 +1,18 @@
 :root {
+  /* Theme-agnostic tokens. Colors flip via [data-theme]; shadows/fonts stay. */
+  --font: 'Space Grotesk', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --mono: 'Space Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --radius: 4px;
+  --maxw: 1180px;
+  --reading: 720px;
+
+  /* Brand accents shared by both themes: Bitcoin orange + crypto green. */
+  --btc: #f7931a;
+  --up: #16c784;
+  --down: #ea3943;
+  --chain: #627eea;
+
+  /* ---- Light theme (default) ---- */
   --ink: #0a0a0a;
   --ink-soft: #3f3f46;
   --muted: #71717a;
@@ -14,13 +28,36 @@
   --us: #ff5c00;
   --intl: #6c5ce7;
   --danger: #d7263d;
+  --glow: 0 0 0 transparent;
+  --dot: #d4d0c8;
+  --footer-bg: #0a0a0a;
+  --footer-fg: #fbf7ef;
   --shadow: 6px 6px 0 var(--ink);
   --shadow-sm: 4px 4px 0 var(--ink);
-  --radius: 4px;
-  --maxw: 1180px;
-  --reading: 720px;
-  --font: 'Space Grotesk', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --mono: 'Space Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+}
+
+/* ---- Dark theme ---- */
+[data-theme='dark'] {
+  --ink: #f4f1ea;
+  --ink-soft: #c7c3bb;
+  --muted: #8b8b93;
+  --paper: #0c0e12;
+  --paper-2: #14171d;
+  --line: #f4f1ea;
+  --line-soft: #2a2e37;
+  --accent: #ff7a1a;
+  --accent-ink: #0c0e12;
+  --accent-2: #ffd60a;
+  --accent-3: #16c784;
+  --accent-4: #8f7bff;
+  --us: #ff7a1a;
+  --intl: #8f7bff;
+  --danger: #ff4d5e;
+  --dot: #2a2e37;
+  --footer-bg: #05070a;
+  --footer-fg: #f4f1ea;
+  --shadow: 6px 6px 0 #000000;
+  --shadow-sm: 4px 4px 0 #000000;
 }
 
 *,
@@ -38,12 +75,16 @@ body {
   margin: 0;
   font-family: var(--font);
   color: var(--ink);
-  background: var(--paper);
+  background-color: var(--paper);
   line-height: 1.6;
   font-size: 17px;
   -webkit-font-smoothing: antialiased;
-  background-image: radial-gradient(var(--line-soft) 1px, transparent 1px);
-  background-size: 22px 22px;
+  background-image:
+    radial-gradient(var(--dot) 1px, transparent 1px),
+    radial-gradient(1200px 600px at 100% -10%, color-mix(in srgb, var(--btc) 8%, transparent), transparent 70%);
+  background-size: 22px 22px, 100% 100%;
+  background-attachment: fixed;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 img {
@@ -228,6 +269,56 @@ h4 {
   box-shadow: 3px 3px 0 var(--ink);
 }
 
+/* ---------- Theme toggle ---------- */
+.theme-toggle {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius);
+  background: var(--paper-2);
+  color: var(--ink);
+  cursor: pointer;
+  box-shadow: 3px 3px 0 var(--ink);
+  transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.15s ease;
+}
+
+.theme-toggle:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--ink);
+  background: var(--accent-2);
+}
+
+.theme-toggle:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+.theme-toggle__icon {
+  grid-area: 1 / 1;
+  font-size: 1.15rem;
+  line-height: 1;
+  transition: opacity 0.15s ease, transform 0.2s ease;
+}
+
+.theme-toggle__icon--moon {
+  opacity: 0;
+  transform: rotate(-40deg) scale(0.6);
+}
+
+[data-theme='dark'] .theme-toggle__icon--sun {
+  opacity: 0;
+  transform: rotate(40deg) scale(0.6);
+}
+
+[data-theme='dark'] .theme-toggle__icon--moon {
+  opacity: 1;
+  transform: none;
+}
+
 /* ---------- Ticker / top search bar (replaces hero) ---------- */
 .ticker {
   background: var(--accent-2);
@@ -313,7 +404,7 @@ h4 {
 }
 
 .search-form input:focus {
-  background: #fff;
+  background: var(--paper-2);
   box-shadow: 6px 6px 0 var(--accent);
 }
 
@@ -397,6 +488,7 @@ h4 {
   border: 2px solid var(--ink);
   border-radius: var(--radius);
   background: var(--accent-3);
+  color: #0a0a0a;
 }
 
 .tag-pill {
@@ -593,6 +685,7 @@ h4 {
   margin: 0 auto 28px;
   padding: 20px 22px;
   background: var(--accent-2);
+  color: #0a0a0a;
   border: 2px solid var(--ink);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
@@ -606,7 +699,7 @@ h4 {
   letter-spacing: 0.1em;
   margin-bottom: 8px;
   display: inline-block;
-  background: var(--ink);
+  background: #0a0a0a;
   color: var(--accent-2);
   padding: 2px 8px;
   border-radius: var(--radius);
@@ -642,7 +735,7 @@ h4 {
   max-width: var(--reading);
   margin-inline: auto;
   font-size: 1.05rem;
-  color: #1c1c1f;
+  color: var(--ink-soft);
 }
 
 .prose h2 {
@@ -802,13 +895,13 @@ h4 {
 .site-footer {
   margin-top: 56px;
   border-top: 3px solid var(--ink);
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--footer-bg, var(--ink));
+  color: var(--footer-fg, var(--paper));
   padding: 40px 0 28px;
 }
 
 .site-footer a {
-  color: var(--paper);
+  color: var(--footer-fg, var(--paper));
 }
 
 .footer-grid {
@@ -844,7 +937,7 @@ h4 {
 }
 
 .footer-brand .logo {
-  color: var(--paper);
+  color: var(--footer-fg, var(--paper));
 }
 
 .footer-brand .logo-mark {
@@ -921,6 +1014,28 @@ h4 {
   margin: 0;
 }
 
+/* Crypto accent: an orange→green underline bar under page titles. */
+.page-header h1::after {
+  content: '';
+  display: block;
+  width: 64px;
+  height: 6px;
+  margin-top: 12px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--btc), var(--up));
+}
+
+.price-table td:last-child,
+.price-table .num,
+.convx-input,
+.convx-price {
+  font-variant-numeric: tabular-nums;
+}
+
+.price-table td:last-child {
+  color: var(--ink);
+}
+
 .empty-state {
   text-align: center;
   color: var(--muted);
@@ -938,6 +1053,16 @@ h4 {
   padding: 20px;
   max-width: 680px;
   margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.convx::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 5px;
+  background: linear-gradient(90deg, var(--btc), var(--accent), var(--up), var(--chain));
 }
 
 .convx-title {
@@ -1013,6 +1138,10 @@ h4 {
   padding-right: 40px;
 }
 
+[data-theme='dark'] .convx-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23f4f1ea' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+
 .convx-rate {
   display: flex;
   align-items: center;
@@ -1024,6 +1153,7 @@ h4 {
   border: 2px solid var(--ink);
   border-radius: var(--radius);
   background: var(--accent-2);
+  color: #0a0a0a;
   font-family: var(--mono);
   font-size: 0.95rem;
   font-weight: 700;
@@ -1104,6 +1234,18 @@ h4 {
   font-weight: 700;
 }
 
+.price-table tbody tr {
+  transition: background 0.1s ease;
+}
+
+.price-table tbody tr:nth-child(even) {
+  background: color-mix(in srgb, var(--line-soft) 18%, transparent);
+}
+
+.price-table tbody tr:hover {
+  background: color-mix(in srgb, var(--btc) 12%, var(--paper-2));
+}
+
 /* ---------- Responsive: tablet/desktop ---------- */
 @media (min-width: 640px) {
   .container {
@@ -1119,7 +1261,7 @@ h4 {
   }
 
   .footer-grid {
-    grid-template-columns: 1.6fr 1fr 1fr;
+    grid-template-columns: 1.6fr 1fr 1fr 1fr;
   }
 
   .convx {
@@ -1127,15 +1269,8 @@ h4 {
   }
 
   .convx-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .convx-field:first-child {
-    grid-column: 1 / -1;
-  }
-
-  .convx-coinwrap {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    align-items: end;
   }
 }
 
@@ -1190,6 +1325,23 @@ h4 {
 }
 
 @media (max-width: 480px) {
+  .header-inner {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .section-nav {
+    order: 3;
+    width: 100%;
+    margin-left: 0;
+    justify-content: space-between;
+  }
+
+  .theme-toggle {
+    order: 2;
+    margin-left: auto;
+  }
+
   .section-nav a {
     padding: 7px 10px;
     font-size: 0.82rem;
@@ -1205,4 +1357,136 @@ h4 {
     transition: none !important;
     scroll-behavior: auto !important;
   }
+}
+
+
+/* ---------- Homepage converter (single line) ---------- */
+.convx--compact {
+  max-width: none;
+}
+
+.convx--compact .convx-grid {
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.convx-links {
+  margin: 14px 0 0;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.convx-links a {
+  color: var(--accent);
+}
+
+.convx-head h1 {
+  font-size: clamp(1.7rem, 6vw, 2.6rem);
+}
+
+/* Compact: one row of [coin | amount | usd] on desktop. */
+@media (min-width: 640px) {
+  .convx--compact .convx-grid {
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr);
+    align-items: end;
+  }
+
+  .convx--compact .convx-coinwrap {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  }
+
+@media (max-width: 639px) {
+  .convx--compact .convx-search,
+  .convx--compact .convx-select,
+  .convx--compact .convx-input {
+    font-size: 1rem;
+    padding: 11px 12px;
+  }
+}
+
+/* ---------- Sigcamp table ---------- */
+.table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  border: 2px solid var(--ink);
+  background: var(--paper-2);
+}
+
+.sig-table {
+  width: 100%;
+  min-width: 680px;
+  border-collapse: collapse;
+}
+
+.sig-table th,
+.sig-table td {
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--line-soft);
+  vertical-align: middle;
+}
+
+.sig-table th {
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.sig-table tbody tr:nth-child(even) {
+  background: var(--paper);
+}
+
+.sig-table tbody tr:hover {
+  background: color-mix(in srgb, var(--accent-2) 22%, var(--paper-2));
+}
+
+.sig-serial {
+  font-family: var(--mono);
+  font-weight: 700;
+  color: var(--muted);
+  width: 90px;
+}
+
+.sig-name {
+  font-weight: 700;
+}
+
+.visit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  box-shadow: 3px 3px 0 var(--ink);
+  white-space: nowrap;
+}
+
+.visit-btn:hover {
+  text-decoration: none;
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+
+.price-rank {
+  font-family: var(--mono);
+  color: var(--muted);
+  width: 56px;
 }

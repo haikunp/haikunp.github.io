@@ -1,17 +1,17 @@
 ---
-title: "Who won the FIFA World Cup?"
-answer: "World Cup winners change every four years, so the correct answer depends on the most recent tournament. Argentina won the 2022 final in Qatar, beating France on penalties after a 3–3 draw. The next tournament is in 2026, co-hosted by the US, Canada and Mexico."
-section: "international"
-topic: "sports"
-tags: ["global"]
-description: "Argentina won the 2022 FIFA World Cup in Qatar. The next World Cup is in 2026, hosted by the US, Canada and Mexico."
-seoTitle: "Who Won the FIFA World Cup? Winners & 2026 Hosts"
+title: Who won the FIFA World Cup?
+kind: news
+answer: World Cup winners change every four years, so the correct answer depends on the most recent tournament. Argentina won the 2022 final in Qatar, beating France on penalties after a 3–3 draw. The next tournament is in 2026, co-hosted by the US, Canada and Mexico.
+topic: sports
+order: 8
+description: Argentina won the 2022 FIFA World Cup in Qatar. The next World Cup is in 2026, hosted by the US, Canada and Mexico.
+seoTitle: Who Won the FIFA World Cup? Winners & 2026 Hosts
 sources:
-  - label: "FIFA — World Cup"
+  - label: FIFA — World Cup
     url: "https://www.fifa.com/tournaments/mens/worldcup"
-  - label: "Britannica — FIFA World Cup"
+  - label: Britannica — FIFA World Cup
     url: "https://www.britannica.com/sports/World-Cup-football"
-author: "MiniAdda Editorial"
+author: MiniAdda Editorial
 publishedAt: 2026-04-20
 lastVerified: 2026-06-01
 featured: false

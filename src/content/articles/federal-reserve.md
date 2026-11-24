@@ -1,17 +1,17 @@
 ---
-title: "What does the Federal Reserve do?"
-answer: "The US Federal Reserve is the country's central bank. It sets monetary policy to promote maximum employment and stable prices, supervises banks, and helps keep the financial system stable. Its main policy lever is the federal funds rate."
-section: "us"
-topic: "business"
-tags: ["us"]
-description: "The Federal Reserve is the US central bank. It manages monetary policy, supervises banks and works to keep prices and employment stable."
-seoTitle: "What Does the Federal Reserve Do?"
+title: What does the Federal Reserve do?
+kind: news
+answer: The US Federal Reserve is the country's central bank. It sets monetary policy to promote maximum employment and stable prices, supervises banks, and helps keep the financial system stable. Its main policy lever is the federal funds rate.
+topic: business
+order: 0
+description: The Federal Reserve is the US central bank. It manages monetary policy, supervises banks and works to keep prices and employment stable.
+seoTitle: What Does the Federal Reserve Do?
 sources:
-  - label: "Federal Reserve — About the Fed"
+  - label: Federal Reserve — About the Fed
     url: "https://www.federalreserve.gov/aboutthefed.htm"
-  - label: "Federal Reserve — Monetary policy"
+  - label: Federal Reserve — Monetary policy
     url: "https://www.federalreserve.gov/monetarypolicy.htm"
-author: "MiniAdda Editorial"
+author: MiniAdda Editorial
 publishedAt: 2026-03-18
 lastVerified: 2026-05-28
 featured: false

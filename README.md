@@ -13,9 +13,10 @@ via the GitHub API; GitHub Actions builds and deploys.
 - **Tool first**: converter on the homepage and every price page.
 - **`/prices`**: auto-generated long-tail pages (`bitcoin-to-usd`, `trx-to-usd`,
   `tron-to-usd`, `price-of-1-btc`, `1000-bitcoin-to-usd`, `100-usd-to-tron`, …).
-- **Sigcamp**: `/sigcamp` lists active BitcoinTalk signature campaigns.
-- **News**: articles live under the existing sections (a smaller part of the site).
-- **Dashboard**: `dashboard/` — Prices · Articles · Sigcamp · Publish.
+- **Sigcamp**: `/sigcamp` is a table of BitcoinTalk signature campaigns (with Visit links).
+- **News & Articles**: one content collection with a `kind` (news | article); homepage
+  shows a **News** section then an **Articles** section.
+- **Dashboard**: `dashboard/` — Prices · News & Articles · Sigcamp · Publish.
 
 ## Status
 
@@ -46,12 +47,20 @@ and [`docs/PROGRESS.md`](docs/PROGRESS.md) for the stage checklist.
 
 ## Content model
 
-- **Sections** (2): `us`, `international` — top-level navigation.
-- **Topics** (chips): politics, technology, business, finance, entertainment, science, sports, general-knowledge.
-- **Tags** (country/region): us, florida, california, new-york, texas, uk, belgium, canada, australia, india, germany, france, global.
-- **No drafts.** Admin publishes directly; edits replace the file.
+- **Kinds** (2): `news` and `article` — one collection, one editor. `kind` picks the
+  homepage section; `order` (lower first) is the dashboard-managed arrangement.
+- **Topic**: free-form slug per story (e.g. `crypto`, `bitcoin`, `regulation`) —
+  powers `/topics/<topic>` hubs.
+- **No drafts.** The dashboard publishes directly; edits replace the file.
 
-Routes: `/`, `/[section]`, `/[section]/[slug]`, `/tags/[tag]`, `/topics/[topic]`, `/search`, plus About/Contact/Privacy/Editorial.
+Routes: `/`, `/news`, `/article`, `/{kind}/{slug}`, `/topics/{topic}`, `/prices`,
+`/prices/{slug}`, `/sigcamp`, plus About/Contact/Privacy/Editorial.
+
+**Sigcamp** is a table (serial, name, manager, payment, link→Visit) stored in
+`src/data/sigcamp.yml`; edit it row-by-row in the dashboard.
+
+**Prices** auto-list every coin the build-time feed returns (curated catalogue in
+`src/lib/coins.ts` + any extras seen in the feed).
 
 ## Ads
 
@@ -74,33 +83,37 @@ npm run check        # astro type/diagnostic check
 
 Background dev server (`AGENTS.md`): `astro dev --background`, `astro dev status`, `astro dev stop`, `astro dev logs`.
 
-## Adding an article (manually)
+## Adding a story (manually)
 
 Create `src/content/articles/<slug>.md`:
 
 ```yaml
 ---
 title: "Who owns OpenAI?"
-answer: "A short, direct answer shown near the top."
-section: "international"        # us | international
-topic: "technology"             # see TOPICS in src/lib/constants.ts
-tags: ["us", "global"]          # see REGIONS in src/lib/constants.ts
+kind: "article"                 # news | article
+answer: "A short standfirst shown on cards and near the top."
+topic: "crypto"
+order: 3                        # manual arrangement (lower first)
 description: "Meta description."
+seoTitle: "Optional SEO title"
 sources:
   - label: "Source name"
     url: "https://example.com"
 author: "MiniAdda Editorial"
 publishedAt: 2026-01-15
 lastVerified: 2026-06-02
+featured: false
 trending: false
 ---
 ```
 
-URL becomes `/<section>/<filename>`. Keep filenames lowercase-hyphenated.
+URL becomes `/<kind>/<filename>`. Keep filenames lowercase-hyphenated.
 
 ## SEO
 
-Static HTML, unique titles/meta, canonical URLs, sitemap (excludes `/search`), robots.txt, Open Graph, Twitter cards. Structured data: `Article` + `BreadcrumbList` + `WebSite` only — **never** `QAPage`/`FAQPage`/`Review` for editorial answers.
+Static HTML, unique titles/meta, canonical URLs, sitemap (excludes `/search`), robots.txt, Open Graph, Twitter cards. Structured data: `Article` + `BreadcrumbList` + `WebSite` + `WebPage`; price pages add
+`Product`/`Offer`, Sigcamp adds `ItemList`. **Never** `QAPage`/`FAQPage`/`Review` for
+editorial content.
 
 ## Security
 

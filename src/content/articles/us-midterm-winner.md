@@ -1,19 +1,17 @@
 ---
-title: "Who won the US midterm elections?"
-answer: "Midterm results vary by cycle and by chamber, and the most accurate answer is the certified result published by official election authorities. Rather than repeat changeable vote counts, this page explains how midterm outcomes are determined and where to verify them."
-section: "us"
-topic: "politics"
-tags: ["us"]
-description: "Midterm election outcomes are certified by state authorities. Here is how they are determined and where to verify the official results."
+title: Who won the US midterm elections?
+kind: news
+answer: Midterm results vary by cycle and by chamber, and the most accurate answer is the certified result published by official election authorities. Rather than repeat changeable vote counts, this page explains how midterm outcomes are determined and where to verify them.
+topic: politics
+order: 5
+description: Midterm election outcomes are certified by state authorities. Here is how they are determined and where to verify the official results.
 seoTitle: "US Midterm Election Results: How to Verify"
-featuredImage: ""
-featuredImageAlt: ""
 sources:
-  - label: "AP — Elections"
+  - label: AP — Elections
     url: "https://apnews.com/hub/election-2026"
-  - label: "USA.gov — Election results"
+  - label: USA.gov — Election results
     url: "https://www.usa.gov/election-results"
-author: "MiniAdda Editorial"
+author: MiniAdda Editorial
 publishedAt: 2026-02-01
 lastVerified: 2026-06-02
 featured: false

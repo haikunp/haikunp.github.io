@@ -11,7 +11,7 @@ interface Props {
   price?: number;         // baked price for the active coin (USD)
   prices?: PriceMap;      // baked prices for ALL coins (for switching)
   heading?: string;
-  compact?: boolean;
+  compact?: boolean;      // single-line layout (homepage)
 }
 
 const active = (Astro.props.active ?? COINS[0].symbol).toUpperCase();
@@ -21,9 +21,10 @@ const priceStr = price != null ? String(price) : '';
 const coinAmount = Astro.props.coinAmount ?? (Astro.props.usdAmount == null ? 1 : null);
 const usdAmount = Astro.props.usdAmount ?? (coinAmount != null && price != null ? +(price * coinAmount).toFixed(2) : null);
 const heading = Astro.props.heading;
+const compact = Astro.props.compact ?? false;
 ---
 
-<div class="convx" data-conv data-symbol={active}
+<div class:list={['convx', compact && 'convx--compact']} data-conv data-symbol={active}
      data-feed={PRICE_FEED.endpoint}
      data-prices={pricesJson}
      data-poll={(PRICE_FEED.pollSeconds * 1000)}
@@ -43,12 +44,12 @@ const heading = Astro.props.heading;
       </div>
     </label>
     <label class="convx-field">
-      <span>Amount in <b data-conv-symbol>{active}</b></span>
+      <span>Amount <b data-conv-symbol>{active}</b></span>
       <input class="convx-input" type="text" inputmode="decimal" data-conv-coin-amount
              value={coinAmount ?? ''} placeholder="0" autocomplete="off" />
     </label>
     <label class="convx-field">
-      <span>Amount in USD</span>
+      <span>Amount USD</span>
       <input class="convx-input" type="text" inputmode="decimal" data-conv-usd-amount
              value={usdAmount ?? ''} placeholder="0" autocomplete="off" />
     </label>
@@ -176,11 +177,23 @@ const heading = Astro.props.heading;
       function writeCache(data: Record<string, number>) {
         try { localStorage.setItem(cacheKey, JSON.stringify({ ts: Date.now(), data })); } catch {}
       }
+      function applyTable(p: Record<string, number>) {
+        document.querySelectorAll<HTMLElement>('[data-live-price]').forEach((el) => {
+          const sym = el.dataset.livePrice!;
+          const v = p[sym];
+          if (v == null) return;
+          el.textContent = '$' + v.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: v < 1 ? 8 : 2,
+          });
+        });
+      }
       function apply(p: Record<string, number>) {
         if (!p || typeof p !== 'object') return;
         prices = p;
         syncPrice();
         recalc('coin');
+        applyTable(p);
       }
       async function fetchPrices() {
         if (!endpoint) return;
@@ -202,6 +215,27 @@ const heading = Astro.props.heading;
 
     function boot() {
       document.querySelectorAll<HTMLElement>('[data-conv]').forEach(setup);
+      // On pages without a converter, still refresh price tables from the feed.
+      if (!document.querySelector('[data-conv]')) {
+        const endpoint = document.querySelector<HTMLElement>('[data-price-feed]')?.dataset.priceFeed;
+        if (endpoint) {
+          fetch(endpoint + '?t=' + Date.now(), { cache: 'no-store' })
+            .then((r) => (r.ok ? r.json() : null))
+            .then((data) => {
+              const p = data && (data.prices || data);
+              if (!p) return;
+              document.querySelectorAll<HTMLElement>('[data-live-price]').forEach((el) => {
+                const v = p[el.dataset.livePrice!];
+                if (v == null) return;
+                el.textContent = '$' + v.toLocaleString('en-US', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: v < 1 ? 8 : 2,
+                });
+              });
+            })
+            .catch(() => {});
+        }
+      }
     }
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', boot);

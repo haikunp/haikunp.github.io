@@ -13,7 +13,7 @@ h1{font-size:1.15rem;margin:0}.brand span{color:var(--acc)}
 .tabs{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
 .tab{background:#1d2534;border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:8px 14px;cursor:pointer;font-size:.9rem;font-weight:600}
 .tab.active{background:var(--acc);color:#fff;border-color:var(--acc)}
-main{max-width:1000px;margin:0 auto;padding:22px}
+main{max-width:1080px;margin:0 auto;padding:22px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:18px}
 .card h2{font-size:.9rem;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);margin:0 0 14px}
 label{display:block;font-size:.82rem;color:var(--mut);margin:10px 0 4px}
@@ -25,14 +25,15 @@ textarea{resize:vertical;min-height:120px;font-family:ui-monospace,monospace}
 .btn.sec{background:#1d2534;color:var(--txt);border:1px solid var(--line)}
 .btn.go{background:var(--ok);color:#04210f}
 .btn.danger{background:var(--red);color:#2a0c0c}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-.list-item{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:9px;margin-bottom:8px;background:#0f1420}
-.list-item .grow{flex:1}
+.btn.sm{padding:5px 10px;font-size:.78rem}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.list-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:9px;margin-bottom:8px;background:#0f1420}
+.list-item .grow{flex:1;min-width:0}
 .list-item b{font-size:.95rem}
 .muted{color:var(--mut);font-size:.8rem}
-.pill{display:inline-block;font-size:.7rem;padding:2px 8px;border-radius:99px;border:1px solid var(--line);margin-right:4px}
-.pill.active{background:#0c2a17;color:var(--ok);border-color:#155e34}
-.pill.closed{background:#2a0c0c;color:var(--red);border-color:#5e1515}
+.pill{display:inline-block;font-size:.68rem;padding:2px 8px;border-radius:99px;border:1px solid var(--line);margin-left:4px}
+.pill.news{background:#0c1a2a;color:var(--blue);border-color:#15405e}
+.pill.article{background:#231a06;color:var(--acc2);border-color:#5e4a15}
 .status{padding:10px 12px;border-radius:8px;margin-top:10px;display:none;font-size:.85rem}
 .status.ok{display:block;background:#0c2a17;border:1px solid #155e34;color:var(--ok)}
 .status.err{display:block;background:#2a0c0c;border:1px solid #5e1515;color:var(--red)}
@@ -41,8 +42,16 @@ textarea{resize:vertical;min-height:120px;font-family:ui-monospace,monospace}
 .price-row b{color:var(--acc2);font-variant-numeric:tabular-nums}
 .hidden{display:none}
 .mono{font-family:ui-monospace,monospace}
-.toolbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
-.toolbar input{flex:1}
+.toolbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.toolbar input{flex:1;min-width:160px}
+.segmented{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.segmented button{background:#0f1420;border:0;color:var(--mut);padding:7px 14px;font-weight:700;cursor:pointer;font-size:.82rem}
+.segmented button.on{background:var(--acc);color:#fff}
+table.grid{width:100%;border-collapse:collapse}
+table.grid th,table.grid td{padding:6px;text-align:left;border-bottom:1px solid var(--line);font-size:.86rem}
+table.grid th{font-size:.72rem;text-transform:uppercase;color:var(--mut);letter-spacing:.04em}
+table.grid td input{font-size:.85rem;padding:7px 9px}
+.drag{cursor:grab;color:var(--mut);user-select:none}
 </style>
 </head>
 <body>
@@ -51,7 +60,7 @@ textarea{resize:vertical;min-height:120px;font-family:ui-monospace,monospace}
   <span class="muted" id="tokenState">checking token…</span>
   <div class="tabs">
     <button class="tab active" data-tab="prices">Prices</button>
-    <button class="tab" data-tab="articles">Articles</button>
+    <button class="tab" data-tab="news">News &amp; Articles</button>
     <button class="tab" data-tab="sigcamp">Sigcamp</button>
     <button class="tab" data-tab="publish">Publish</button>
   </div>
@@ -63,47 +72,52 @@ textarea{resize:vertical;min-height:120px;font-family:ui-monospace,monospace}
       <h2>Live prices</h2>
       <div id="priceList" class="muted">Loading…</div>
       <button class="btn sec" style="margin-top:12px" onclick="loadPrices()">Refresh prices</button>
-      <p class="muted" style="margin-top:12px">Prices are baked into <span class="mono">/prices</span> pages at build time by GitHub Actions. Live updates come from the Cloudflare Worker.</p>
+      <p class="muted" style="margin-top:12px">Prices are baked into <span class="mono">/prices</span> pages at build time by GitHub Actions. The prices table lists every coin the feed returns automatically.</p>
     </div>
   </section>
 
-  <!-- ARTICLES -->
-  <section id="tab-articles" class="hidden">
+  <!-- NEWS & ARTICLES -->
+  <section id="tab-news" class="hidden">
     <div class="card">
       <div class="toolbar">
-        <input id="articleSearch" placeholder="Search articles…" oninput="renderArticles()">
-        <button class="btn" onclick="newArticle()">New article</button>
+        <div class="segmented" id="kindFilter">
+          <button class="on" data-kind="">All</button>
+          <button data-kind="news">News</button>
+          <button data-kind="article">Articles</button>
+        </div>
+        <input id="articleSearch" placeholder="Search title or slug…" oninput="renderArticles()">
+        <button class="btn" onclick="newArticle()">New item</button>
       </div>
+      <p class="muted" style="margin:0 0 10px">Drag the ⠿ handle or use ▲▼ to arrange. Order saves automatically; top of the list shows first on the site.</p>
       <div id="articleList"></div>
     </div>
     <div class="card hidden" id="articleEditor">
-      <h2 id="articleEditorTitle">Edit article</h2>
+      <h2 id="articleEditorTitle">Edit item</h2>
       <div class="row">
-        <div><label>Title</label><input id="a_title"></div>
+        <div><label>Type</label><select id="a_kind"><option value="news">News</option><option value="article">Article</option></select></div>
         <div><label>Slug</label><input id="a_slug" placeholder="auto from title"></div>
       </div>
+      <label>Title</label><input id="a_title">
+      <label>Standfirst / quick answer (short, shown on cards)</label><textarea id="a_answer" style="min-height:70px"></textarea>
       <div class="row">
-        <div><label>Section</label><select id="a_section"><option>us</option><option>international</option></select></div>
-        <div><label>Topic</label><select id="a_topic">
-          <option>politics</option><option>technology</option><option>business</option><option>finance</option>
-          <option>entertainment</option><option>science</option><option>sports</option><option>general-knowledge</option>
-        </select></div>
-      </div>
-      <div class="row">
-        <div><label>Tags (comma-separated)</label><input id="a_tags" placeholder="us, global"></div>
+        <div><label>Topic</label><input id="a_topic" placeholder="crypto" list="topicList"></div>
         <div><label>Author</label><input id="a_author" value="MiniAdda Editorial"></div>
-      </div>
-      <label>Quick answer (short)</label><textarea id="a_answer" style="min-height:70px"></textarea>
-      <label>Description (meta)</label><input id="a_description">
-      <div class="row">
         <div><label>Published at</label><input id="a_publishedAt" type="date"></div>
+      </div>
+      <datalist id="topicList"></datalist>
+      <label>Description (meta, 20–320 chars)</label><input id="a_description">
+      <div class="row">
+        <div><label>SEO title (optional, ≤70)</label><input id="a_seoTitle"></div>
+        <div><label>SEO description (optional)</label><input id="a_seoDescription"></div>
+      </div>
+      <div class="row">
         <div><label>Featured</label><select id="a_featured"><option value="false">No</option><option value="true">Yes</option></select></div>
         <div><label>Trending</label><select id="a_trending"><option value="false">No</option><option value="true">Yes</option></select></div>
       </div>
-      <label>Body (Markdown)</label><textarea id="a_body" style="min-height:240px"></textarea>
+      <label>Body (Markdown)</label><textarea id="a_body" style="min-height:260px"></textarea>
       <div style="margin-top:14px;display:flex;gap:10px">
-        <button class="btn" onclick="saveArticle()">Save article</button>
-        <button class="btn sec" onclick="hideEditor('article')">Cancel</button>
+        <button class="btn" onclick="saveArticle()">Save</button>
+        <button class="btn sec" onclick="hideEditor()">Cancel</button>
         <button class="btn danger" id="a_delete" onclick="deleteArticle()">Delete</button>
       </div>
       <div class="status" id="articleStatus"></div>
@@ -114,38 +128,17 @@ textarea{resize:vertical;min-height:120px;font-family:ui-monospace,monospace}
   <section id="tab-sigcamp" class="hidden">
     <div class="card">
       <div class="toolbar">
-        <input id="sigSearch" placeholder="Search campaigns…" oninput="renderSigcamp()">
-        <button class="btn" onclick="newSigcamp()">New campaign</button>
+        <h2 style="margin:0;flex:1">Sigcamp rows</h2>
+        <button class="btn sec" onclick="addSigRow()">+ Add row</button>
+        <button class="btn" onclick="saveSigcamp()">Save table</button>
       </div>
-      <div id="sigList"></div>
-    </div>
-    <div class="card hidden" id="sigEditor">
-      <h2 id="sigEditorTitle">Edit campaign</h2>
-      <div class="row">
-        <div><label>Project</label><input id="s_project"></div>
-        <div><label>Slug</label><input id="s_slug" placeholder="auto from project"></div>
-      </div>
-      <div class="row">
-        <div><label>Status</label><select id="s_status"><option>active</option><option>upcoming</option><option>closed</option></select></div>
-        <div><label>Reward</label><input id="s_reward" placeholder="0.0002 BTC / post"></div>
-        <div><label>Slots</label><input id="s_slots" placeholder="20 / 50 filled"></div>
-      </div>
-      <div class="row">
-        <div><label>Started at</label><input id="s_startedAt" type="date"></div>
-        <div><label>Thread URL</label><input id="s_threadUrl" placeholder="https://bitcointalk.org/..."></div>
-      </div>
-      <label>Title (page title)</label><input id="s_title">
-      <label>Description (meta)</label><input id="s_description">
-      <div class="row">
-        <div><label>Tags (comma-separated)</label><input id="s_tags" placeholder="bitcointalk, signature"></div>
-        <div><label>Featured</label><select id="s_featured"><option value="false">No</option><option value="true">Yes</option></select></div>
-      </div>
-      <label>Body (Markdown)</label><textarea id="s_body" style="min-height:160px"></textarea>
-      <div style="margin-top:14px;display:flex;gap:10px">
-        <button class="btn" onclick="saveSigcamp()">Save campaign</button>
-        <button class="btn sec" onclick="hideEditor('sig')">Cancel</button>
-        <button class="btn danger" onclick="deleteSigcamp()">Delete</button>
-      </div>
+      <p class="muted" style="margin:0 0 10px">Edit each row inline. Serial number follows row order. “Link” is the external URL; the site shows a Visit button for it.</p>
+      <table class="grid">
+        <thead>
+          <tr><th style="width:44px">Serial</th><th>Name</th><th>Manager</th><th>Payment</th><th>Link (URL)</th><th style="width:70px"></th></tr>
+        </thead>
+        <tbody id="sigRows"></tbody>
+      </table>
       <div class="status" id="sigStatus"></div>
     </div>
   </section>
@@ -156,7 +149,7 @@ textarea{resize:vertical;min-height:120px;font-family:ui-monospace,monospace}
       <h2>Publish to GitHub</h2>
       <p class="muted">Commits content to <span class="mono" id="repoLabel"></span>. GitHub Actions then builds and deploys to GitHub Pages.</p>
       <div class="row" style="margin:12px 0">
-        <label style="margin:0"><input type="checkbox" id="pub_articles" checked style="width:auto"> Articles</label>
+        <label style="margin:0"><input type="checkbox" id="pub_articles" checked style="width:auto"> News &amp; Articles</label>
         <label style="margin:0"><input type="checkbox" id="pub_sigcamp" checked style="width:auto"> Sigcamp</label>
       </div>
       <label>Commit message</label><input id="pub_message" placeholder="Dashboard: update content">
@@ -170,11 +163,12 @@ textarea{resize:vertical;min-height:120px;font-family:ui-monospace,monospace}
 </main>
 
 <script>
-let ARTICLES = [], SIGCAMP = [], currentArticle = null, currentSig = null;
+let ARTICLES = [], SIGROWS = [], currentArticle = null, kindFilter = '';
 
 function $(id){return document.getElementById(id)}
 function show(el, kind, msg){ el.className='status '+kind; el.textContent=msg; }
 function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function slugify(s){ return String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,80); }
 
 function api(path, method, body){
   return fetch(path, {method:method||'GET', headers:body?{'Content-Type':'application/json'}:{},
@@ -182,16 +176,14 @@ function api(path, method, body){
     .then(async r=>{ const d=await r.json().catch(()=>({})); if(!r.ok) throw new Error(d.error||('HTTP '+r.status)); return d; });
 }
 
-// Tabs
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
   t.classList.add('active');
-  ['prices','articles','sigcamp','publish'].forEach(n=>$('tab-'+n).classList.toggle('hidden', n!==t.dataset.tab));
-  if(t.dataset.tab==='articles') loadArticles();
+  ['prices','news','sigcamp','publish'].forEach(n=>$('tab-'+n).classList.toggle('hidden', n!==t.dataset.tab));
+  if(t.dataset.tab==='news') loadArticles();
   if(t.dataset.tab==='sigcamp') loadSigcamp();
 });
 
-// Token
 async function checkToken(){
   try{
     const d=await api('/api/token');
@@ -202,7 +194,6 @@ async function checkToken(){
   }catch(e){ $('tokenState').textContent='token check failed'; $('tokenState').style.color='var(--red)'; }
 }
 
-// Prices
 async function loadPrices(){
   $('priceList').textContent='Loading…';
   try{
@@ -215,30 +206,81 @@ async function loadPrices(){
   }catch(e){ $('priceList').textContent='Failed: '+e.message; }
 }
 
-// Articles
+// ---------- News & Articles ----------
+document.getElementById('kindFilter').addEventListener('click', e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  kindFilter=b.dataset.kind;
+  document.querySelectorAll('#kindFilter button').forEach(x=>x.classList.toggle('on', x===b));
+  renderArticles();
+});
+
 async function loadArticles(){
   const d=await api('/api/articles');
   ARTICLES=d.articles||[];
+  const topics=[...new Set(ARTICLES.map(a=>a.data.topic).filter(Boolean))];
+  $('topicList').innerHTML=topics.map(t=>'<option value="'+esc(t)+'">').join('');
   renderArticles();
 }
 function renderArticles(){
   const q=($('articleSearch').value||'').toLowerCase();
-  const list=ARTICLES.filter(a=>!q || (a.data.title||'').toLowerCase().includes(q) || a.id.includes(q));
-  $('articleList').innerHTML = list.length ? list.map(a=>(
-    '<div class="list-item"><div class="grow"><b>'+esc(a.data.title||a.id)+'</b><div class="muted">'+
-    esc(a.data.section||'')+' · '+esc(a.data.topic||'')+' · '+esc(a.id)+'</div></div>'+
-    '<button class="btn sec" onclick="editArticle(\''+a.id+'\')">Edit</button></div>'
-  )).join('') : '<p class="muted">No articles yet.</p>';
+  const list=ARTICLES.filter(a=>{
+    if(kindFilter && (a.data.kind||'news')!==kindFilter) return false;
+    return !q || (a.data.title||'').toLowerCase().includes(q) || a.id.includes(q);
+  });
+  $('articleList').innerHTML = list.length ? list.map((a,i)=>{
+    const kind=a.data.kind||'news';
+    return '<div class="list-item" draggable="true" data-id="'+esc(a.id)+'">'+
+      '<span class="drag" title="Drag to reorder">⠿</span>'+
+      '<div class="grow"><b>'+esc(a.data.title||a.id)+'</b>'+
+      '<span class="pill '+esc(kind)+'">'+esc(kind)+'</span>'+
+      '<div class="muted">'+esc(a.data.topic||'')+' · /'+esc(kind)+'/'+esc(a.id)+'</div></div>'+
+      '<button class="btn sec sm" onclick="moveItem(\''+esc(a.id)+'\',-1)">▲</button>'+
+      '<button class="btn sec sm" onclick="moveItem(\''+esc(a.id)+'\',1)">▼</button>'+
+      '<button class="btn sec sm" onclick="editArticle(\''+esc(a.id)+'\')">Edit</button></div>';
+  }).join('') : '<p class="muted">Nothing here yet.</p>';
+  enableDrag();
 }
+function enableDrag(){
+  const items=[...$('articleList').querySelectorAll('.list-item')];
+  let dragId=null;
+  items.forEach(el=>{
+    el.addEventListener('dragstart',()=>{ dragId=el.dataset.id; el.style.opacity=.4; });
+    el.addEventListener('dragend',()=>{ el.style.opacity=1; });
+    el.addEventListener('dragover',e=>e.preventDefault());
+    el.addEventListener('drop',async e=>{
+      e.preventDefault();
+      const targetId=el.dataset.id;
+      if(!dragId || dragId===targetId) return;
+      const ids=ARTICLES.map(a=>a.id);
+      const from=ids.indexOf(dragId), to=ids.indexOf(targetId);
+      ids.splice(from,1); ids.splice(to,0,dragId);
+      ARTICLES.sort((a,b)=>ids.indexOf(a.id)-ids.indexOf(b.id));
+      renderArticles();
+      await api('/api/articles/reorder','POST',{ids});
+    });
+  });
+}
+async function moveItem(id, dir){
+  const ids=ARTICLES.map(a=>a.id);
+  const i=ids.indexOf(id); const j=i+dir;
+  if(i<0 || j<0 || j>=ids.length) return;
+  ids.splice(j,0,ids.splice(i,1)[0]);
+  ARTICLES.sort((a,b)=>ids.indexOf(a.id)-ids.indexOf(b.id));
+  renderArticles();
+  await api('/api/articles/reorder','POST',{ids});
+}
+
 function newArticle(){
   currentArticle=null;
-  $('articleEditorTitle').textContent='New article';
-  ['a_title','a_slug','a_tags','a_description','a_body','a_answer'].forEach(id=>$(id).value='');
+  $('articleEditorTitle').textContent='New item';
+  ['a_title','a_slug','a_description','a_body','a_answer','a_seoTitle','a_seoDescription'].forEach(id=>$(id).value='');
+  $('a_kind').value = kindFilter || 'news';
+  $('a_topic').value='crypto';
   $('a_author').value='MiniAdda Editorial';
-  $('a_section').value='us'; $('a_topic').value='technology';
   $('a_publishedAt').value=new Date().toISOString().slice(0,10);
   $('a_featured').value='false'; $('a_trending').value='false';
   $('a_delete').classList.add('hidden');
+  $('articleStatus').className='status';
   $('articleEditor').classList.remove('hidden');
 }
 async function editArticle(id){
@@ -246,103 +288,85 @@ async function editArticle(id){
   currentArticle=a;
   const d=a.data||{};
   $('articleEditorTitle').textContent='Edit: '+id;
+  $('a_kind').value=d.kind||'news';
   $('a_title').value=d.title||''; $('a_slug').value=id;
-  $('a_section').value=d.section||'us'; $('a_topic').value=d.topic||'technology';
-  $('a_tags').value=(d.tags||[]).join(', ');
+  $('a_topic').value=d.topic||'crypto';
   $('a_author').value=d.author||'MiniAdda Editorial';
   $('a_answer').value=d.answer||''; $('a_description').value=d.description||'';
+  $('a_seoTitle').value=d.seoTitle||''; $('a_seoDescription').value=d.seoDescription||'';
   $('a_publishedAt').value=(d.publishedAt||'').toString().slice(0,10);
   $('a_featured').value=String(!!d.featured); $('a_trending').value=String(!!d.trending);
   $('a_body').value=a.body||'';
   $('a_delete').classList.remove('hidden');
+  $('articleStatus').className='status';
   $('articleEditor').classList.remove('hidden');
 }
 function selBool(id){ return $(id).value==='true'; }
 async function saveArticle(){
+  const kind=$('a_kind').value;
   const data={
-    title:$('a_title').value, section:$('a_section').value, topic:$('a_topic').value,
-    tags:($('a_tags').value||'').split(',').map(s=>s.trim()).filter(Boolean),
-    author:$('a_author').value||'MiniAdda Editorial', answer:$('a_answer').value,
-    description:$('a_description').value, publishedAt:$('a_publishedAt').value,
+    title:$('a_title').value, kind, answer:$('a_answer').value,
+    topic:($('a_topic').value||'crypto').trim(), author:$('a_author').value||'MiniAdda Editorial',
+    description:$('a_description').value, seoTitle:$('a_seoTitle').value||undefined,
+    seoDescription:$('a_seoDescription').value||undefined, publishedAt:$('a_publishedAt').value,
     featured:selBool('a_featured'), trending:selBool('a_trending'),
   };
+  const slug=$('a_slug').value || slugify($('a_title').value);
   try{
     show($('articleStatus'),'info','Saving…');
-    const d=await api('/api/articles','POST',{slug:$('a_slug').value||undefined, data, body:$('a_body').value});
-    show($('articleStatus'),'ok','Saved '+d.slug+'.');
+    const d=await api('/api/articles','POST',{slug, oldSlug:(currentArticle?currentArticle.id:undefined), data, body:$('a_body').value});
+    show($('articleStatus'),'ok','Saved '+d.slug+' ('+kind+').');
     await loadArticles();
   }catch(e){ show($('articleStatus'),'err','Save failed: '+e.message); }
 }
 async function deleteArticle(){
-  if(!currentArticle || !confirm('Delete this article?')) return;
+  if(!currentArticle || !confirm('Delete this item?')) return;
   await api('/api/articles/'+currentArticle.id,'DELETE');
-  hideEditor('article'); await loadArticles();
+  hideEditor(); await loadArticles();
 }
-function hideEditor(kind){
-  if(kind==='article'){ $('articleEditor').classList.add('hidden'); currentArticle=null; }
-  else { $('sigEditor').classList.add('hidden'); currentSig=null; }
-}
+function hideEditor(){ $('articleEditor').classList.add('hidden'); currentArticle=null; }
 
-// Sigcamp
+// ---------- Sigcamp ----------
 async function loadSigcamp(){
   const d=await api('/api/sigcamp');
-  SIGCAMP=d.campaigns||[];
-  renderSigcamp();
+  SIGROWS=d.rows||[];
+  renderSigRows();
 }
-function renderSigcamp(){
-  const q=($('sigSearch').value||'').toLowerCase();
-  const list=SIGCAMP.filter(c=>!q || (c.data.project||'').toLowerCase().includes(q));
-  $('sigList').innerHTML = list.length ? list.map(c=>(
-    '<div class="list-item"><div class="grow"><b>'+esc(c.data.project||c.id)+'</b> '+
-    '<span class="pill '+(c.data.status||'')+'">'+esc(c.data.status||'')+'</span>'+
-    '<div class="muted">'+esc(c.data.reward||'')+(c.data.slots?' · '+esc(c.data.slots):'')+' · '+esc(c.id)+'</div></div>'+
-    '<button class="btn sec" onclick="editSigcamp(\''+c.id+'\')">Edit</button></div>'
-  )).join('') : '<p class="muted">No campaigns yet.</p>';
+function renderSigRows(){
+  $('sigRows').innerHTML = SIGROWS.map((r,i)=>{
+    return '<tr>'+
+      '<td class="mono">'+(i+1)+'</td>'+
+      '<td><input data-i="'+i+'" data-f="name" value="'+esc(r.name||'')+'" placeholder="Campaign name"></td>'+
+      '<td><input data-i="'+i+'" data-f="manager" value="'+esc(r.manager||'')+'" placeholder="Manager"></td>'+
+      '<td><input data-i="'+i+'" data-f="payment" value="'+esc(r.payment||'')+'" placeholder="0.0002 BTC / post"></td>'+
+      '<td><input data-i="'+i+'" data-f="link" value="'+esc(r.link||'')+'" placeholder="https://bitcointalk.org/..."></td>'+
+      '<td style="white-space:nowrap">'+
+        '<button class="btn sec sm" onclick="moveSigRow('+i+',-1)">▲</button> '+
+        '<button class="btn sec sm" onclick="moveSigRow('+i+',1)">▼</button> '+
+        '<button class="btn danger sm" onclick="removeSigRow('+i+')">✕</button>'+
+      '</td></tr>';
+  }).join('') || '<tr><td colspan="6" class="muted">No rows yet. Click “+ Add row”.</td></tr>';
+  $('sigRows').querySelectorAll('input').forEach(inp=>{
+    inp.addEventListener('input',()=>{
+      const i=+inp.dataset.i, f=inp.dataset.f;
+      SIGROWS[i][f]=inp.value;
+    });
+  });
 }
-function newSigcamp(){
-  currentSig=null;
-  $('sigEditorTitle').textContent='New campaign';
-  ['s_project','s_slug','s_reward','s_slots','s_threadUrl','s_title','s_description','s_tags','s_body'].forEach(id=>$(id).value='');
-  $('s_status').value='active'; $('s_startedAt').value=new Date().toISOString().slice(0,10);
-  $('s_featured').value='false';
-  $('sigEditor').classList.remove('hidden');
-}
-async function editSigcamp(id){
-  const c=await api('/api/sigcamp/'+id);
-  currentSig=c;
-  const d=c.data||{};
-  $('sigEditorTitle').textContent='Edit: '+id;
-  $('s_project').value=d.project||''; $('s_slug').value=id; $('s_status').value=d.status||'active';
-  $('s_reward').value=d.reward||''; $('s_slots').value=d.slots||'';
-  $('s_startedAt').value=(d.startedAt||'').toString().slice(0,10);
-  $('s_threadUrl').value=d.threadUrl||''; $('s_title').value=d.title||'';
-  $('s_description').value=d.description||''; $('s_tags').value=(d.tags||[]).join(', ');
-  $('s_featured').value=String(!!d.featured); $('s_body').value=c.body||'';
-  $('sigEditor').classList.remove('hidden');
-}
+function addSigRow(){ SIGROWS.push({name:'',manager:'',payment:'',link:''}); renderSigRows(); }
+function removeSigRow(i){ SIGROWS.splice(i,1); renderSigRows(); }
+function moveSigRow(i,dir){ const j=i+dir; if(j<0||j>=SIGROWS.length) return;
+  const t=SIGROWS[j]; SIGROWS[j]=SIGROWS[i]; SIGROWS[i]=t; renderSigRows(); }
 async function saveSigcamp(){
-  const data={
-    project:$('s_project').value, title:$('s_title').value||($('s_project').value+' — Signature Campaign'),
-    status:$('s_status').value, reward:$('s_reward').value, slots:$('s_slots').value,
-    startedAt:$('s_startedAt').value, threadUrl:$('s_threadUrl').value||undefined,
-    description:$('s_description').value,
-    tags:($('s_tags').value||'').split(',').map(s=>s.trim()).filter(Boolean),
-    featured:selBool('s_featured'),
-  };
   try{
     show($('sigStatus'),'info','Saving…');
-    const d=await api('/api/sigcamp','POST',{slug:$('s_slug').value||undefined, data, body:$('s_body').value});
-    show($('sigStatus'),'ok','Saved '+d.slug+'.');
-    await loadSigcamp();
+    const d=await api('/api/sigcamp','POST',{rows:SIGROWS});
+    SIGROWS=d.rows||SIGROWS; renderSigRows();
+    show($('sigStatus'),'ok','Saved '+SIGROWS.length+' rows.');
   }catch(e){ show($('sigStatus'),'err','Save failed: '+e.message); }
 }
-async function deleteSigcamp(){
-  if(!currentSig || !confirm('Delete this campaign?')) return;
-  await api('/api/sigcamp/'+currentSig.id,'DELETE');
-  hideEditor('sig'); await loadSigcamp();
-}
 
-// Publish
+// ---------- Publish ----------
 async function publishNow(){
   const what=[];
   if($('pub_articles').checked) what.push('articles');
@@ -354,7 +378,6 @@ async function publishNow(){
   }catch(e){ show($('publishStatus'),'err','Publish failed: '+e.message); }
 }
 
-// init
 checkToken(); loadPrices();
 </script>
 </body>

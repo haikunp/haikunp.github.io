@@ -1,41 +1,47 @@
 ---
-import { SITE, SECTIONS, TOPICS } from '../lib/constants';
+import { SITE, KINDS } from '../lib/constants';
 const year = new Date().getFullYear();
 ---
 <footer class="site-footer">
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <a href="/" class="logo">
+        <a href="/" class="logo" aria-label="MiniAdda home">
           <span class="logo-mark" aria-hidden="true">M</span>
           {SITE.name}
         </a>
         <p>{SITE.tagline}</p>
       </div>
-      <div>
-        <h3>Sections</h3>
+      <nav aria-label="Footer — tools">
+        <h3>Tools</h3>
         <ul>
-          {SECTIONS.map((s) => (
-            <li><a href={`/${s.slug}`}>{s.name}</a></li>
-          ))}
-          {TOPICS.slice(0, 4).map((t) => (
-            <li><a href={`/topics/${t.slug}`}>{t.name}</a></li>
-          ))}
+          <li><a href="/">Converter</a></li>
+          <li><a href="/prices">Crypto prices</a></li>
+          <li><a href="/sigcamp">Sigcamp</a></li>
         </ul>
-      </div>
-      <div>
+      </nav>
+      <nav aria-label="Footer — content">
+        <h3>Read</h3>
+        <ul>
+          {KINDS.map((k) => (
+            <li><a href={`/${k.slug}`}>{k.name}</a></li>
+          ))}
+          <li><a href="/topics/crypto">Crypto topic</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="Footer — site">
         <h3>Site</h3>
         <ul>
           <li><a href="/about">About</a></li>
           <li><a href="/contact">Contact</a></li>
-          <li><a href="/privacy">Privacy Policy</a></li>
-          <li><a href="/editorial">Editorial Policy</a></li>
+          <li><a href="/privacy">Privacy</a></li>
+          <li><a href="/editorial">Editorial policy</a></li>
         </ul>
-      </div>
+      </nav>
     </div>
     <div class="footer-bottom">
-      <span>© {year} {SITE.name}</span>
-      <span>Fast, factual answers — verified &amp; sourced.</span>
+      <span>© {year} {SITE.name} · {SITE.domain}</span>
+      <span>Crypto prices, converters &amp; quick answers.</span>
     </div>
   </div>
 </footer>

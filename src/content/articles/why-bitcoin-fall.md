@@ -1,19 +1,17 @@
 ---
-title: "Why did Bitcoin fall today?"
-answer: "Bitcoin's price moves for many possible reasons, and there is rarely a single cause. Common drivers include macroeconomic data, regulatory news, large liquidations, ETF flows and shifts in risk appetite. Check live price data and credible financial reporting for the specific session you're asking about."
-section: "international"
-topic: "finance"
-tags: ["global"]
-description: "Bitcoin price drops are usually driven by a mix of macro data, regulation, liquidations and market sentiment. Here are the main factors to check."
-seoTitle: "Why Did Bitcoin Fall Today? Common Causes Explained"
-featuredImage: ""
-featuredImageAlt: ""
+title: Why did Bitcoin fall today?
+kind: news
+answer: Bitcoin's price moves for many possible reasons, and there is rarely a single cause. Common drivers include macroeconomic data, regulatory news, large liquidations, ETF flows and shifts in risk appetite. Check live price data and credible financial reporting for the specific session you're asking about.
+topic: finance
+order: 7
+description: Bitcoin price drops are usually driven by a mix of macro data, regulation, liquidations and market sentiment. Here are the main factors to check.
+seoTitle: Why Did Bitcoin Fall Today? Common Causes Explained
 sources:
-  - label: "CoinDesk — Markets"
+  - label: CoinDesk — Markets
     url: "https://www.coindesk.com/markets/"
-  - label: "Investopedia — What Is Bitcoin?"
+  - label: Investopedia — What Is Bitcoin?
     url: "https://www.investopedia.com/terms/b/bitcoin.asp"
-author: "MiniAdda Editorial"
+author: MiniAdda Editorial
 publishedAt: 2026-03-05
 lastVerified: 2026-05-30
 featured: false
