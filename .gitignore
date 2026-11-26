@@ -5,7 +5,8 @@ dist/
 *.log
 .env
 .env.*
-!.env.example
+
 .wrangler/
-dashboard/__pycache__/
-dashboard/data/
+dashboard/
+worker/
+.vscode/
