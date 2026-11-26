@@ -1,0 +1,107 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { PRICE_FEED } from '../../lib/constants';
+import { COINS, coinSlug, CONVERSION_AMOUNTS, type Coin } from '../../lib/coins';
+import { fetchPrices, fmtUsd } from '../../lib/prices';
+
+export function getStaticPaths() {
+  const paths: { params: { slug: string }; props: { amount: string; coin: Coin } }[] = [];
+  for (const coin of COINS) {
+    const slugs = Array.from(new Set([coinSlug(coin), coin.symbol.toLowerCase()]));
+    for (const base of slugs) {
+      for (const amount of CONVERSION_AMOUNTS) {
+        paths.push({
+          params: { slug: `${amount}-${base}-to-usd` },
+          props: { amount: String(amount), coin },
+        });
+      }
+    }
+  }
+  return paths;
+}
+
+const { amount, coin } = Astro.props;
+const { prices } = await fetchPrices();
+const price = prices[coin.symbol];
+const amountNum = parseFloat(amount);
+const result = price != null && isFinite(amountNum) ? amountNum * price : null;
+const title = `${amount} ${coin.symbol} to USD`;
+const metaDescription =
+  result != null
+    ? `${amount} ${coin.name} (${coin.symbol}) = ${fmtUsd(result)} USD. Convert ${coin.name} to USD with live prices on MiniAdda.`
+    : `Convert ${amount} ${coin.name} (${coin.symbol}) to USD with live prices on MiniAdda.`;
+
+const related = CONVERSION_AMOUNTS.filter((a) => String(a) !== amount).slice(0, 4);
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: title,
+  description: metaDescription,
+  url: `https://miniadda.com/convert/${amount}-${coinSlug(coin)}-to-usd`,
+};
+---
+<BaseLayout title={title} description={metaDescription} path={`/convert/${amount}-${coinSlug(coin)}-to-usd`}>
+  <div class="container page">
+    <a class="back-link" href="/crypto-price">← Crypto Price</a>
+    <h1 class="page-title">{amount} {coin.name} to USD</h1>
+    <p class="page-sub">Live conversion at the current {coin.symbol} price.</p>
+
+    <section
+      class="panel"
+      data-conv
+      data-symbol={coin.symbol}
+      data-prices={JSON.stringify(prices)}
+      data-feed={PRICE_FEED.endpoint}
+      data-poll={PRICE_FEED.pollSeconds * 1000}
+    >
+      <p class="conv-result">
+        <span data-conv-amount data-amount={amount}>{amount}</span>
+        <b>{coin.symbol}</b> =
+        <strong data-conv-usd>{result != null ? fmtUsd(result) : '—'}</strong> USD
+      </p>
+      <p class="conv-rate">1 <b>{coin.symbol}</b> = <span data-conv-rate>{fmtUsd(price)}</span> USD</p>
+    </section>
+
+    <section class="panel">
+      <h2>Other conversions</h2>
+      <div class="chips">
+        {related.map((a) => (
+          <a class="chip" href={`/convert/${a}-${coinSlug(coin)}-to-usd`}>{a} {coin.symbol} → USD</a>
+        ))}
+        <a class="chip" href="/crypto-price">All prices →</a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<script is:inline define:vars={{ feed: PRICE_FEED.endpoint, symbol: coin.symbol }}>
+  (function liveConvert() {
+    const root = document.querySelector('[data-conv]');
+    if (!root) return;
+    const amount = Number(root.querySelector('[data-conv-amount]')?.dataset.amount || '0');
+    const usdEl = root.querySelector('[data-conv-usd]');
+    const rateEl = root.querySelector('[data-conv-rate]');
+    function fmt(v) {
+      if (!isFinite(v)) return '—';
+      const max = v < 1 ? 8 : 2;
+      return '$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: max });
+    }
+    async function refresh() {
+      if (!feed) return;
+      try {
+        const r = await fetch(feed + (feed.includes('?') ? '&' : '?') + 't=' + Date.now(), { cache: 'no-store' });
+        if (!r.ok) return;
+        const d = await r.json();
+        const p = (d.prices || d)[symbol];
+        if (typeof p !== 'number') return;
+        if (usdEl) usdEl.textContent = fmt(amount * p);
+        if (rateEl) rateEl.textContent = fmt(p);
+      } catch {}
+    }
+    refresh();
+    setInterval(refresh, 5000);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(); });
+  })();
+</script>
+
+{schema && <script type="application/ld+json" set:html={JSON.stringify(schema)} />}

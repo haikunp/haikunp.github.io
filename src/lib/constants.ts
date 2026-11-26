@@ -13,6 +13,6 @@ export const SITE = {
 // visitors still see numbers.
 export const PRICE_FEED = {
   endpoint: 'https://miniadda-prices.samundrana.workers.dev/prices.json',
-  pollSeconds: 15,
-  clientCacheSeconds: 10,
+  pollSeconds: 5,
+  clientCacheSeconds: 3,
 } as const;

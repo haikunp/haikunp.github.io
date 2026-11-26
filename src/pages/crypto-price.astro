@@ -1,16 +1,20 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { PRICE_FEED } from '../lib/constants';
-import { COINS } from '../lib/coins';
+import { COINS, coinSlug } from '../lib/coins';
 import { fetchPrices, availableCoins, fmtUsd } from '../lib/prices';
 
 const { prices } = await fetchPrices();
 const coins = availableCoins(prices);
 const first = coins[0] ?? COINS[0];
 const pricesJson = JSON.stringify(prices);
+const popular = coins.slice(0, 6).flatMap((c) => [
+  { href: `/convert/1-${coinSlug(c)}-to-usd`, label: `1 ${c.symbol} → USD` },
+  { href: `/convert/10-${coinSlug(c)}-to-usd`, label: `10 ${c.symbol} → USD` },
+]);
 
 const metaDescription =
-  'Live crypto prices in USD and a two-way converter for Bitcoin, Ethereum, Solana, TRON and more.';
+  'Live crypto prices in USD and a two-way converter for Bitcoin, Ethereum, Solana, TRON and more. Convert any amount of any coin to USD instantly.';
 ---
 <BaseLayout title="Crypto Price" description={metaDescription} path="/crypto-price">
   <div class="container page" data-price-feed={PRICE_FEED.endpoint}>
@@ -27,8 +31,9 @@ const metaDescription =
       data-poll={PRICE_FEED.pollSeconds * 1000}
       data-cache={PRICE_FEED.clientCacheSeconds * 1000}
     >
-      <label class="conv-field">
+      <label class="conv-field conv-field--coin">
         <span>Coin</span>
+        <input type="text" class="conv-search" data-conv-search placeholder="Search coin…" autocomplete="off" aria-label="Search coin" />
         <select data-conv-coin aria-label="Coin">
           {coins.map((c) => (
             <option value={c.symbol} selected={c.symbol === first.symbol}>
@@ -48,7 +53,7 @@ const metaDescription =
       <p class="conv-rate" style="grid-column: 1 / -1">
         1 <b data-conv-symbol>{first.symbol}</b> =
         <span data-conv-rate>{fmtUsd(prices[first.symbol])}</span> USD
-        <span class="badge" data-conv-live>live</span>
+        <span class="badge up" data-conv-live>live</span>
       </p>
     </section>
 
@@ -69,6 +74,15 @@ const metaDescription =
             ))}
           </tbody>
         </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Popular conversions</h2>
+      <div class="chips">
+        {popular.map((p) => (
+          <a class="chip" href={p.href}>{p.label}</a>
+        ))}
       </div>
     </section>
   </div>
@@ -97,6 +111,7 @@ const metaDescription =
     root.dataset.ready = '1';
 
     const sel = root.querySelector<HTMLSelectElement>('[data-conv-coin]')!;
+    const search = root.querySelector<HTMLInputElement>('[data-conv-search]');
     const coinEl = root.querySelector<HTMLInputElement>('[data-conv-coin-amount]')!;
     const usdEl = root.querySelector<HTMLInputElement>('[data-conv-usd-amount]')!;
     const rateEl = root.querySelector<HTMLElement>('[data-conv-rate]')!;
@@ -134,6 +149,22 @@ const metaDescription =
       setLabels();
       recalc('coin');
     });
+    if (search) {
+      search.addEventListener('input', () => {
+        const q = (search.value || '').trim().toLowerCase();
+        let firstMatch: HTMLOptionElement | null = null;
+        for (const opt of Array.from(sel.options)) {
+          const match = !q || opt.textContent!.toLowerCase().includes(q);
+          opt.hidden = !match;
+          if (match && !firstMatch) firstMatch = opt;
+        }
+        if (q && firstMatch) {
+          sel.value = firstMatch.value;
+          setLabels();
+          recalc('coin');
+        }
+      });
+    }
 
     function applyTable(p: Record<string, number>) {
       document.querySelectorAll<HTMLElement>('[data-live-price]').forEach((el) => {
@@ -151,8 +182,8 @@ const metaDescription =
     }
 
     const endpoint = root.dataset.priceFeed || '';
-    const poll = Number(root.dataset.poll) || 15000;
-    const cacheTtl = Number(root.dataset.cache) || 10000;
+    const poll = Number(root.dataset.poll) || 5000;
+    const cacheTtl = Number(root.dataset.cache) || 3000;
     const cacheKey = 'miniadda_prices_v1';
 
     function readCache(): Record<string, number> | null {
@@ -192,6 +223,11 @@ const metaDescription =
     const cached = readCache();
     if (cached) apply(cached);
     refresh();
-    if (endpoint) setInterval(refresh, poll);
+    if (endpoint) {
+      setInterval(refresh, poll);
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) refresh();
+      });
+    }
   })();
 </script>

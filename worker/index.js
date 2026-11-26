@@ -32,7 +32,7 @@ const COINS = [
   { symbol: 'VET', cg: 'vechain', cmc: 3077 },
 ];
 
-const CACHE_TTL_SECONDS = 15;
+const CACHE_TTL_SECONDS = 5;
 const CORS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, OPTIONS',
@@ -117,12 +117,14 @@ function jsonResponse(body, status) {
     headers: {
       ...CORS,
       'Content-Type': 'application/json',
-      'Cache-Control': 'public, max-age=' + CACHE_TTL_SECONDS,
+      // Never let browsers/edge serve stale prices; the in-memory cache below
+      // already dedupes upstream calls for CACHE_TTL_SECONDS.
+      'Cache-Control': 'no-store',
     },
   });
 }
 
-async function handle(request, env, ctx) {
+async function handle(request, env) {
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS });
   if (request.method !== 'GET') return new Response('Method not allowed', { status: 405, headers: CORS });
 
@@ -130,27 +132,14 @@ async function handle(request, env, ctx) {
   if (url.pathname === '/health') return new Response('ok', { headers: CORS });
 
   const nowSec = Math.floor(Date.now() / 1000);
+  // Serve from this isolate's memory cache when fresh (dedupes upstream calls).
   if (memCache.body && nowSec - memCache.ts < CACHE_TTL_SECONDS) {
     return jsonResponse(memCache.body);
-  }
-
-  const cache = caches.default;
-  const cacheKey = new Request('https://miniadda-prices.internal/prices.json', { method: 'GET' });
-  const cached = await cache.match(cacheKey);
-  if (cached) {
-    const body = await cached.text();
-    memCache = { ts: nowSec, body };
-    return jsonResponse(body);
   }
 
   try {
     const data = await buildPrices(env);
     const payload = JSON.stringify({ prices: data.prices, source: data.source, ts: new Date().toISOString() });
-    ctx.waitUntil(
-      cache.put(cacheKey, new Response(payload, {
-        headers: { 'Cache-Control': 'public, max-age=' + CACHE_TTL_SECONDS },
-      }))
-    );
     memCache = { ts: nowSec, body: payload };
     return jsonResponse(payload);
   } catch (e) {
@@ -160,7 +149,7 @@ async function handle(request, env, ctx) {
 }
 
 export default {
-  async fetch(request, env, ctx) {
-    return handle(request, env, ctx);
+  async fetch(request, env) {
+    return handle(request, env);
   },
 };

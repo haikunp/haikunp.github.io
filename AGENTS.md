@@ -23,6 +23,8 @@ Manage the background server with `astro dev stop`, `astro dev status`, and `ast
   `src/data/cpu-coins.yml` (flat row format parsed by `src/lib/table.ts`). Edit
   them via the dashboard (`python3 -m dashboard.run`) or by hand in the same
   format; never change column meaning without updating `dashboard/content.py`.
+  Multi-value cells use ` ; ` separators. `/convert/<amount>-<coin>-to-usd`
+  pages are auto-generated from `CONVERSION_AMOUNTS` in `src/lib/coins.ts`.
 
 ## Documentation
 

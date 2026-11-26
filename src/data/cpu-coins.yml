@@ -1,14 +1,17 @@
-# cpu rows — edited by the dashboard. Serial = row position.
+# CPU-mineable coins — edited by the dashboard. Serial = row position.
 rows:
   - name: "Monero"
     symbol: "XMR"
     algorithm: "RandomX"
-    link: "https://www.getmonero.org/"
+    pool: "https://www.supportxmr.com/ ; https://moneroocean.stream/"
+    exchange: "https://www.kraken.com/ ; https://tradeogre.com/"
   - name: "Raptoreum"
     symbol: "RTM"
     algorithm: "GhostRider"
-    link: "https://raptoreum.com/"
+    pool: "https://raptoreum.zone/ ; https://minermore.com/"
+    exchange: "https://tradeogre.com/ ; https://www.gate.io/"
   - name: "Zephyr"
     symbol: "ZEPH"
     algorithm: "RandomX"
-    link: "https://www.zephyrprotocol.com/"
+    pool: "https://zephyr.herominers.com/"
+    exchange: "https://tradeogre.com/"

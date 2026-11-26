@@ -1,10 +1,18 @@
 # Sigcamp rows — edited by the dashboard. Serial = row position.
+# Multi-value fields (slots, payment) use " ; " between items.
+# status: OPEN | CFNP | HOLD | END
 rows:
   - name: "Sample Signature Campaign"
-    manager: "BitcoinTalk User"
-    payment: "0.0002 BTC / post"
+    subtitle: "Exchange"
+    coin: "BTC"
+    slots: "Jr. Member ; Member ; Full Member"
+    payment: "0.0002 BTC / post ; +0.0001 BTC bonus"
+    status: "OPEN"
     link: "https://bitcointalk.org/"
   - name: "Second Sample Campaign"
-    manager: "Campaign Manager"
+    subtitle: "Gambling"
+    coin: "ETH"
+    slots: "Full Member ; Senior Member"
     payment: "0.0001 BTC / post"
+    status: "CFNP"
     link: "https://bitcointalk.org/index.php?board=52.0"

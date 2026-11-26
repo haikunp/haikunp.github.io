@@ -62,6 +62,15 @@ export function cell(row: Row, key: string): string {
   return v == null ? '' : String(v);
 }
 
+// Multi-value cells (payment, slots, pool, exchange) are stored on one line
+// separated by " ; ". Split into trimmed, non-empty parts.
+export function list(row: Row, key: string): string[] {
+  return cell(row, key)
+    .split(';')
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
 const dataDir = path.resolve(process.cwd(), 'src/data');
 
 export function getSigcamp(): Row[] {

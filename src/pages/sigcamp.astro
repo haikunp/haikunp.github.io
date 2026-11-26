@@ -1,10 +1,19 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getSigcamp, cell } from '../lib/table';
+import { getSigcamp, cell, list } from '../lib/table';
 
 const rows = getSigcamp();
 const metaDescription =
-  'Browse BitcoinTalk signature campaigns in one simple table: campaign name, manager, payment per post and a link to each thread.';
+  'Browse BitcoinTalk signature campaigns: project type, coin, slots, payment, status (Open / CFNP / Hold / End) and a visit link, all in one simple table.';
+const VALID = ['OPEN', 'CFNP', 'HOLD', 'END'];
+function statusClass(s: string): string {
+  const v = s.trim().toUpperCase();
+  if (v === 'OPEN') return 'status-open';
+  if (v === 'CFNP') return 'status-cfnp';
+  if (v === 'HOLD') return 'status-hold';
+  if (v === 'END') return 'status-end';
+  return 'status-unknown';
+}
 ---
 <BaseLayout title="Signature Campaigns" description={metaDescription} path="/sigcamp">
   <div class="container page">
@@ -20,30 +29,64 @@ const metaDescription =
           <thead>
             <tr>
               <th scope="col">#</th>
-              <th scope="col">Name</th>
-              <th scope="col">Manager</th>
+              <th scope="col">Campaign</th>
+              <th scope="col">Coin</th>
+              <th scope="col">Slots</th>
               <th scope="col">Payment</th>
+              <th scope="col">Status</th>
               <th scope="col">Link</th>
             </tr>
           </thead>
           <tbody>
-            {rows.map((r) => (
-              <tr>
-                <td class="serial">{r.serial}</td>
-                <td>{cell(r, 'name')}</td>
-                <td>{cell(r, 'manager') || '—'}</td>
-                <td>{cell(r, 'payment') || '—'}</td>
-                <td>
-                  {r.link ? (
-                    <a class="btn" href={cell(r, 'link')} target="_blank" rel="nofollow noopener noreferrer">
-                      Visit
-                    </a>
-                  ) : (
-                    '—'
-                  )}
-                </td>
-              </tr>
-            ))}
+            {rows.map((r) => {
+              const status = cell(r, 'status').trim().toUpperCase();
+              const slots = list(r, 'slots');
+              const payment = list(r, 'payment');
+              return (
+                <tr>
+                  <td class="serial">{r.serial}</td>
+                  <td>
+                    <span class="camp-name">{cell(r, 'name')}</span>
+                    {cell(r, 'subtitle') && <span class="camp-sub">{cell(r, 'subtitle')}</span>}
+                  </td>
+                  <td><span class="badge">{cell(r, 'coin') || '—'}</span></td>
+                  <td>
+                    {slots.length ? (
+                      <ul class="multi">
+                        {slots.map((s) => <li>{s}</li>)}
+                      </ul>
+                    ) : (
+                      '—'
+                    )}
+                  </td>
+                  <td>
+                    {payment.length ? (
+                      <ul class="multi">
+                        {payment.map((p) => <li>{p}</li>)}
+                      </ul>
+                    ) : (
+                      '—'
+                    )}
+                  </td>
+                  <td>
+                    {status && VALID.includes(status) ? (
+                      <span class:list={['status-badge', statusClass(status)]}>{status}</span>
+                    ) : (
+                      '—'
+                    )}
+                  </td>
+                  <td>
+                    {cell(r, 'link') ? (
+                      <a class="btn" href={cell(r, 'link')} target="_blank" rel="nofollow noopener noreferrer">
+                        Visit
+                      </a>
+                    ) : (
+                      '—'
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

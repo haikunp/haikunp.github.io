@@ -17,11 +17,11 @@ from . import config
 TABLES = {
     "sigcamp": {
         "file": config.SIGCAMP_FILE,
-        "fields": ("name", "manager", "payment", "link"),
+        "fields": ("name", "subtitle", "coin", "slots", "payment", "status", "link"),
     },
     "cpu": {
         "file": config.CPU_FILE,
-        "fields": ("name", "symbol", "algorithm", "link"),
+        "fields": ("name", "symbol", "algorithm", "pool", "exchange"),
     },
 }
 

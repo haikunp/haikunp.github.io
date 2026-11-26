@@ -11,9 +11,10 @@ The public site is fully static (GitHub Pages).
 | Route | Tool |
 | --- | --- |
 | `/` | Homepage — name + cards linking to each tool |
-| `/crypto-price` | Live crypto prices (USD) + a two-way converter |
-| `/sigcamp` | BitcoinTalk signature campaigns table |
-| `/cpu-mining` | Coins you can still mine on a normal CPU |
+| `/crypto-price` | Live crypto prices (USD) + coin search + two-way converter, auto-refreshing |
+| `/sigcamp` | BitcoinTalk signature campaigns table (project type, coin, slots, payment, status) |
+| `/cpu-mining` | CPU-mineable coins with pool + exchange links |
+| `/convert/<amount>-<coin>-to-usd` | Auto-generated conversion pages (e.g. `10-tron-to-usd`, `0.0001-btc-to-usd`) |
 
 ## Local development
 
@@ -54,15 +55,30 @@ Both tables share one flat row format (`rows:` + `- key: value` items) parsed by
 ```yaml
 rows:
   - name: "..."
-    # sigcamp: manager, payment, link
-    # cpu:     symbol, algorithm, link
+    # sigcamp: subtitle (project type e.g. Gambling/Exchange), coin, slots,
+    #          payment, status (OPEN|CFNP|HOLD|END), link
+    # cpu:     symbol, algorithm, pool, exchange
 ```
+
+Multi-value cells (`slots`, `payment`, `pool`, `exchange`) are stored on one line
+separated by ` ; ` and rendered as lists. The dashboard edits them as one-item-
+per-line textareas.
 
 ## Prices
 
 `src/lib/prices.ts` bakes prices at build time (CoinMarketCap public listing,
-CoinGecko fallback) so pages work without JS. The browser then refreshes live
-from the Cloudflare Worker in `worker/` (`src/lib/constants.ts` → `PRICE_FEED`).
+CoinGecko fallback) so pages work without JS. The `/crypto-price` and every
+`/convert/...` page then poll the Cloudflare Worker in `worker/` every 5s and
+update in place (no refresh). The Worker caches upstream calls for 5s and sends
+`no-store` so the browser/edge never serves stale numbers. Configure via
+`src/lib/constants.ts` → `PRICE_FEED`.
+
+### Conversion pages (SEO)
+
+`src/pages/convert/[slug].astro` generates a page per coin × amount in
+`CONVERSION_AMOUNTS` (`src/lib/coins.ts`), keyed by both coin name and symbol
+slugs. Each has its own title, meta description, canonical URL and WebPage
+schema.
 
 ## Deployment
 

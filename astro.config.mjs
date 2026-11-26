@@ -15,6 +15,9 @@ export default defineConfig({
         if (item.url === 'https://miniadda.com/') {
           return { ...item, priority: 1.0 };
         }
+        if (item.url.includes('/convert/')) {
+          return { ...item, priority: 0.6 };
+        }
         return { ...item, priority: 0.8 };
       },
     }),

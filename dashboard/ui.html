@@ -30,8 +30,9 @@ table.grid{width:100%;border-collapse:collapse;min-width:640px}
 table.grid th,table.grid td{padding:7px;text-align:left;border-bottom:1px solid var(--line);font-size:.86rem;vertical-align:middle}
 table.grid th{font-size:.72rem;text-transform:uppercase;color:var(--mut);letter-spacing:.04em;background:#0f1420;position:sticky;top:0}
 table.grid td.serial{width:44px;color:var(--mut);font-variant-numeric:tabular-nums}
-table.grid input{width:100%;background:#0f1420;border:1px solid var(--line);color:var(--txt);border-radius:7px;padding:7px 9px;font-family:inherit;font-size:.85rem}
-table.grid input:focus{outline:none;border-color:var(--acc)}
+table.grid input,table.grid textarea,table.grid select{width:100%;background:#0f1420;border:1px solid var(--line);color:var(--txt);border-radius:7px;padding:7px 9px;font-family:inherit;font-size:.85rem}
+table.grid textarea{resize:vertical;min-height:52px;line-height:1.35}
+table.grid input:focus,table.grid textarea:focus,table.grid select:focus{outline:none;border-color:var(--acc)}
 table.grid td.actions{white-space:nowrap;width:1%}
 .status{padding:10px 12px;border-radius:8px;margin-top:12px;display:none;font-size:.85rem}
 .status.ok{display:block;background:#0c2a17;border:1px solid #155e34;color:var(--ok)}
@@ -65,10 +66,10 @@ table.grid td.actions{white-space:nowrap;width:1%}
         <button class="btn sec" onclick="addRow('sigcamp')">+ Add row</button>
         <button class="btn" onclick="saveRows('sigcamp')">Save</button>
       </div>
-      <p class="muted" style="margin:0 0 10px">Edit inline. Use ▲▼ to reorder — serial follows order, and the site shows rows top-first.</p>
+      <p class="muted" style="margin:0 0 10px">Edit inline. Multi-line fields: one item per line (Slots/Payment/Pools/Exchanges). Status: OPEN, CFNP, HOLD or END. Use ▲▼ to reorder.</p>
       <div class="table-wrap">
         <table class="grid">
-          <thead><tr><th>#</th><th>Name</th><th>Manager</th><th>Payment</th><th>Link (URL)</th><th></th></tr></thead>
+          <thead><tr><th>#</th><th>Campaign</th><th>Type</th><th>Coin</th><th>Slots</th><th>Payment</th><th>Status</th><th>Link</th><th></th></tr></thead>
           <tbody id="rows-sigcamp"></tbody>
         </table>
       </div>
@@ -84,10 +85,10 @@ table.grid td.actions{white-space:nowrap;width:1%}
         <button class="btn sec" onclick="addRow('cpu')">+ Add row</button>
         <button class="btn" onclick="saveRows('cpu')">Save</button>
       </div>
-      <p class="muted" style="margin:0 0 10px">Edit inline. Use ▲▼ to reorder — serial follows order, and the site shows rows top-first.</p>
+      <p class="muted" style="margin:0 0 10px">Edit inline. Pools/Exchanges: one URL per line. Use ▲▼ to reorder — serial follows order.</p>
       <div class="table-wrap">
         <table class="grid">
-          <thead><tr><th>#</th><th>Coin</th><th>Symbol</th><th>Algorithm</th><th>Link (URL)</th><th></th></tr></thead>
+          <thead><tr><th>#</th><th>Coin</th><th>Symbol</th><th>Algorithm</th><th>Pools</th><th>Exchanges</th><th></th></tr></thead>
           <tbody id="rows-cpu"></tbody>
         </table>
       </div>
@@ -129,13 +130,19 @@ table.grid td.actions{white-space:nowrap;width:1%}
 
 <script>
 const FIELDS = {
-  sigcamp: ['name','manager','payment','link'],
-  cpu: ['name','symbol','algorithm','link'],
+  sigcamp: ['name','subtitle','coin','slots','payment','status','link'],
+  cpu: ['name','symbol','algorithm','pool','exchange'],
 };
 const LABELS = {
-  sigcamp: {name:'Name', manager:'Manager', payment:'Payment', link:'Link'},
-  cpu: {name:'Coin', symbol:'Symbol', algorithm:'Algorithm', link:'Link'},
+  sigcamp: {name:'Campaign name', subtitle:'Project type (e.g. Gambling, Exchange)', coin:'Coin', slots:'Slots (; separated)', payment:'Payment (; separated)', status:'Status', link:'Link (URL)'},
+  cpu: {name:'Coin', symbol:'Symbol', algorithm:'Algorithm', pool:'Pools (; separated URLs)', exchange:'Exchanges (; separated URLs)'},
 };
+// Multi-line fields rendered as auto-growing textareas (values joined/split by " ; ").
+const MULTI = {
+  sigcamp: ['slots','payment'],
+  cpu: ['pool','exchange'],
+};
+const STATUS = ['OPEN','CFNP','HOLD','END'];
 const TABLES = { sigcamp: [], cpu: [] };
 
 function $(id){return document.getElementById(id)}
@@ -184,8 +191,20 @@ async function loadTable(name){
 }
 function renderTable(name){
   const rows=TABLES[name], fields=FIELDS[name], labels=LABELS[name];
+  const multi=MULTI[name]||[];
   $('rows-'+name).innerHTML = rows.map((r,i)=>{
-    const cells=fields.map(f=>'<td><input data-i="'+i+'" data-f="'+f+'" value="'+esc(r[f]||'')+'" placeholder="'+esc(labels[f])+'"></td>').join('');
+    const cells=fields.map(f=>{
+      if(f==='status'){
+        const cur=(r[f]||'').toUpperCase();
+        const opts=['',...STATUS].map(o=>'<option value="'+o+'"'+((cur===o)?' selected':'')+'>'+(o||'—')+'</option>').join('');
+        return '<td><select data-i="'+i+'" data-f="'+f+'">'+opts+'</select></td>';
+      }
+      if(multi.includes(f)){
+        const val=String(r[f]||'').split(';').map(s=>s.trim()).filter(Boolean).join('\n');
+        return '<td><textarea data-i="'+i+'" data-f="'+f+'" rows="2" placeholder="'+esc(labels[f])+'">'+esc(val)+'</textarea></td>';
+      }
+      return '<td><input data-i="'+i+'" data-f="'+f+'" value="'+esc(r[f]||'')+'" placeholder="'+esc(labels[f])+'"></td>';
+    }).join('');
     return '<tr><td class="serial">'+(i+1)+'</td>'+cells+
       '<td class="actions">'+
         '<button class="btn sec sm" onclick="moveRow(\''+name+'\','+i+',-1)">▲</button> '+
@@ -193,10 +212,17 @@ function renderTable(name){
         '<button class="btn danger sm" onclick="removeRow(\''+name+'\','+i+')">✕</button>'+
       '</td></tr>';
   }).join('') || '<tr><td colspan="'+(fields.length+2)+'" class="muted">No rows yet. Click “+ Add row”.</td></tr>';
-  $('rows-'+name).querySelectorAll('input').forEach(inp=>{
-    inp.addEventListener('input',()=>{ TABLES[name][+inp.dataset.i][inp.dataset.f]=inp.value; });
+  $('rows-'+name).querySelectorAll('input,textarea,select').forEach(inp=>{
+    const evt = inp.tagName==='SELECT' ? 'change' : 'input';
+    inp.addEventListener(evt,()=>{
+      const f=inp.dataset.f;
+      const v = (multi.includes(f)) ? splitMulti(inp.value) : inp.value;
+      TABLES[name][+inp.dataset.i][f]=v;
+    });
   });
 }
+// Textareas show one item per line; stored on one line joined by " ; ".
+function splitMulti(v){ return String(v||'').split(/\s*;\s*|\n+/).map(s=>s.trim()).filter(Boolean).join(' ; '); }
 function addRow(name){ const blank={}; FIELDS[name].forEach(f=>blank[f]=''); TABLES[name].push(blank); renderTable(name); }
 function removeRow(name,i){ TABLES[name].splice(i,1); renderTable(name); }
 function moveRow(name,i,dir){ const j=i+dir; const rows=TABLES[name];

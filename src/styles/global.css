@@ -353,6 +353,131 @@ table.data tbody tr:hover {
   border-color: var(--accent);
 }
 
+/* ---------- Multi-line table cells ---------- */
+.camp-name {
+  display: block;
+  font-weight: 600;
+}
+
+.camp-sub {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+ul.multi,
+ul.link-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+ul.multi li,
+ul.link-list li {
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+ul.multi li + li,
+ul.link-list li + li {
+  margin-top: 3px;
+}
+
+/* ---------- Status badges ---------- */
+.status-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.status-open {
+  background: #f0fdf4;
+  color: #15803d;
+  border-color: #bbf7d0;
+}
+
+.status-cfnp {
+  background: #fefce8;
+  color: #a16207;
+  border-color: #fde68a;
+}
+
+.status-hold {
+  background: #fef2f2;
+  color: #b91c1c;
+  border-color: #fecaca;
+}
+
+.status-end {
+  background: #f3f4f6;
+  color: #4b5563;
+  border-color: #e5e7eb;
+}
+
+.status-unknown {
+  background: var(--bg);
+  color: var(--muted);
+  border-color: var(--line);
+}
+
+/* ---------- Converter search + result ---------- */
+.conv-field--coin {
+  gap: 8px;
+}
+
+.conv-search {
+  width: 100%;
+  font: inherit;
+  font-size: 0.95rem;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  outline: none;
+}
+
+.conv-search:focus {
+  border-color: var(--accent);
+}
+
+.conv-result {
+  font-size: 1.3rem;
+  margin: 0 0 8px;
+}
+
+.conv-result strong {
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Chips ---------- */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  display: inline-block;
+  font-size: 0.85rem;
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.chip:hover {
+  text-decoration: none;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 /* ---------- Responsive ---------- */
 @media (min-width: 640px) {
   .container {

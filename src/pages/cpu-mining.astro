@@ -1,10 +1,17 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getCpuCoins, cell } from '../lib/table';
+import { getCpuCoins, cell, list } from '../lib/table';
 
 const rows = getCpuCoins();
 const metaDescription =
-  'A list of coins you can still mine on a normal CPU: name, symbol, mining algorithm and a link to learn more.';
+  'Coins you can still mine on a normal CPU: name, symbol, algorithm, plus pools and exchanges for each coin, all in one simple table.';
+function host(url: string): string {
+  try {
+    return new URL(url).hostname.replace(/^www\./, '');
+  } catch {
+    return url;
+  }
+}
 ---
 <BaseLayout title="CPU Mining Coins" description={metaDescription} path="/cpu-mining">
   <div class="container page">
@@ -23,27 +30,49 @@ const metaDescription =
               <th scope="col">Coin</th>
               <th scope="col">Symbol</th>
               <th scope="col">Algorithm</th>
-              <th scope="col">Link</th>
+              <th scope="col">Pools</th>
+              <th scope="col">Exchanges</th>
             </tr>
           </thead>
           <tbody>
-            {rows.map((r) => (
-              <tr>
-                <td class="serial">{r.serial}</td>
-                <td>{cell(r, 'name')}</td>
-                <td>{cell(r, 'symbol') || '—'}</td>
-                <td>{cell(r, 'algorithm') || '—'}</td>
-                <td>
-                  {r.link ? (
-                    <a class="btn" href={cell(r, 'link')} target="_blank" rel="nofollow noopener noreferrer">
-                      Visit
-                    </a>
-                  ) : (
-                    '—'
-                  )}
-                </td>
-              </tr>
-            ))}
+            {rows.map((r) => {
+              const pools = list(r, 'pool');
+              const exchanges = list(r, 'exchange');
+              return (
+                <tr>
+                  <td class="serial">{r.serial}</td>
+                  <td>{cell(r, 'name')}</td>
+                  <td>{cell(r, 'symbol') || '—'}</td>
+                  <td>{cell(r, 'algorithm') || '—'}</td>
+                  <td>
+                    {pools.length ? (
+                      <ul class="link-list">
+                        {pools.map((u) => (
+                          <li>
+                            <a href={u} target="_blank" rel="nofollow noopener noreferrer">{host(u)}</a>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      '—'
+                    )}
+                  </td>
+                  <td>
+                    {exchanges.length ? (
+                      <ul class="link-list">
+                        {exchanges.map((u) => (
+                          <li>
+                            <a href={u} target="_blank" rel="nofollow noopener noreferrer">{host(u)}</a>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      '—'
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
