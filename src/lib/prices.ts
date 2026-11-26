@@ -51,13 +51,8 @@ export interface PriceResult {
   source: string;
 }
 
-// Module-level memo. Every /prices page calls fetchPrices() during a single
-// build; without this each page re-hit the network (hundreds of requests).
-// Cache the in-flight promise so concurrent renders share one fetch.
 let pricePromise: Promise<PriceResult> | null = null;
 
-// Fetch prices at build time. Tries CMC public listing first, CoinGecko fallback.
-// Never throws: on total failure returns an empty map so the build still succeeds.
 export function fetchPrices(): Promise<PriceResult> {
   if (!pricePromise) pricePromise = loadPrices();
   return pricePromise;
@@ -68,21 +63,17 @@ async function loadPrices(): Promise<PriceResult> {
     const p = await fromCoinMarketCapPublic();
     if (Object.keys(p).length) return { prices: p, source: 'coinmarketcap' };
   } catch {
-    /* fall through */
+
   }
   try {
     const p = await fromCoinGecko();
     if (Object.keys(p).length) return { prices: p, source: 'coingecko' };
   } catch {
-    /* fall through */
+
   }
   return { prices: {}, source: 'unavailable' };
 }
 
-// Ordered list of every coin available for the price tables/pages: the curated
-// catalogue first (that we have markets for), then any extra coins the feed
-// returned, in feed order. Coins with no baked price are dropped so tables and
-// auto-generated pages never show a dangling "—".
 export function availableCoins(prices: PriceMap): Coin[] {
   const curated = COINS.filter((c) => prices[c.symbol] != null);
   const seen = new Set(curated.map((c) => c.symbol));
@@ -93,12 +84,11 @@ export function availableCoins(prices: PriceMap): Coin[] {
     extras.push(known ?? coinFromSymbol(symbol));
     seen.add(symbol);
   }
-  // No live data at all: fall back to the curated catalogue so pages still build.
+
   if (!curated.length && !extras.length) return [...COINS];
   return [...curated, ...extras];
 }
 
-// ---- formatting ----
 export function fmtUsd(v: number | undefined): string {
   if (v == null || !isFinite(v)) return '—';
   if (v >= 1) return `$${v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;

@@ -1,4 +1,3 @@
-// MiniAdda live price feed. One cached upstream call serves all visitors.
 const COINS = [
   { symbol: 'BTC', cg: 'bitcoin', cmc: 1 },
   { symbol: 'ETH', cg: 'ethereum', cmc: 1027 },
@@ -117,8 +116,8 @@ function jsonResponse(body, status) {
     headers: {
       ...CORS,
       'Content-Type': 'application/json',
-      // Never let browsers/edge serve stale prices; the in-memory cache below
-      // already dedupes upstream calls for CACHE_TTL_SECONDS.
+
+      
       'Cache-Control': 'no-store',
     },
   });
@@ -132,7 +131,7 @@ async function handle(request, env) {
   if (url.pathname === '/health') return new Response('ok', { headers: CORS });
 
   const nowSec = Math.floor(Date.now() / 1000);
-  // Serve from this isolate's memory cache when fresh (dedupes upstream calls).
+
   if (memCache.body && nowSec - memCache.ts < CACHE_TTL_SECONDS) {
     return jsonResponse(memCache.body);
   }

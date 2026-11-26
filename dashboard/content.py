@@ -12,8 +12,6 @@ import re
 
 from . import config
 
-# Field order per table. The dashboard renders these columns and only these
-# keys are written back.
 TABLES = {
     "sigcamp": {
         "file": config.SIGCAMP_FILE,
@@ -25,12 +23,10 @@ TABLES = {
     },
 }
 
-
 TABLES_TITLES = {
     "sigcamp": "Sigcamp rows — edited by the dashboard. Serial = row position.",
     "cpu": "CPU-mineable coins — edited by the dashboard. Serial = row position.",
 }
-
 
 def _unquote(v):
     s = (v or "").strip()
@@ -40,18 +36,15 @@ def _unquote(v):
         s = s[1:-1]
     return s
 
-
 def _yaml_str(v):
     s = str(v or "").replace("\n", " ").strip()
     return '"' + s.replace("\\", "\\\\").replace('"', '\\"') + '"'
-
 
 def _field(name):
     table = TABLES.get(name)
     if not table:
         raise KeyError(f"unknown table: {name}")
     return table
-
 
 def list_rows(name):
     table = _field(name)
@@ -86,7 +79,6 @@ def list_rows(name):
         r["serial"] = i + 1
     return rows
 
-
 def save_rows(name, rows):
     table = _field(name)
     config.ensure_dirs()
@@ -107,7 +99,6 @@ def save_rows(name, rows):
         lines[1] = "rows: []"
     table["file"].write_text("\n".join(lines) + "\n", encoding="utf-8")
     return list_rows(name)
-
 
 def repo_path(name):
     rel = _field(name)["file"].relative_to(config.ROOT)

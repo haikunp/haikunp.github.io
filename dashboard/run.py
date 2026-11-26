@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Launch the MiniAdda dashboard (signature campaigns + CPU mining coins)."""
 import sys
 from pathlib import Path

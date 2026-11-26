@@ -58,7 +58,7 @@ table.grid td.actions{white-space:nowrap;width:1%}
   </div>
 </header>
 <main>
-  <!-- SIGCAMP -->
+
   <section id="tab-sigcamp">
     <div class="card">
       <div class="toolbar">
@@ -77,7 +77,6 @@ table.grid td.actions{white-space:nowrap;width:1%}
     </div>
   </section>
 
-  <!-- CPU -->
   <section id="tab-cpu" class="hidden">
     <div class="card">
       <div class="toolbar">
@@ -96,7 +95,6 @@ table.grid td.actions{white-space:nowrap;width:1%}
     </div>
   </section>
 
-  <!-- PRICES -->
   <section id="tab-prices" class="hidden">
     <div class="card">
       <div class="toolbar">
@@ -108,7 +106,6 @@ table.grid td.actions{white-space:nowrap;width:1%}
     </div>
   </section>
 
-  <!-- PUBLISH -->
   <section id="tab-publish" class="hidden">
     <div class="card">
       <h2>Publish to GitHub</h2>
@@ -137,7 +134,7 @@ const LABELS = {
   sigcamp: {name:'Campaign name', subtitle:'Project type (e.g. Gambling, Exchange)', coin:'Coin', slots:'Slots (; separated)', payment:'Payment (; separated)', status:'Status', link:'Link (URL)'},
   cpu: {name:'Coin', symbol:'Symbol', algorithm:'Algorithm', pool:'Pools (; separated URLs)', exchange:'Exchanges (; separated URLs)'},
 };
-// Multi-line fields rendered as auto-growing textareas (values joined/split by " ; ").
+
 const MULTI = {
   sigcamp: ['slots','payment'],
   cpu: ['pool','exchange'],
@@ -183,7 +180,6 @@ async function loadPrices(){
   }catch(e){ $('priceList').textContent='Failed: '+e.message; }
 }
 
-// ---------- Tables ----------
 async function loadTable(name){
   const d=await api('/api/table/'+name);
   TABLES[name]=d.rows||[];
@@ -221,7 +217,6 @@ function renderTable(name){
     });
   });
 }
-// Textareas show one item per line; stored on one line joined by " ; ".
 function splitMulti(v){ return String(v||'').split(/\s*;\s*|\n+/).map(s=>s.trim()).filter(Boolean).join(' ; '); }
 function addRow(name){ const blank={}; FIELDS[name].forEach(f=>blank[f]=''); TABLES[name].push(blank); renderTable(name); }
 function removeRow(name,i){ TABLES[name].splice(i,1); renderTable(name); }
@@ -236,7 +231,6 @@ async function saveRows(name){
   }catch(e){ show($('status-'+name),'err','Save failed: '+e.message); }
 }
 
-// ---------- Publish ----------
 async function publishNow(){
   const what=[];
   if($('pub_sigcamp').checked) what.push('sigcamp');

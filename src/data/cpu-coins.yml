@@ -1,4 +1,3 @@
-# CPU-mineable coins — edited by the dashboard. Serial = row position.
 rows:
   - name: "Monero"
     symbol: "XMR"

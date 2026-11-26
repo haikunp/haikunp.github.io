@@ -1,8 +1,3 @@
-// Tiny reader for the dashboard-managed flat "table" data files:
-//   src/data/sigcamp.yml   (name, manager, payment, link)
-//   src/data/cpu-coins.yml (name, symbol, algorithm, difficulty?, link)
-// Each file is `rows:` followed by `- key: value` items. Serial = row position
-// (1-based). Kept dependency-free so builds stay light.
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -56,14 +51,11 @@ export function readTable(file: string): Row[] {
   }
 }
 
-// Read a cell as a string (rows are all string cells except `serial`).
 export function cell(row: Row, key: string): string {
   const v = row[key];
   return v == null ? '' : String(v);
 }
 
-// Multi-value cells (payment, slots, pool, exchange) are stored on one line
-// separated by " ; ". Split into trimmed, non-empty parts.
 export function list(row: Row, key: string): string[] {
   return cell(row, key)
     .split(';')

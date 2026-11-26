@@ -8,9 +8,6 @@ export const SITE = {
   locale: 'en_US',
 } as const;
 
-// Live price feed (Cloudflare Worker). Empty string = baked prices only.
-// The browser polls this; pages also ship baked prices so crawlers/no-JS
-// visitors still see numbers.
 export const PRICE_FEED = {
   endpoint: 'https://miniadda-prices.samundrana.workers.dev/prices.json',
   pollSeconds: 5,

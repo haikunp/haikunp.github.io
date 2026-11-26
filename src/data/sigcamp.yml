@@ -1,6 +1,3 @@
-# Sigcamp rows — edited by the dashboard. Serial = row position.
-# Multi-value fields (slots, payment) use " ; " between items.
-# status: OPEN | CFNP | HOLD | END
 rows:
   - name: "Sample Signature Campaign"
     subtitle: "Exchange"

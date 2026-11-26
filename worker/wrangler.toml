@@ -2,6 +2,3 @@ name = "miniadda-prices"
 main = "index.js"
 compatibility_date = "2024-11-01"
 
-# Optional: set a CoinMarketCap Pro API key as a secret to use the
-# authenticated endpoint. Without it, the Worker uses the public CMC listing.
-#   npx wrangler secret put CMC_API_KEY --config worker/wrangler.toml

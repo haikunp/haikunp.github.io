@@ -1,6 +1,3 @@
-// Coin catalogue for the Crypto Price tool.
-// `cg` is the CoinGecko id, `cmc` the CoinMarketCap id. Order = display order.
-
 export interface Coin {
   symbol: string;
   name: string;
@@ -45,7 +42,6 @@ export function coinBySymbol(symbol: string): Coin | undefined {
   return COINS.find((c) => c.symbol.toLowerCase() === symbol.toLowerCase());
 }
 
-// Slug used in auto-generated conversion pages: full name, e.g. "tron", "bitcoin".
 export function coinSlug(coin: Coin): string {
   return coin.name
     .toLowerCase()
@@ -53,12 +49,8 @@ export function coinSlug(coin: Coin): string {
     .replace(/^-+|-+$/g, '');
 }
 
-// Amounts offered as long-tail "<amount>-<coin>-to-usd" pages. Kept small so
-// the static build stays light; covers the most-searched values.
 export const CONVERSION_AMOUNTS = [1, 10, 100, 1000, '0.0001', '0.001', '0.01', '0.1'];
 
-// Fallback metadata for coins that appear in a price feed but are not in the
-// curated catalogue (so the table never skips a coin).
 export function coinFromSymbol(symbol: string): Coin {
   const known = coinBySymbol(symbol);
   if (known) return known;
