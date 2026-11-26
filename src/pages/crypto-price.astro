@@ -1,26 +1,23 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { PRICE_FEED } from '../lib/constants';
-import { COINS, coinSlug } from '../lib/coins';
-import { fetchPrices, availableCoins, fmtUsd } from '../lib/prices';
+import { getCoins } from '../lib/table';
+import { fetchPrices, fmtUsd } from '../lib/prices';
 
+const rows = getCoins();
+const coins = rows.map((r) => ({ symbol: String(r.symbol), name: String(r.name) }));
 const { prices } = await fetchPrices();
-const coins = availableCoins(prices);
-const first = coins[0] ?? COINS[0];
+const first = coins[0] ?? { symbol: 'BTC', name: 'Bitcoin' };
 const pricesJson = JSON.stringify(prices);
-const popular = coins.slice(0, 6).flatMap((c) => [
-  { href: `/convert/1-${coinSlug(c)}-to-usd`, label: `1 ${c.symbol} → USD` },
-  { href: `/convert/10-${coinSlug(c)}-to-usd`, label: `10 ${c.symbol} → USD` },
-]);
 
 const metaDescription =
-  'Live crypto prices in USD and a two-way converter for Bitcoin, Ethereum, Solana, TRON and more. Convert any amount of any coin to USD instantly.';
+  'Convert any crypto to USD and USD to crypto instantly with live prices. Pick a coin, enter an amount, get the value.';
 ---
-<BaseLayout title="Crypto Price" description={metaDescription} path="/crypto-price">
+<BaseLayout title="Crypto Converter" description={metaDescription} path="/crypto-price">
   <div class="container page" data-price-feed={PRICE_FEED.endpoint}>
     <a class="back-link" href="/">← MiniAdda</a>
-    <h1 class="page-title">Crypto Price</h1>
-    <p class="page-sub">Live USD prices and a quick converter.</p>
+    <h1 class="page-title">Crypto Converter</h1>
+    <p class="page-sub">Convert crypto ↔ USD with live prices. <a href="/crypto-prices">All prices →</a></p>
 
     <section
       class="panel conv"
@@ -56,40 +53,11 @@ const metaDescription =
         <span class="badge up" data-conv-live>live</span>
       </p>
     </section>
-
-    <section class="panel">
-      <h2>All prices (USD)</h2>
-      <div class="table-wrap">
-        <table class="data">
-          <thead>
-            <tr><th scope="col">#</th><th scope="col">Coin</th><th scope="col" class="num">Price</th></tr>
-          </thead>
-          <tbody>
-            {coins.map((c, i) => (
-              <tr>
-                <td class="serial">{i + 1}</td>
-                <td>{c.name} ({c.symbol})</td>
-                <td class="num" data-live-price={c.symbol}>{fmtUsd(prices[c.symbol])}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <section class="panel">
-      <h2>Popular conversions</h2>
-      <div class="chips">
-        {popular.map((p) => (
-          <a class="chip" href={p.href}>{p.label}</a>
-        ))}
-      </div>
-    </section>
   </div>
 </BaseLayout>
 
 <script>
-  (function initPriceTool() {
+  (function initConverter() {
     function num(v: string | null | undefined): number {
       if (v == null) return NaN;
       const n = parseFloat(String(v).replace(/[^0-9.\-]/g, ''));
@@ -123,6 +91,12 @@ const metaDescription =
       for (const k of Object.keys(baked)) if (typeof baked[k] === 'number') prices[k] = baked[k];
     } catch {}
 
+    const params = new URLSearchParams(location.search);
+    const want = (params.get('coin') || '').toUpperCase();
+    if (want && Array.from(sel.options).some((o) => o.value.toUpperCase() === want)) {
+      sel.value = Array.from(sel.options).find((o) => o.value.toUpperCase() === want)!.value;
+    }
+
     function price(): number {
       return prices[sel.value];
     }
@@ -149,9 +123,10 @@ const metaDescription =
       setLabels();
       recalc('coin');
     });
-    if (search) {
-      search.addEventListener('input', () => {
-        const q = (search.value || '').trim().toLowerCase();
+    function wireSearch(input: HTMLInputElement | null) {
+      if (!input) return;
+      input.addEventListener('input', () => {
+        const q = (input.value || '').trim().toLowerCase();
         let firstMatch: HTMLOptionElement | null = null;
         for (const opt of Array.from(sel.options)) {
           const match = !q || opt.textContent!.toLowerCase().includes(q);
@@ -165,20 +140,13 @@ const metaDescription =
         }
       });
     }
-
-    function applyTable(p: Record<string, number>) {
-      document.querySelectorAll<HTMLElement>('[data-live-price]').forEach((el) => {
-        const v = p[el.dataset.livePrice!];
-        if (v != null) el.textContent = usd(v);
-      });
-    }
+    wireSearch(search);
 
     function apply(p: Record<string, number>) {
       if (!p || typeof p !== 'object') return;
       prices = p;
       setLabels();
       recalc('coin');
-      applyTable(p);
     }
 
     const endpoint = root.dataset.priceFeed || '';

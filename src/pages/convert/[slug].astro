@@ -1,18 +1,22 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { PRICE_FEED } from '../../lib/constants';
-import { COINS, coinSlug, CONVERSION_AMOUNTS, type Coin } from '../../lib/coins';
+import { CONVERSION_AMOUNTS, STATIC_PAGES_TOP, coinSlug } from '../../lib/coins';
+import { getCoins } from '../../lib/table';
 import { fetchPrices, fmtUsd } from '../../lib/prices';
 
 export function getStaticPaths() {
-  const paths: { params: { slug: string }; props: { amount: string; coin: Coin } }[] = [];
-  for (const coin of COINS) {
-    const slugs = Array.from(new Set([coinSlug(coin), coin.symbol.toLowerCase()]));
+  const rows = getCoins().slice(0, STATIC_PAGES_TOP);
+  const paths: { params: { slug: string }; props: { amount: string; symbol: string; name: string } }[] = [];
+  for (const r of rows) {
+    const symbol = String(r.symbol);
+    const name = String(r.name);
+    const slugs = Array.from(new Set([coinSlug({ name }), symbol.toLowerCase()]));
     for (const base of slugs) {
       for (const amount of CONVERSION_AMOUNTS) {
         paths.push({
           params: { slug: `${amount}-${base}-to-usd` },
-          props: { amount: String(amount), coin },
+          props: { amount: String(amount), symbol, name },
         });
       }
     }
@@ -20,67 +24,67 @@ export function getStaticPaths() {
   return paths;
 }
 
-const { amount, coin } = Astro.props;
+const { amount, symbol, name } = Astro.props;
 const { prices } = await fetchPrices();
-const price = prices[coin.symbol];
+const price = prices[symbol];
 const amountNum = parseFloat(amount);
 const result = price != null && isFinite(amountNum) ? amountNum * price : null;
-const title = `${amount} ${coin.symbol} to USD`;
+const title = `${amount} ${symbol} to USD`;
 const metaDescription =
   result != null
-    ? `${amount} ${coin.name} (${coin.symbol}) = ${fmtUsd(result)} USD. Convert ${coin.name} to USD with live prices on MiniAdda.`
-    : `Convert ${amount} ${coin.name} (${coin.symbol}) to USD with live prices on MiniAdda.`;
+    ? `${amount} ${name} (${symbol}) = ${fmtUsd(result)} USD. Convert ${name} to USD with live prices.`
+    : `Convert ${amount} ${name} (${symbol}) to USD with live prices.`;
 
-const related = CONVERSION_AMOUNTS.filter((a) => String(a) !== amount).slice(0, 4);
+const related = CONVERSION_AMOUNTS.filter((a) => String(a) !== amount).slice(0, 5);
+const slugBase = coinSlug({ name });
 const schema = {
   '@context': 'https://schema.org',
   '@type': 'WebPage',
   name: title,
   description: metaDescription,
-  url: `https://miniadda.com/convert/${amount}-${coinSlug(coin)}-to-usd`,
+  url: `https://miniadda.com/convert/${amount}-${slugBase}-to-usd`,
 };
 ---
-<BaseLayout title={title} description={metaDescription} path={`/convert/${amount}-${coinSlug(coin)}-to-usd`}>
+<BaseLayout title={title} description={metaDescription} path={`/convert/${amount}-${slugBase}-to-usd`}>
   <div class="container page">
-    <a class="back-link" href="/crypto-price">← Crypto Price</a>
-    <h1 class="page-title">{amount} {coin.name} to USD</h1>
-    <p class="page-sub">Live conversion at the current {coin.symbol} price.</p>
+    <a class="back-link" href="/crypto-price?coin={symbol}">← Converter</a>
+    <h1 class="page-title">{amount} {name} to USD</h1>
+    <p class="page-sub">Live conversion at the current {symbol} price.</p>
 
     <section
       class="panel"
-      data-conv
-      data-symbol={coin.symbol}
-      data-prices={JSON.stringify(prices)}
+      data-live
+      data-symbol={symbol}
+      data-amount={amount}
       data-feed={PRICE_FEED.endpoint}
-      data-poll={PRICE_FEED.pollSeconds * 1000}
     >
       <p class="conv-result">
-        <span data-conv-amount data-amount={amount}>{amount}</span>
-        <b>{coin.symbol}</b> =
-        <strong data-conv-usd>{result != null ? fmtUsd(result) : '—'}</strong> USD
+        <span>{amount}</span> <b>{symbol}</b> = <strong data-live-usd>{result != null ? fmtUsd(result) : '—'}</strong> USD
       </p>
-      <p class="conv-rate">1 <b>{coin.symbol}</b> = <span data-conv-rate>{fmtUsd(price)}</span> USD</p>
+      <p class="conv-rate">1 <b>{symbol}</b> = <span data-live-rate>{fmtUsd(price)}</span> USD <span class="badge up">live</span></p>
+      <p class="page-sub" style="margin-top:14px">
+        Convert any amount on the <a href="/crypto-price?coin={symbol}">converter</a>, or browse <a href="/crypto-prices">all prices</a>.
+      </p>
     </section>
 
     <section class="panel">
-      <h2>Other conversions</h2>
+      <h2>Other {symbol} conversions</h2>
       <div class="chips">
         {related.map((a) => (
-          <a class="chip" href={`/convert/${a}-${coinSlug(coin)}-to-usd`}>{a} {coin.symbol} → USD</a>
+          <a class="chip" href={`/convert/${a}-${slugBase}-to-usd`}>{a} {symbol} → USD</a>
         ))}
-        <a class="chip" href="/crypto-price">All prices →</a>
       </div>
     </section>
   </div>
 </BaseLayout>
 
-<script is:inline define:vars={{ feed: PRICE_FEED.endpoint, symbol: coin.symbol }}>
+<script is:inline define:vars={{ feed: PRICE_FEED.endpoint, symbol: symbol }}>
   (function liveConvert() {
-    const root = document.querySelector('[data-conv]');
+    const root = document.querySelector('[data-live]');
     if (!root) return;
-    const amount = Number(root.querySelector('[data-conv-amount]')?.dataset.amount || '0');
-    const usdEl = root.querySelector('[data-conv-usd]');
-    const rateEl = root.querySelector('[data-conv-rate]');
+    const amount = Number(root.dataset.amount || '0');
+    const usdEl = root.querySelector('[data-live-usd]');
+    const rateEl = root.querySelector('[data-live-rate]');
     function fmt(v) {
       if (!isFinite(v)) return '—';
       const max = v < 1 ? 8 : 2;

@@ -1,8 +1,22 @@
-import { COINS, coinBySymbol, coinFromSymbol, type Coin } from './coins';
-
 export type PriceMap = Record<string, number>;
 
+export interface LiveCoin {
+  symbol: string;
+  name: string;
+  cmc: number;
+  slug: string;
+  price: number;
+}
+
+export interface PriceResult {
+  prices: PriceMap;
+  coins: LiveCoin[];
+  source: string;
+}
+
 const UA = 'MiniAdda/1.0 (+https://miniadda.com)';
+const MAX_PAGES = 4;
+const PAGE_LIMIT = 250;
 
 async function getJson(url: string): Promise<any> {
   const res = await fetch(url, { headers: { 'User-Agent': UA, Accept: 'application/json' } });
@@ -10,45 +24,53 @@ async function getJson(url: string): Promise<any> {
   return res.json();
 }
 
-async function fromCoinGecko(): Promise<PriceMap> {
-  const ids = COINS.map((c) => c.cg).join(',');
-  const data = await getJson(
-    `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd`
-  );
-  const out: PriceMap = {};
-  for (const c of COINS) {
-    const e = data[c.cg];
-    if (e && typeof e.usd === 'number') out[c.symbol] = e.usd;
-  }
-  return out;
-}
-
-async function fromCoinMarketCapPublic(): Promise<PriceMap> {
-  const byId = new Map(COINS.map((c) => [c.cmc, c]));
-  const out: PriceMap = {};
-  let start = 1;
-  const limit = 250;
-  for (let page = 0; page < 3; page++) {
+async function fromCoinMarketCap(): Promise<LiveCoin[]> {
+  const out: LiveCoin[] = [];
+  for (let page = 0; page < MAX_PAGES; page++) {
+    const start = 1 + page * PAGE_LIMIT;
     const data = await getJson(
-      `https://api.coinmarketcap.com/data-api/v3/cryptocurrency/listing?start=${start}&limit=${limit}&sortBy=market_cap&sortType=desc`
+      `https://api.coinmarketcap.com/data-api/v3/cryptocurrency/listing?start=${start}&limit=${PAGE_LIMIT}&sortBy=market_cap&sortType=desc`
     );
     const list = data?.data?.cryptoCurrencyList ?? [];
     if (!list.length) break;
     for (const item of list) {
-      const coin = byId.get(item.id);
-      if (!coin) continue;
       const q = (item.quotes ?? []).find((x: any) => x.name === 'USD' || x.convert === 'USD');
-      if (q) out[coin.symbol] = Number(q.price);
+      const price = q ? Number(q.price) : NaN;
+      if (!item.symbol || !isFinite(price)) continue;
+      out.push({
+        symbol: String(item.symbol),
+        name: String(item.name ?? item.symbol),
+        cmc: Number(item.id),
+        slug: String(item.slug ?? ''),
+        price,
+      });
     }
-    if (Object.keys(out).length === COINS.length) break;
-    start += limit;
+    if (list.length < PAGE_LIMIT) break;
   }
   return out;
 }
 
-export interface PriceResult {
-  prices: PriceMap;
-  source: string;
+async function fromCoinGecko(): Promise<LiveCoin[]> {
+  const out: LiveCoin[] = [];
+  for (let page = 1; page <= 10; page++) {
+    const data = await getJson(
+      `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=${page}&sparkline=false`
+    );
+    if (!Array.isArray(data) || !data.length) break;
+    for (const item of data) {
+      const price = Number(item.current_price);
+      if (!item.symbol || !isFinite(price)) continue;
+      out.push({
+        symbol: String(item.symbol).toUpperCase(),
+        name: String(item.name ?? item.symbol),
+        cmc: 0,
+        slug: String(item.id ?? ''),
+        price,
+      });
+    }
+    if (data.length < 100) break;
+  }
+  return out;
 }
 
 let pricePromise: Promise<PriceResult> | null = null;
@@ -59,34 +81,33 @@ export function fetchPrices(): Promise<PriceResult> {
 }
 
 async function loadPrices(): Promise<PriceResult> {
+  let coins: LiveCoin[] = [];
+  let source = 'unavailable';
   try {
-    const p = await fromCoinMarketCapPublic();
-    if (Object.keys(p).length) return { prices: p, source: 'coinmarketcap' };
+    coins = await fromCoinMarketCap();
+    if (coins.length) source = 'coinmarketcap';
   } catch {
-
+    coins = [];
   }
-  try {
-    const p = await fromCoinGecko();
-    if (Object.keys(p).length) return { prices: p, source: 'coingecko' };
-  } catch {
-
+  if (!coins.length) {
+    try {
+      coins = await fromCoinGecko();
+      if (coins.length) source = 'coingecko';
+    } catch {
+      coins = [];
+    }
   }
-  return { prices: {}, source: 'unavailable' };
-}
-
-export function availableCoins(prices: PriceMap): Coin[] {
-  const curated = COINS.filter((c) => prices[c.symbol] != null);
-  const seen = new Set(curated.map((c) => c.symbol));
-  const extras: Coin[] = [];
-  for (const symbol of Object.keys(prices)) {
-    if (seen.has(symbol)) continue;
-    const known = coinBySymbol(symbol);
-    extras.push(known ?? coinFromSymbol(symbol));
-    seen.add(symbol);
+  const prices: PriceMap = {};
+  const seen = new Set<string>();
+  const unique: LiveCoin[] = [];
+  for (const c of coins) {
+    const key = c.symbol.toUpperCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    prices[c.symbol] = c.price;
+    unique.push(c);
   }
-
-  if (!curated.length && !extras.length) return [...COINS];
-  return [...curated, ...extras];
+  return { prices, coins: unique, source };
 }
 
 export function fmtUsd(v: number | undefined): string {

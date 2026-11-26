@@ -72,3 +72,7 @@ export function getSigcamp(): Row[] {
 export function getCpuCoins(): Row[] {
   return readTable(path.join(dataDir, 'cpu-coins.yml'));
 }
+
+export function getCoins(): Row[] {
+  return readTable(path.join(dataDir, 'coins.yml'));
+}

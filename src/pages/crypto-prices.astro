@@ -1,0 +1,107 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { PRICE_FEED } from '../lib/constants';
+import { fetchPrices, fmtUsd } from '../lib/prices';
+
+const { prices, coins } = await fetchPrices();
+const pricesJson = JSON.stringify(prices);
+
+const metaDescription =
+  'Live crypto prices in USD for all top coins. Search any coin, check its price and convert instantly — updating live.';
+---
+<BaseLayout title="Crypto Prices" description={metaDescription} path="/crypto-prices">
+  <div class="container page" data-price-feed={PRICE_FEED.endpoint}>
+    <a class="back-link" href="/">← MiniAdda</a>
+    <h1 class="page-title">Crypto Prices</h1>
+    <p class="page-sub">Live USD prices for {coins.length} coins.</p>
+
+    <section class="panel">
+      <input
+        type="text"
+        class="search-input"
+        data-price-search
+        placeholder="Search coin by name or symbol…"
+        aria-label="Search coins"
+        autocomplete="off"
+      />
+      <div class="table-wrap">
+        <table class="data">
+          <thead>
+            <tr><th scope="col">#</th><th scope="col">Coin</th><th scope="col" class="num">Price</th></tr>
+          </thead>
+          <tbody data-price-body data-prices={pricesJson}>
+            {coins.map((c, i) => (
+              <tr data-row data-key={`${c.name} ${c.symbol}`.toLowerCase()}>
+                <td class="serial">{i + 1}</td>
+                <td>
+                  <a href={`/crypto-price?coin=${encodeURIComponent(c.symbol)}`}>
+                    <span class="camp-name">{c.name}</span>
+                    <span class="camp-sub">{c.symbol}</span>
+                  </a>
+                </td>
+                <td class="num" data-live-price={c.symbol}>{fmtUsd(prices[c.symbol])}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="empty" data-price-empty hidden>No coins match your search.</p>
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  (function pricesPage() {
+    function usd(v: number): string {
+      if (!isFinite(v)) return '—';
+      const max = v < 1 ? 8 : 2;
+      return '$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: max });
+    }
+
+    const root = document.querySelector<HTMLElement>('[data-price-feed]');
+    if (!root) return;
+    const endpoint = root.dataset.priceFeed || '';
+    const search = document.querySelector<HTMLInputElement>('[data-price-search]');
+    const empty = document.querySelector<HTMLElement>('[data-price-empty]');
+    const rows = Array.from(document.querySelectorAll<HTMLElement>('[data-row]'));
+
+    function applyTable(p: Record<string, number>) {
+      document.querySelectorAll<HTMLElement>('[data-live-price]').forEach((el) => {
+        const v = p[el.dataset.livePrice!];
+        if (v != null) el.textContent = usd(v);
+      });
+    }
+
+    async function refresh() {
+      if (!endpoint) return;
+      try {
+        const r = await fetch(endpoint + (endpoint.includes('?') ? '&' : '?') + 't=' + Date.now(), {
+          cache: 'no-store',
+        });
+        if (!r.ok) return;
+        const data = await r.json();
+        const p = data.prices || data;
+        if (p && typeof p === 'object') applyTable(p);
+      } catch {}
+    }
+
+    if (search) {
+      search.addEventListener('input', () => {
+        const q = search.value.trim().toLowerCase();
+        let shown = 0;
+        for (const row of rows) {
+          const match = !q || (row.dataset.key || '').includes(q);
+          row.hidden = !match;
+          if (match) shown++;
+        }
+        if (empty) empty.hidden = shown > 0;
+      });
+    }
+
+    refresh();
+    setInterval(refresh, 5000);
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) refresh();
+    });
+  })();
+</script>

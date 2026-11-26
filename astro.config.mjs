@@ -13,6 +13,9 @@ export default defineConfig({
         if (item.url === 'https://miniadda.com/') {
           return { ...item, priority: 1.0 };
         }
+        if (/\/(crypto-prices|crypto-price)\/?$/.test(item.url)) {
+          return { ...item, priority: 0.9 };
+        }
         if (item.url.includes('/convert/')) {
           return { ...item, priority: 0.6 };
         }
