@@ -1,7 +1,5 @@
-// Coin catalogue for the MiniAdda price tool.
+// Coin catalogue for the Crypto Price tool.
 // `cg` is the CoinGecko id, `cmc` the CoinMarketCap id. Order = display order.
-// Use `coinBySymbol`/`auto` helpers to render any coin the price feed returns,
-// including coins added here later or discovered from the market listing.
 
 export interface Coin {
   symbol: string;
@@ -47,40 +45,10 @@ export function coinBySymbol(symbol: string): Coin | undefined {
   return COINS.find((c) => c.symbol.toLowerCase() === symbol.toLowerCase());
 }
 
-// Amounts offered as long-tail pages in either direction.
-export const COIN_AMOUNTS = [1, 5, 10, 20, 50, 100, 1000];
-export const USD_AMOUNTS = [1, 5, 10, 20, 50, 100, 500, 1000];
-
 // Fallback metadata for coins that appear in a price feed but are not in the
-// curated catalogue (so auto-built price tables never skip a coin).
+// curated catalogue (so the table never skips a coin).
 export function coinFromSymbol(symbol: string): Coin {
   const known = coinBySymbol(symbol);
   if (known) return known;
   return { symbol, name: symbol, cg: '', cmc: 0 };
-}
-
-// Human-friendly slug: "bitcoin-to-usd", "trx-to-usd", "tron-to-usd".
-// We expose per-coin aliases (symbol + full name) so both rank.
-export function coinSlug(coin: Coin): string {
-  return coin.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-}
-
-// URL builders (all under /prices).
-export function priceOfOneUrl(coin: Coin): string {
-  return `/prices/price-of-1-${coin.symbol.toLowerCase()}`;
-}
-export function coinToUsdUrl(coin: Coin, amount: number): string {
-  return `/prices/${amount}-${coinSlug(coin)}-to-usd`;
-}
-export function usdToCoinUrl(coin: Coin, usd: number): string {
-  return `/prices/${usd}-usd-to-${coinSlug(coin)}`;
-}
-// Alias pages keyed by symbol (e.g. /prices/trx-to-usd, /prices/bitcoin-to-usd).
-export function coinAliasUrls(coin: Coin): string[] {
-  const names = [coinSlug(coin), coin.symbol.toLowerCase()];
-  return Array.from(new Set(names)).map((n) => `/prices/${n}-to-usd`);
-}
-
-export function coinSlugOf(c: Coin): string {
-  return c.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 }

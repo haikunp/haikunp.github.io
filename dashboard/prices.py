@@ -8,9 +8,14 @@ from . import config  # noqa: F401  (loads dotenv on import)
 COINS = [
     {"symbol": "BTC", "name": "Bitcoin", "cg": "bitcoin", "cmc": 1},
     {"symbol": "ETH", "name": "Ethereum", "cg": "ethereum", "cmc": 1027},
-    {"symbol": "TRX", "name": "TRON", "cg": "tron", "cmc": 1958},
     {"symbol": "USDT", "name": "Tether", "cg": "tether", "cmc": 825},
     {"symbol": "BNB", "name": "BNB", "cg": "binancecoin", "cmc": 1839},
+    {"symbol": "SOL", "name": "Solana", "cg": "solana", "cmc": 5426},
+    {"symbol": "XRP", "name": "XRP", "cg": "ripple", "cmc": 52},
+    {"symbol": "USDC", "name": "USD Coin", "cg": "usd-coin", "cmc": 3408},
+    {"symbol": "ADA", "name": "Cardano", "cg": "cardano", "cmc": 2010},
+    {"symbol": "DOGE", "name": "Dogecoin", "cg": "dogecoin", "cmc": 74},
+    {"symbol": "TRX", "name": "TRON", "cg": "tron", "cmc": 1958},
 ]
 
 UA = "MiniAdda-Dashboard/1.0"

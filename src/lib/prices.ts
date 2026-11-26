@@ -110,11 +110,3 @@ export function fmtCoin(v: number | undefined): string {
   const max = v >= 1 ? 4 : 8;
   return `${v.toLocaleString('en-US', { maximumFractionDigits: max })}`;
 }
-
-export function fmtAmount(n: number): string {
-  return n.toLocaleString('en-US');
-}
-
-export function coinFor(symbol: string): Coin | undefined {
-  return COINS.find((c) => c.symbol === symbol);
-}

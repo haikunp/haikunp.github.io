@@ -1,77 +1,54 @@
 ---
-import PageLayout from '../layouts/PageLayout.astro';
-import Breadcrumbs from '../components/Breadcrumbs.astro';
-import { getSigcamp } from '../lib/sigcamp';
-import { breadcrumbList, linkListSchema, webPageSchema } from '../lib/seo';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getSigcamp, cell } from '../lib/table';
 
 const rows = getSigcamp();
-const crumbs = [
-  { name: 'Home', url: '/' },
-  { name: 'Sigcamp', url: '/sigcamp' },
-];
-const title = 'Sigcamp — BitcoinTalk Signature Campaigns';
-const description =
-  'Browse BitcoinTalk signature campaigns in one table: campaign name, manager, payment per post and a link to visit each thread.';
-const ld = [
-  breadcrumbList(crumbs),
-  webPageSchema({ name: title, description, url: '/sigcamp' }),
-  linkListSchema(
-    rows.filter((r) => r.link).map((r) => ({ name: r.name, url: r.link })),
-    { name: 'BitcoinTalk signature campaigns', url: '/sigcamp' }
-  ),
-];
+const metaDescription =
+  'Browse BitcoinTalk signature campaigns in one simple table: campaign name, manager, payment per post and a link to each thread.';
 ---
-<PageLayout title={title} description={description} path="/sigcamp" jsonLd={ld}>
-  <div class="container">
-    <Breadcrumbs items={crumbs} />
-    <header class="page-header">
-      <h1>Sigcamp</h1>
-      <p>{rows.length} signature campaign{rows.length === 1 ? '' : 's'} on BitcoinTalk</p>
-    </header>
+<BaseLayout title="Signature Campaigns" description={metaDescription} path="/sigcamp">
+  <div class="container page">
+    <a class="back-link" href="/">← MiniAdda</a>
+    <h1 class="page-title">Signature Campaigns</h1>
+    <p class="page-sub">
+      {rows.length} BitcoinTalk campaign{rows.length === 1 ? '' : 's'}.
+    </p>
 
-    <section class="section section--first">
-      {rows.length ? (
-        <div class="table-scroll">
-          <table class="sig-table">
-            <thead>
+    {rows.length ? (
+      <div class="table-wrap">
+        <table class="data">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Name</th>
+              <th scope="col">Manager</th>
+              <th scope="col">Payment</th>
+              <th scope="col">Link</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
               <tr>
-                <th scope="col">Serial No.</th>
-                <th scope="col">Name</th>
-                <th scope="col">Manager</th>
-                <th scope="col">Payment</th>
-                <th scope="col">Link</th>
+                <td class="serial">{r.serial}</td>
+                <td>{cell(r, 'name')}</td>
+                <td>{cell(r, 'manager') || '—'}</td>
+                <td>{cell(r, 'payment') || '—'}</td>
+                <td>
+                  {r.link ? (
+                    <a class="btn" href={cell(r, 'link')} target="_blank" rel="nofollow noopener noreferrer">
+                      Visit
+                    </a>
+                  ) : (
+                    '—'
+                  )}
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {rows.map((r) => (
-                <tr>
-                  <td class="sig-serial">{r.serial}</td>
-                  <td class="sig-name">{r.name}</td>
-                  <td>{r.manager || '—'}</td>
-                  <td>{r.payment || '—'}</td>
-                  <td>
-                    {r.link ? (
-                      <a
-                        class="visit-btn"
-                        href={r.link}
-                        target="_blank"
-                        rel="nofollow noopener noreferrer"
-                        aria-label={`Visit ${r.name}`}
-                      >
-                        Visit <span aria-hidden="true">→</span>
-                      </a>
-                    ) : (
-                      <span class="muted">—</span>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <p class="empty-state">No campaigns listed yet.</p>
-      )}
-    </section>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    ) : (
+      <p class="empty">No campaigns listed yet.</p>
+    )}
   </div>
-</PageLayout>
+</BaseLayout>

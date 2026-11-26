@@ -5,13 +5,15 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 from . import config, prices, content, publish
 
+TABLE_NAMES = ("sigcamp", "cpu")
+
 
 def _read_ui():
     return (config.ROOT / "dashboard" / "ui.html").read_text(encoding="utf-8")
 
 
 class Handler(BaseHTTPRequestHandler):
-    server_version = "MiniAddaDash/1.1"
+    server_version = "MiniAddaDash/2.0"
 
     def log_message(self, fmt, *args):
         pass
@@ -50,14 +52,11 @@ class Handler(BaseHTTPRequestHandler):
             elif self.path == "/api/prices":
                 p, src = prices.fetch_prices(force=True)
                 self._json({"ok": True, "prices": p, "source": src, "coins": prices.COINS})
-            elif self.path == "/api/articles":
-                self._json({"ok": True, "articles": content.list_articles()})
-            elif self.path.startswith("/api/articles/"):
-                slug = self.path.split("/api/articles/", 1)[1]
-                a = content.get_article(slug)
-                self._json(a or {"ok": False, "error": "not found"}, 200 if a else 404)
-            elif self.path == "/api/sigcamp":
-                self._json({"ok": True, "rows": content.list_sigcamp()})
+            elif self.path.startswith("/api/table/"):
+                name = self.path.split("/api/table/", 1)[1]
+                if name not in TABLE_NAMES:
+                    return self._json({"error": "not found"}, 404)
+                self._json({"ok": True, "rows": content.list_rows(name)})
             else:
                 self._json({"error": "not found"}, 404)
         except Exception as e:  # noqa: BLE001
@@ -65,25 +64,12 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         try:
-            if self.path == "/api/state":
-                state = config.load_state()
-                body = self._body()
-                state.update(body)
-                config.save_state(state)
-                self._json({"ok": True})
-            elif self.path == "/api/articles":
+            if self.path.startswith("/api/table/"):
+                name = self.path.split("/api/table/", 1)[1]
+                if name not in TABLE_NAMES:
+                    return self._json({"error": "not found"}, 404)
                 b = self._body()
-                slug, _ = content.save_article(
-                    b.get("slug"), b.get("data", {}), b.get("body", ""), b.get("oldSlug")
-                )
-                self._json({"ok": True, "slug": slug})
-            elif self.path == "/api/articles/reorder":
-                b = self._body()
-                content.reorder_articles(b.get("ids", []))
-                self._json({"ok": True})
-            elif self.path == "/api/sigcamp":
-                b = self._body()
-                rows = content.save_sigcamp(b.get("rows", []))
+                rows = content.save_rows(name, b.get("rows", []))
                 self._json({"ok": True, "rows": rows})
             elif self.path == "/api/publish":
                 self._json(self._publish(self._body()))
@@ -92,30 +78,19 @@ class Handler(BaseHTTPRequestHandler):
         except Exception as e:  # noqa: BLE001
             self._json({"ok": False, "error": str(e)}, 500)
 
-    def do_DELETE(self):
-        try:
-            if self.path.startswith("/api/articles/"):
-                slug = self.path.split("/api/articles/", 1)[1]
-                self._json({"ok": content.delete_article(slug)})
-            else:
-                self._json({"error": "not found"}, 404)
-        except Exception as e:  # noqa: BLE001
-            self._json({"ok": False, "error": str(e)}, 500)
-
     def _publish(self, b):
-        """Publish selected content (articles, sigcamp) via GitHub in one commit."""
-        what = b.get("what", ["articles", "sigcamp"])
+        """Publish selected tables via GitHub in one commit."""
+        what = b.get("what", list(TABLE_NAMES))
         files = {}
-        if "articles" in what:
-            for a in content.list_articles():
-                files[content.article_repo_path(a["id"])] = (
-                    config.ARTICLES / f"{a['id']}.md"
-                ).read_text(encoding="utf-8")
-        if "sigcamp" in what and config.SIGCAMP_FILE.exists():
-            files[content.sigcamp_repo_path()] = config.SIGCAMP_FILE.read_text(encoding="utf-8")
+        for name in what:
+            if name not in TABLE_NAMES:
+                continue
+            path = content.TABLES[name]["file"]
+            if path.exists():
+                files[content.repo_path(name)] = path.read_text(encoding="utf-8")
         if not files:
             return {"ok": False, "error": "Nothing to publish"}
-        msg = b.get("message") or "Dashboard: update content"
+        msg = b.get("message") or "Dashboard: update tables"
         res = publish.publish(files, msg)
         return {"ok": True, "published": res}
 

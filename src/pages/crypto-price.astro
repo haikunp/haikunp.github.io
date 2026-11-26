@@ -1,0 +1,197 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { PRICE_FEED } from '../lib/constants';
+import { COINS } from '../lib/coins';
+import { fetchPrices, availableCoins, fmtUsd } from '../lib/prices';
+
+const { prices } = await fetchPrices();
+const coins = availableCoins(prices);
+const first = coins[0] ?? COINS[0];
+const pricesJson = JSON.stringify(prices);
+
+const metaDescription =
+  'Live crypto prices in USD and a two-way converter for Bitcoin, Ethereum, Solana, TRON and more.';
+---
+<BaseLayout title="Crypto Price" description={metaDescription} path="/crypto-price">
+  <div class="container page" data-price-feed={PRICE_FEED.endpoint}>
+    <a class="back-link" href="/">← MiniAdda</a>
+    <h1 class="page-title">Crypto Price</h1>
+    <p class="page-sub">Live USD prices and a quick converter.</p>
+
+    <section
+      class="panel conv"
+      data-conv
+      data-symbol={first.symbol}
+      data-prices={pricesJson}
+      data-price-feed={PRICE_FEED.endpoint}
+      data-poll={PRICE_FEED.pollSeconds * 1000}
+      data-cache={PRICE_FEED.clientCacheSeconds * 1000}
+    >
+      <label class="conv-field">
+        <span>Coin</span>
+        <select data-conv-coin aria-label="Coin">
+          {coins.map((c) => (
+            <option value={c.symbol} selected={c.symbol === first.symbol}>
+              {c.name} ({c.symbol})
+            </option>
+          ))}
+        </select>
+      </label>
+      <label class="conv-field">
+        <span>Amount <b data-conv-symbol>{first.symbol}</b></span>
+        <input type="text" inputmode="decimal" data-conv-coin-amount value="1" autocomplete="off" />
+      </label>
+      <label class="conv-field">
+        <span>Amount USD</span>
+        <input type="text" inputmode="decimal" data-conv-usd-amount autocomplete="off" />
+      </label>
+      <p class="conv-rate" style="grid-column: 1 / -1">
+        1 <b data-conv-symbol>{first.symbol}</b> =
+        <span data-conv-rate>{fmtUsd(prices[first.symbol])}</span> USD
+        <span class="badge" data-conv-live>live</span>
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>All prices (USD)</h2>
+      <div class="table-wrap">
+        <table class="data">
+          <thead>
+            <tr><th scope="col">#</th><th scope="col">Coin</th><th scope="col" class="num">Price</th></tr>
+          </thead>
+          <tbody>
+            {coins.map((c, i) => (
+              <tr>
+                <td class="serial">{i + 1}</td>
+                <td>{c.name} ({c.symbol})</td>
+                <td class="num" data-live-price={c.symbol}>{fmtUsd(prices[c.symbol])}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  (function initPriceTool() {
+    function num(v: string | null | undefined): number {
+      if (v == null) return NaN;
+      const n = parseFloat(String(v).replace(/[^0-9.\-]/g, ''));
+      return isFinite(n) ? n : NaN;
+    }
+    function amount(v: number): string {
+      if (!isFinite(v)) return '';
+      const max = v >= 1 ? 6 : 8;
+      return v.toLocaleString('en-US', { maximumFractionDigits: max, useGrouping: false });
+    }
+    function usd(v: number): string {
+      if (!isFinite(v)) return '—';
+      const max = v < 1 ? 8 : 2;
+      return '$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: max });
+    }
+
+    const root = document.querySelector<HTMLElement>('[data-conv]');
+    if (!root || root.dataset.ready === '1') return;
+    root.dataset.ready = '1';
+
+    const sel = root.querySelector<HTMLSelectElement>('[data-conv-coin]')!;
+    const coinEl = root.querySelector<HTMLInputElement>('[data-conv-coin-amount]')!;
+    const usdEl = root.querySelector<HTMLInputElement>('[data-conv-usd-amount]')!;
+    const rateEl = root.querySelector<HTMLElement>('[data-conv-rate]')!;
+    const symbolEls = root.querySelectorAll<HTMLElement>('[data-conv-symbol]');
+
+    let prices: Record<string, number> = {};
+    try {
+      const baked = JSON.parse(root.dataset.prices || '{}');
+      for (const k of Object.keys(baked)) if (typeof baked[k] === 'number') prices[k] = baked[k];
+    } catch {}
+
+    function price(): number {
+      return prices[sel.value];
+    }
+    function setLabels() {
+      symbolEls.forEach((el) => (el.textContent = sel.value));
+      const p = price();
+      rateEl.textContent = p != null ? usd(p) : '—';
+    }
+    function recalc(from: 'coin' | 'usd') {
+      const p = price();
+      if (!isFinite(p) || p <= 0) return;
+      if (from === 'usd') {
+        const v = num(usdEl.value);
+        if (isFinite(v)) coinEl.value = amount(v / p);
+      } else {
+        const v = num(coinEl.value);
+        if (isFinite(v)) usdEl.value = amount(v * p);
+      }
+    }
+
+    coinEl.addEventListener('input', () => recalc('coin'));
+    usdEl.addEventListener('input', () => recalc('usd'));
+    sel.addEventListener('change', () => {
+      setLabels();
+      recalc('coin');
+    });
+
+    function applyTable(p: Record<string, number>) {
+      document.querySelectorAll<HTMLElement>('[data-live-price]').forEach((el) => {
+        const v = p[el.dataset.livePrice!];
+        if (v != null) el.textContent = usd(v);
+      });
+    }
+
+    function apply(p: Record<string, number>) {
+      if (!p || typeof p !== 'object') return;
+      prices = p;
+      setLabels();
+      recalc('coin');
+      applyTable(p);
+    }
+
+    const endpoint = root.dataset.priceFeed || '';
+    const poll = Number(root.dataset.poll) || 15000;
+    const cacheTtl = Number(root.dataset.cache) || 10000;
+    const cacheKey = 'miniadda_prices_v1';
+
+    function readCache(): Record<string, number> | null {
+      try {
+        const raw = localStorage.getItem(cacheKey);
+        if (!raw) return null;
+        const obj = JSON.parse(raw);
+        if (!obj?.ts || Date.now() - obj.ts > cacheTtl) return null;
+        return obj.data;
+      } catch {
+        return null;
+      }
+    }
+    function writeCache(data: Record<string, number>) {
+      try {
+        localStorage.setItem(cacheKey, JSON.stringify({ ts: Date.now(), data }));
+      } catch {}
+    }
+    async function refresh() {
+      if (!endpoint) return;
+      try {
+        const r = await fetch(endpoint + (endpoint.includes('?') ? '&' : '?') + 't=' + Date.now(), {
+          cache: 'no-store',
+        });
+        if (!r.ok) return;
+        const data = await r.json();
+        const p = data.prices || data;
+        if (p && typeof p === 'object') {
+          apply(p);
+          writeCache(p);
+        }
+      } catch {}
+    }
+
+    setLabels();
+    recalc('coin');
+    const cached = readCache();
+    if (cached) apply(cached);
+    refresh();
+    if (endpoint) setInterval(refresh, poll);
+  })();
+</script>

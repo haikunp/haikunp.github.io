@@ -1,0 +1,14 @@
+# cpu rows — edited by the dashboard. Serial = row position.
+rows:
+  - name: "Monero"
+    symbol: "XMR"
+    algorithm: "RandomX"
+    link: "https://www.getmonero.org/"
+  - name: "Raptoreum"
+    symbol: "RTM"
+    algorithm: "GhostRider"
+    link: "https://raptoreum.com/"
+  - name: "Zephyr"
+    symbol: "ZEPH"
+    algorithm: "RandomX"
+    link: "https://www.zephyrprotocol.com/"

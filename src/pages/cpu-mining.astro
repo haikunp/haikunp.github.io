@@ -1,0 +1,54 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCpuCoins, cell } from '../lib/table';
+
+const rows = getCpuCoins();
+const metaDescription =
+  'A list of coins you can still mine on a normal CPU: name, symbol, mining algorithm and a link to learn more.';
+---
+<BaseLayout title="CPU Mining Coins" description={metaDescription} path="/cpu-mining">
+  <div class="container page">
+    <a class="back-link" href="/">← MiniAdda</a>
+    <h1 class="page-title">CPU Mining Coins</h1>
+    <p class="page-sub">
+      {rows.length} coin{rows.length === 1 ? '' : 's'} you can mine on a normal CPU.
+    </p>
+
+    {rows.length ? (
+      <div class="table-wrap">
+        <table class="data">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Coin</th>
+              <th scope="col">Symbol</th>
+              <th scope="col">Algorithm</th>
+              <th scope="col">Link</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr>
+                <td class="serial">{r.serial}</td>
+                <td>{cell(r, 'name')}</td>
+                <td>{cell(r, 'symbol') || '—'}</td>
+                <td>{cell(r, 'algorithm') || '—'}</td>
+                <td>
+                  {r.link ? (
+                    <a class="btn" href={cell(r, 'link')} target="_blank" rel="nofollow noopener noreferrer">
+                      Visit
+                    </a>
+                  ) : (
+                    '—'
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    ) : (
+      <p class="empty">No coins listed yet.</p>
+    )}
+  </div>
+</BaseLayout>

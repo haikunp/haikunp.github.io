@@ -1,97 +1,45 @@
 ---
-import PageLayout from '../layouts/PageLayout.astro';
-import ArticleCard from '../components/ArticleCard.astro';
-import PriceConverter from '../components/PriceConverter.astro';
-import { SITE, topicLabel } from '../lib/constants';
-import { COINS } from '../lib/coins';
-import { fetchPrices, availableCoins } from '../lib/prices';
-import { getByKind, getTopicList } from '../lib/content';
-import { itemListSchema } from '../lib/seo';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../lib/constants';
 
-const { prices } = await fetchPrices();
-const coins = availableCoins(prices);
-const news = await getByKind('news');
-const articles = await getByKind('article');
-const topics = await getTopicList();
-const first = coins[0] ?? COINS[0];
+const tools = [
+  {
+    href: '/crypto-price',
+    title: 'Crypto Price',
+    desc: 'Live crypto prices in USD and a quick two-way converter.',
+  },
+  {
+    href: '/sigcamp',
+    title: 'Signature Campaigns',
+    desc: 'BitcoinTalk signature campaigns in one simple table.',
+  },
+  {
+    href: '/cpu-mining',
+    title: 'CPU Mining Coins',
+    desc: 'Coins you can still mine on a normal CPU.',
+  },
+];
 
-const all = [...news, ...articles];
-const homeLd = itemListSchema(all.slice(0, 12), { name: 'Latest on MiniAdda', url: '/' });
-const metaTitle = `${SITE.name} — Crypto Prices, Converters & Quick Answers`;
 const metaDescription =
-  'Convert crypto to USD instantly, check live Bitcoin, Ethereum and altcoin prices, browse BitcoinTalk signature campaigns and read the latest crypto news and articles.';
-const newsPreview = news.slice(0, 3);
-const articlePreview = articles.slice(0, 3);
+  'MiniAdda — simple, useful tools: live crypto prices, BitcoinTalk signature campaigns and CPU-mineable coins.';
 ---
+<BaseLayout title="MiniAdda" description={metaDescription} path="/">
+  <div class="container">
+    <header class="home-head">
+      <h1>{SITE.name}</h1>
+      <p>{SITE.tagline}</p>
+    </header>
 
-<PageLayout title={metaTitle} description={metaDescription} path="/" jsonLd={homeLd}>
-  <section class="section section--first" aria-labelledby="convert-heading">
-    <div class="container">
-      <header class="page-header convx-head">
-        <h1 id="convert-heading">Crypto to USD converter</h1>
-        <p>Pick a coin, enter an amount, get USD.</p>
-      </header>
-      <PriceConverter active={first.symbol} price={prices[first.symbol]} prices={prices} compact />
-      <p class="convx-links">
-        <a href="/prices">All crypto prices →</a>
-      </p>
-    </div>
-  </section>
-
-  <section class="section" aria-labelledby="news-heading">
-    <div class="container">
-      <div class="section-head">
-        <h2 id="news-heading" class="section-title"><span class="tag-bar" aria-hidden="true"></span>News</h2>
-        <a href="/news">More news →</a>
+    <nav aria-label="Tools">
+      <div class="tool-grid">
+        {tools.map((t) => (
+          <a class="tool-card" href={t.href}>
+            <h2>{t.title}</h2>
+            <p>{t.desc}</p>
+            <span class="go">Open →</span>
+          </a>
+        ))}
       </div>
-      {newsPreview.length ? (
-        <div class="card-grid">
-          {newsPreview.map((a) => <ArticleCard article={a} />)}
-        </div>
-      ) : (
-        <p class="empty-state">No news yet. Check back soon.</p>
-      )}
-    </div>
-  </section>
-
-  <section class="section" aria-labelledby="articles-heading">
-    <div class="container">
-      <div class="section-head">
-        <h2 id="articles-heading" class="section-title"><span class="tag-bar" aria-hidden="true"></span>Articles</h2>
-        <a href="/article">More articles →</a>
-      </div>
-      {articlePreview.length ? (
-        <div class="card-grid">
-          {articlePreview.map((a) => <ArticleCard article={a} />)}
-        </div>
-      ) : (
-        <p class="empty-state">No articles yet. Check back soon.</p>
-      )}
-    </div>
-  </section>
-
-  {topics.length > 0 && (
-    <section class="section" aria-labelledby="topics-heading">
-      <div class="container">
-        <div class="section-head">
-          <h2 id="topics-heading" class="section-title"><span class="tag-bar" aria-hidden="true"></span>By topic</h2>
-        </div>
-        <div class="chip-row">
-          {topics.map((t) => (
-            <a class="chip" href={`/topics/${t.slug}`}>{topicLabel(t.slug)} <span class="count">{t.count}</span></a>
-          ))}
-        </div>
-      </div>
-    </section>
-  )}
-
-  <section class="section" aria-labelledby="sigcamp-heading">
-    <div class="container">
-      <div class="section-head">
-        <h2 id="sigcamp-heading" class="section-title"><span class="tag-bar" aria-hidden="true"></span>Signature campaigns</h2>
-        <a href="/sigcamp">View Sigcamp →</a>
-      </div>
-      <p class="empty-state">Browse active BitcoinTalk signature campaigns — <a href="/sigcamp">open Sigcamp</a>.</p>
-    </div>
-  </section>
-</PageLayout>
+    </nav>
+  </div>
+</BaseLayout>

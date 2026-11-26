@@ -5,141 +5,105 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>MiniAdda Dashboard</title>
 <style>
-:root{--bg:#0b0e14;--card:#141925;--line:#232a3a;--txt:#e6e9ef;--mut:#8b93a7;--acc:#ff5c00;--acc2:#ffe600;--ok:#4ade80;--red:#f87171;--blue:#60a5fa}
+:root{--bg:#0b0e14;--card:#141925;--line:#232a3a;--txt:#e6e9ef;--mut:#8b93a7;--acc:#2563eb;--ok:#4ade80;--red:#f87171}
 *{box-sizing:border-box}
 body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--txt);line-height:1.5}
 header{padding:14px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;flex-wrap:wrap;position:sticky;top:0;background:var(--bg);z-index:10}
-h1{font-size:1.15rem;margin:0}.brand span{color:var(--acc)}
+h1{font-size:1.15rem;margin:0}
 .tabs{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
 .tab{background:#1d2534;border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:8px 14px;cursor:pointer;font-size:.9rem;font-weight:600}
 .tab.active{background:var(--acc);color:#fff;border-color:var(--acc)}
 main{max-width:1080px;margin:0 auto;padding:22px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:18px}
-.card h2{font-size:.9rem;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);margin:0 0 14px}
-label{display:block;font-size:.82rem;color:var(--mut);margin:10px 0 4px}
-input,textarea,select{width:100%;background:#0f1420;border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:9px 11px;font-family:inherit;font-size:.92rem}
-textarea{resize:vertical;min-height:120px;font-family:ui-monospace,monospace}
-.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1;min-width:150px}
-.btn{background:var(--acc);color:#fff;border:0;border-radius:8px;padding:10px 16px;font-weight:700;cursor:pointer;font-size:.9rem}
+.card h2{font-size:.95rem;margin:0 0 14px}
+.muted{color:var(--mut);font-size:.82rem}
+.btn{background:var(--acc);color:#fff;border:0;border-radius:8px;padding:9px 15px;font-weight:700;cursor:pointer;font-size:.88rem}
 .btn:hover{filter:brightness(1.1)}
 .btn.sec{background:#1d2534;color:var(--txt);border:1px solid var(--line)}
-.btn.go{background:var(--ok);color:#04210f}
 .btn.danger{background:var(--red);color:#2a0c0c}
-.btn.sm{padding:5px 10px;font-size:.78rem}
-.btn:disabled{opacity:.4;cursor:not-allowed}
-.list-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:9px;margin-bottom:8px;background:#0f1420}
-.list-item .grow{flex:1;min-width:0}
-.list-item b{font-size:.95rem}
-.muted{color:var(--mut);font-size:.8rem}
-.pill{display:inline-block;font-size:.68rem;padding:2px 8px;border-radius:99px;border:1px solid var(--line);margin-left:4px}
-.pill.news{background:#0c1a2a;color:var(--blue);border-color:#15405e}
-.pill.article{background:#231a06;color:var(--acc2);border-color:#5e4a15}
-.status{padding:10px 12px;border-radius:8px;margin-top:10px;display:none;font-size:.85rem}
+.btn.sm{padding:5px 9px;font-size:.78rem}
+.btn.go{background:var(--ok);color:#04210f}
+.toolbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.toolbar .grow{flex:1}
+.table-wrap{width:100%;overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+table.grid{width:100%;border-collapse:collapse;min-width:640px}
+table.grid th,table.grid td{padding:7px;text-align:left;border-bottom:1px solid var(--line);font-size:.86rem;vertical-align:middle}
+table.grid th{font-size:.72rem;text-transform:uppercase;color:var(--mut);letter-spacing:.04em;background:#0f1420;position:sticky;top:0}
+table.grid td.serial{width:44px;color:var(--mut);font-variant-numeric:tabular-nums}
+table.grid input{width:100%;background:#0f1420;border:1px solid var(--line);color:var(--txt);border-radius:7px;padding:7px 9px;font-family:inherit;font-size:.85rem}
+table.grid input:focus{outline:none;border-color:var(--acc)}
+table.grid td.actions{white-space:nowrap;width:1%}
+.status{padding:10px 12px;border-radius:8px;margin-top:12px;display:none;font-size:.85rem}
 .status.ok{display:block;background:#0c2a17;border:1px solid #155e34;color:var(--ok)}
 .status.err{display:block;background:#2a0c0c;border:1px solid #5e1515;color:var(--red)}
-.status.info{display:block;background:#0c1a2a;border:1px solid #15405e;color:var(--blue)}
-.price-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)}
-.price-row b{color:var(--acc2);font-variant-numeric:tabular-nums}
+.status.info{display:block;background:#0c1a2a;border:1px solid #15405e;color:#60a5fa}
 .hidden{display:none}
 .mono{font-family:ui-monospace,monospace}
-.toolbar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
-.toolbar input{flex:1;min-width:160px}
-.segmented{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
-.segmented button{background:#0f1420;border:0;color:var(--mut);padding:7px 14px;font-weight:700;cursor:pointer;font-size:.82rem}
-.segmented button.on{background:var(--acc);color:#fff}
-table.grid{width:100%;border-collapse:collapse}
-table.grid th,table.grid td{padding:6px;text-align:left;border-bottom:1px solid var(--line);font-size:.86rem}
-table.grid th{font-size:.72rem;text-transform:uppercase;color:var(--mut);letter-spacing:.04em}
-table.grid td input{font-size:.85rem;padding:7px 9px}
-.drag{cursor:grab;color:var(--mut);user-select:none}
+.price-list{max-height:340px;overflow:auto}
+.price-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line);font-size:.85rem}
+.price-row b{color:#93c5fd;font-variant-numeric:tabular-nums}
+.check{display:inline-flex;align-items:center;gap:6px;margin-right:14px;font-size:.85rem}
 </style>
 </head>
 <body>
 <header>
-  <h1><span class="brand">MiniAdda<span>.</span></span> Dashboard</h1>
+  <h1>MiniAdda Dashboard</h1>
   <span class="muted" id="tokenState">checking token…</span>
   <div class="tabs">
-    <button class="tab active" data-tab="prices">Prices</button>
-    <button class="tab" data-tab="news">News &amp; Articles</button>
-    <button class="tab" data-tab="sigcamp">Sigcamp</button>
+    <button class="tab active" data-tab="sigcamp">Signature Campaigns</button>
+    <button class="tab" data-tab="cpu">CPU Mining Coins</button>
+    <button class="tab" data-tab="prices">Prices</button>
     <button class="tab" data-tab="publish">Publish</button>
   </div>
 </header>
 <main>
-  <!-- PRICES -->
-  <section id="tab-prices">
-    <div class="card">
-      <h2>Live prices</h2>
-      <div id="priceList" class="muted">Loading…</div>
-      <button class="btn sec" style="margin-top:12px" onclick="loadPrices()">Refresh prices</button>
-      <p class="muted" style="margin-top:12px">Prices are baked into <span class="mono">/prices</span> pages at build time by GitHub Actions. The prices table lists every coin the feed returns automatically.</p>
-    </div>
-  </section>
-
-  <!-- NEWS & ARTICLES -->
-  <section id="tab-news" class="hidden">
-    <div class="card">
-      <div class="toolbar">
-        <div class="segmented" id="kindFilter">
-          <button class="on" data-kind="">All</button>
-          <button data-kind="news">News</button>
-          <button data-kind="article">Articles</button>
-        </div>
-        <input id="articleSearch" placeholder="Search title or slug…" oninput="renderArticles()">
-        <button class="btn" onclick="newArticle()">New item</button>
-      </div>
-      <p class="muted" style="margin:0 0 10px">Drag the ⠿ handle or use ▲▼ to arrange. Order saves automatically; top of the list shows first on the site.</p>
-      <div id="articleList"></div>
-    </div>
-    <div class="card hidden" id="articleEditor">
-      <h2 id="articleEditorTitle">Edit item</h2>
-      <div class="row">
-        <div><label>Type</label><select id="a_kind"><option value="news">News</option><option value="article">Article</option></select></div>
-        <div><label>Slug</label><input id="a_slug" placeholder="auto from title"></div>
-      </div>
-      <label>Title</label><input id="a_title">
-      <label>Standfirst / quick answer (short, shown on cards)</label><textarea id="a_answer" style="min-height:70px"></textarea>
-      <div class="row">
-        <div><label>Topic</label><input id="a_topic" placeholder="crypto" list="topicList"></div>
-        <div><label>Author</label><input id="a_author" value="MiniAdda Editorial"></div>
-        <div><label>Published at</label><input id="a_publishedAt" type="date"></div>
-      </div>
-      <datalist id="topicList"></datalist>
-      <label>Description (meta, 20–320 chars)</label><input id="a_description">
-      <div class="row">
-        <div><label>SEO title (optional, ≤70)</label><input id="a_seoTitle"></div>
-        <div><label>SEO description (optional)</label><input id="a_seoDescription"></div>
-      </div>
-      <div class="row">
-        <div><label>Featured</label><select id="a_featured"><option value="false">No</option><option value="true">Yes</option></select></div>
-        <div><label>Trending</label><select id="a_trending"><option value="false">No</option><option value="true">Yes</option></select></div>
-      </div>
-      <label>Body (Markdown)</label><textarea id="a_body" style="min-height:260px"></textarea>
-      <div style="margin-top:14px;display:flex;gap:10px">
-        <button class="btn" onclick="saveArticle()">Save</button>
-        <button class="btn sec" onclick="hideEditor()">Cancel</button>
-        <button class="btn danger" id="a_delete" onclick="deleteArticle()">Delete</button>
-      </div>
-      <div class="status" id="articleStatus"></div>
-    </div>
-  </section>
-
   <!-- SIGCAMP -->
-  <section id="tab-sigcamp" class="hidden">
+  <section id="tab-sigcamp">
     <div class="card">
       <div class="toolbar">
-        <h2 style="margin:0;flex:1">Sigcamp rows</h2>
-        <button class="btn sec" onclick="addSigRow()">+ Add row</button>
-        <button class="btn" onclick="saveSigcamp()">Save table</button>
+        <h2 class="grow" style="margin:0">Signature Campaigns</h2>
+        <button class="btn sec" onclick="addRow('sigcamp')">+ Add row</button>
+        <button class="btn" onclick="saveRows('sigcamp')">Save</button>
       </div>
-      <p class="muted" style="margin:0 0 10px">Edit each row inline. Serial number follows row order. “Link” is the external URL; the site shows a Visit button for it.</p>
-      <table class="grid">
-        <thead>
-          <tr><th style="width:44px">Serial</th><th>Name</th><th>Manager</th><th>Payment</th><th>Link (URL)</th><th style="width:70px"></th></tr>
-        </thead>
-        <tbody id="sigRows"></tbody>
-      </table>
-      <div class="status" id="sigStatus"></div>
+      <p class="muted" style="margin:0 0 10px">Edit inline. Use ▲▼ to reorder — serial follows order, and the site shows rows top-first.</p>
+      <div class="table-wrap">
+        <table class="grid">
+          <thead><tr><th>#</th><th>Name</th><th>Manager</th><th>Payment</th><th>Link (URL)</th><th></th></tr></thead>
+          <tbody id="rows-sigcamp"></tbody>
+        </table>
+      </div>
+      <div class="status" id="status-sigcamp"></div>
+    </div>
+  </section>
+
+  <!-- CPU -->
+  <section id="tab-cpu" class="hidden">
+    <div class="card">
+      <div class="toolbar">
+        <h2 class="grow" style="margin:0">CPU Mining Coins</h2>
+        <button class="btn sec" onclick="addRow('cpu')">+ Add row</button>
+        <button class="btn" onclick="saveRows('cpu')">Save</button>
+      </div>
+      <p class="muted" style="margin:0 0 10px">Edit inline. Use ▲▼ to reorder — serial follows order, and the site shows rows top-first.</p>
+      <div class="table-wrap">
+        <table class="grid">
+          <thead><tr><th>#</th><th>Coin</th><th>Symbol</th><th>Algorithm</th><th>Link (URL)</th><th></th></tr></thead>
+          <tbody id="rows-cpu"></tbody>
+        </table>
+      </div>
+      <div class="status" id="status-cpu"></div>
+    </div>
+  </section>
+
+  <!-- PRICES -->
+  <section id="tab-prices" class="hidden">
+    <div class="card">
+      <div class="toolbar">
+        <h2 class="grow" style="margin:0">Live prices</h2>
+        <button class="btn sec" onclick="loadPrices()">Refresh</button>
+      </div>
+      <div id="priceList" class="price-list muted">Loading…</div>
+      <p class="muted" style="margin:12px 0 0">Preview only. The site bakes prices at build time and refreshes live from the price Worker.</p>
     </div>
   </section>
 
@@ -147,12 +111,13 @@ table.grid td input{font-size:.85rem;padding:7px 9px}
   <section id="tab-publish" class="hidden">
     <div class="card">
       <h2>Publish to GitHub</h2>
-      <p class="muted">Commits content to <span class="mono" id="repoLabel"></span>. GitHub Actions then builds and deploys to GitHub Pages.</p>
-      <div class="row" style="margin:12px 0">
-        <label style="margin:0"><input type="checkbox" id="pub_articles" checked style="width:auto"> News &amp; Articles</label>
-        <label style="margin:0"><input type="checkbox" id="pub_sigcamp" checked style="width:auto"> Sigcamp</label>
+      <p class="muted">Commits the table data files to <span class="mono" id="repoLabel"></span>. GitHub Actions then builds and deploys.</p>
+      <div style="margin:12px 0">
+        <label class="check"><input type="checkbox" id="pub_sigcamp" checked> Signature Campaigns</label>
+        <label class="check"><input type="checkbox" id="pub_cpu" checked> CPU Mining Coins</label>
       </div>
-      <label>Commit message</label><input id="pub_message" placeholder="Dashboard: update content">
+      <label class="muted">Commit message</label>
+      <input id="pub_message" placeholder="Dashboard: update tables" style="width:100%;background:#0f1420;border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:9px 11px;margin-top:4px">
       <div style="margin-top:14px">
         <button class="btn go" onclick="publishNow()">Publish now</button>
         <button class="btn sec" onclick="checkToken()">Check token</button>
@@ -163,12 +128,19 @@ table.grid td input{font-size:.85rem;padding:7px 9px}
 </main>
 
 <script>
-let ARTICLES = [], SIGROWS = [], currentArticle = null, kindFilter = '';
+const FIELDS = {
+  sigcamp: ['name','manager','payment','link'],
+  cpu: ['name','symbol','algorithm','link'],
+};
+const LABELS = {
+  sigcamp: {name:'Name', manager:'Manager', payment:'Payment', link:'Link'},
+  cpu: {name:'Coin', symbol:'Symbol', algorithm:'Algorithm', link:'Link'},
+};
+const TABLES = { sigcamp: [], cpu: [] };
 
 function $(id){return document.getElementById(id)}
 function show(el, kind, msg){ el.className='status '+kind; el.textContent=msg; }
 function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
-function slugify(s){ return String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,80); }
 
 function api(path, method, body){
   return fetch(path, {method:method||'GET', headers:body?{'Content-Type':'application/json'}:{},
@@ -179,9 +151,8 @@ function api(path, method, body){
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
   t.classList.add('active');
-  ['prices','news','sigcamp','publish'].forEach(n=>$('tab-'+n).classList.toggle('hidden', n!==t.dataset.tab));
-  if(t.dataset.tab==='news') loadArticles();
-  if(t.dataset.tab==='sigcamp') loadSigcamp();
+  ['sigcamp','cpu','prices','publish'].forEach(n=>$('tab-'+n).classList.toggle('hidden', n!==t.dataset.tab));
+  if(t.dataset.tab==='prices') loadPrices();
 });
 
 async function checkToken(){
@@ -190,7 +161,6 @@ async function checkToken(){
     const el=$('tokenState');
     if(d.ok){ el.textContent='token OK · '+d.repo; el.style.color='var(--ok)'; $('repoLabel').textContent=d.repo+' ('+d.default_branch+')'; }
     else { el.textContent='token: '+(d.error||'not set'); el.style.color='var(--red)'; }
-    return d;
   }catch(e){ $('tokenState').textContent='token check failed'; $('tokenState').style.color='var(--red)'; }
 }
 
@@ -206,171 +176,45 @@ async function loadPrices(){
   }catch(e){ $('priceList').textContent='Failed: '+e.message; }
 }
 
-// ---------- News & Articles ----------
-document.getElementById('kindFilter').addEventListener('click', e=>{
-  const b=e.target.closest('button'); if(!b) return;
-  kindFilter=b.dataset.kind;
-  document.querySelectorAll('#kindFilter button').forEach(x=>x.classList.toggle('on', x===b));
-  renderArticles();
-});
-
-async function loadArticles(){
-  const d=await api('/api/articles');
-  ARTICLES=d.articles||[];
-  const topics=[...new Set(ARTICLES.map(a=>a.data.topic).filter(Boolean))];
-  $('topicList').innerHTML=topics.map(t=>'<option value="'+esc(t)+'">').join('');
-  renderArticles();
+// ---------- Tables ----------
+async function loadTable(name){
+  const d=await api('/api/table/'+name);
+  TABLES[name]=d.rows||[];
+  renderTable(name);
 }
-function renderArticles(){
-  const q=($('articleSearch').value||'').toLowerCase();
-  const list=ARTICLES.filter(a=>{
-    if(kindFilter && (a.data.kind||'news')!==kindFilter) return false;
-    return !q || (a.data.title||'').toLowerCase().includes(q) || a.id.includes(q);
-  });
-  $('articleList').innerHTML = list.length ? list.map((a,i)=>{
-    const kind=a.data.kind||'news';
-    return '<div class="list-item" draggable="true" data-id="'+esc(a.id)+'">'+
-      '<span class="drag" title="Drag to reorder">⠿</span>'+
-      '<div class="grow"><b>'+esc(a.data.title||a.id)+'</b>'+
-      '<span class="pill '+esc(kind)+'">'+esc(kind)+'</span>'+
-      '<div class="muted">'+esc(a.data.topic||'')+' · /'+esc(kind)+'/'+esc(a.id)+'</div></div>'+
-      '<button class="btn sec sm" onclick="moveItem(\''+esc(a.id)+'\',-1)">▲</button>'+
-      '<button class="btn sec sm" onclick="moveItem(\''+esc(a.id)+'\',1)">▼</button>'+
-      '<button class="btn sec sm" onclick="editArticle(\''+esc(a.id)+'\')">Edit</button></div>';
-  }).join('') : '<p class="muted">Nothing here yet.</p>';
-  enableDrag();
-}
-function enableDrag(){
-  const items=[...$('articleList').querySelectorAll('.list-item')];
-  let dragId=null;
-  items.forEach(el=>{
-    el.addEventListener('dragstart',()=>{ dragId=el.dataset.id; el.style.opacity=.4; });
-    el.addEventListener('dragend',()=>{ el.style.opacity=1; });
-    el.addEventListener('dragover',e=>e.preventDefault());
-    el.addEventListener('drop',async e=>{
-      e.preventDefault();
-      const targetId=el.dataset.id;
-      if(!dragId || dragId===targetId) return;
-      const ids=ARTICLES.map(a=>a.id);
-      const from=ids.indexOf(dragId), to=ids.indexOf(targetId);
-      ids.splice(from,1); ids.splice(to,0,dragId);
-      ARTICLES.sort((a,b)=>ids.indexOf(a.id)-ids.indexOf(b.id));
-      renderArticles();
-      await api('/api/articles/reorder','POST',{ids});
-    });
-  });
-}
-async function moveItem(id, dir){
-  const ids=ARTICLES.map(a=>a.id);
-  const i=ids.indexOf(id); const j=i+dir;
-  if(i<0 || j<0 || j>=ids.length) return;
-  ids.splice(j,0,ids.splice(i,1)[0]);
-  ARTICLES.sort((a,b)=>ids.indexOf(a.id)-ids.indexOf(b.id));
-  renderArticles();
-  await api('/api/articles/reorder','POST',{ids});
-}
-
-function newArticle(){
-  currentArticle=null;
-  $('articleEditorTitle').textContent='New item';
-  ['a_title','a_slug','a_description','a_body','a_answer','a_seoTitle','a_seoDescription'].forEach(id=>$(id).value='');
-  $('a_kind').value = kindFilter || 'news';
-  $('a_topic').value='crypto';
-  $('a_author').value='MiniAdda Editorial';
-  $('a_publishedAt').value=new Date().toISOString().slice(0,10);
-  $('a_featured').value='false'; $('a_trending').value='false';
-  $('a_delete').classList.add('hidden');
-  $('articleStatus').className='status';
-  $('articleEditor').classList.remove('hidden');
-}
-async function editArticle(id){
-  const a=await api('/api/articles/'+id);
-  currentArticle=a;
-  const d=a.data||{};
-  $('articleEditorTitle').textContent='Edit: '+id;
-  $('a_kind').value=d.kind||'news';
-  $('a_title').value=d.title||''; $('a_slug').value=id;
-  $('a_topic').value=d.topic||'crypto';
-  $('a_author').value=d.author||'MiniAdda Editorial';
-  $('a_answer').value=d.answer||''; $('a_description').value=d.description||'';
-  $('a_seoTitle').value=d.seoTitle||''; $('a_seoDescription').value=d.seoDescription||'';
-  $('a_publishedAt').value=(d.publishedAt||'').toString().slice(0,10);
-  $('a_featured').value=String(!!d.featured); $('a_trending').value=String(!!d.trending);
-  $('a_body').value=a.body||'';
-  $('a_delete').classList.remove('hidden');
-  $('articleStatus').className='status';
-  $('articleEditor').classList.remove('hidden');
-}
-function selBool(id){ return $(id).value==='true'; }
-async function saveArticle(){
-  const kind=$('a_kind').value;
-  const data={
-    title:$('a_title').value, kind, answer:$('a_answer').value,
-    topic:($('a_topic').value||'crypto').trim(), author:$('a_author').value||'MiniAdda Editorial',
-    description:$('a_description').value, seoTitle:$('a_seoTitle').value||undefined,
-    seoDescription:$('a_seoDescription').value||undefined, publishedAt:$('a_publishedAt').value,
-    featured:selBool('a_featured'), trending:selBool('a_trending'),
-  };
-  const slug=$('a_slug').value || slugify($('a_title').value);
-  try{
-    show($('articleStatus'),'info','Saving…');
-    const d=await api('/api/articles','POST',{slug, oldSlug:(currentArticle?currentArticle.id:undefined), data, body:$('a_body').value});
-    show($('articleStatus'),'ok','Saved '+d.slug+' ('+kind+').');
-    await loadArticles();
-  }catch(e){ show($('articleStatus'),'err','Save failed: '+e.message); }
-}
-async function deleteArticle(){
-  if(!currentArticle || !confirm('Delete this item?')) return;
-  await api('/api/articles/'+currentArticle.id,'DELETE');
-  hideEditor(); await loadArticles();
-}
-function hideEditor(){ $('articleEditor').classList.add('hidden'); currentArticle=null; }
-
-// ---------- Sigcamp ----------
-async function loadSigcamp(){
-  const d=await api('/api/sigcamp');
-  SIGROWS=d.rows||[];
-  renderSigRows();
-}
-function renderSigRows(){
-  $('sigRows').innerHTML = SIGROWS.map((r,i)=>{
-    return '<tr>'+
-      '<td class="mono">'+(i+1)+'</td>'+
-      '<td><input data-i="'+i+'" data-f="name" value="'+esc(r.name||'')+'" placeholder="Campaign name"></td>'+
-      '<td><input data-i="'+i+'" data-f="manager" value="'+esc(r.manager||'')+'" placeholder="Manager"></td>'+
-      '<td><input data-i="'+i+'" data-f="payment" value="'+esc(r.payment||'')+'" placeholder="0.0002 BTC / post"></td>'+
-      '<td><input data-i="'+i+'" data-f="link" value="'+esc(r.link||'')+'" placeholder="https://bitcointalk.org/..."></td>'+
-      '<td style="white-space:nowrap">'+
-        '<button class="btn sec sm" onclick="moveSigRow('+i+',-1)">▲</button> '+
-        '<button class="btn sec sm" onclick="moveSigRow('+i+',1)">▼</button> '+
-        '<button class="btn danger sm" onclick="removeSigRow('+i+')">✕</button>'+
+function renderTable(name){
+  const rows=TABLES[name], fields=FIELDS[name], labels=LABELS[name];
+  $('rows-'+name).innerHTML = rows.map((r,i)=>{
+    const cells=fields.map(f=>'<td><input data-i="'+i+'" data-f="'+f+'" value="'+esc(r[f]||'')+'" placeholder="'+esc(labels[f])+'"></td>').join('');
+    return '<tr><td class="serial">'+(i+1)+'</td>'+cells+
+      '<td class="actions">'+
+        '<button class="btn sec sm" onclick="moveRow(\''+name+'\','+i+',-1)">▲</button> '+
+        '<button class="btn sec sm" onclick="moveRow(\''+name+'\','+i+',1)">▼</button> '+
+        '<button class="btn danger sm" onclick="removeRow(\''+name+'\','+i+')">✕</button>'+
       '</td></tr>';
-  }).join('') || '<tr><td colspan="6" class="muted">No rows yet. Click “+ Add row”.</td></tr>';
-  $('sigRows').querySelectorAll('input').forEach(inp=>{
-    inp.addEventListener('input',()=>{
-      const i=+inp.dataset.i, f=inp.dataset.f;
-      SIGROWS[i][f]=inp.value;
-    });
+  }).join('') || '<tr><td colspan="'+(fields.length+2)+'" class="muted">No rows yet. Click “+ Add row”.</td></tr>';
+  $('rows-'+name).querySelectorAll('input').forEach(inp=>{
+    inp.addEventListener('input',()=>{ TABLES[name][+inp.dataset.i][inp.dataset.f]=inp.value; });
   });
 }
-function addSigRow(){ SIGROWS.push({name:'',manager:'',payment:'',link:''}); renderSigRows(); }
-function removeSigRow(i){ SIGROWS.splice(i,1); renderSigRows(); }
-function moveSigRow(i,dir){ const j=i+dir; if(j<0||j>=SIGROWS.length) return;
-  const t=SIGROWS[j]; SIGROWS[j]=SIGROWS[i]; SIGROWS[i]=t; renderSigRows(); }
-async function saveSigcamp(){
+function addRow(name){ const blank={}; FIELDS[name].forEach(f=>blank[f]=''); TABLES[name].push(blank); renderTable(name); }
+function removeRow(name,i){ TABLES[name].splice(i,1); renderTable(name); }
+function moveRow(name,i,dir){ const j=i+dir; const rows=TABLES[name];
+  if(j<0||j>=rows.length) return; const t=rows[j]; rows[j]=rows[i]; rows[i]=t; renderTable(name); }
+async function saveRows(name){
   try{
-    show($('sigStatus'),'info','Saving…');
-    const d=await api('/api/sigcamp','POST',{rows:SIGROWS});
-    SIGROWS=d.rows||SIGROWS; renderSigRows();
-    show($('sigStatus'),'ok','Saved '+SIGROWS.length+' rows.');
-  }catch(e){ show($('sigStatus'),'err','Save failed: '+e.message); }
+    show($('status-'+name),'info','Saving…');
+    const d=await api('/api/table/'+name,'POST',{rows:TABLES[name]});
+    TABLES[name]=d.rows||TABLES[name]; renderTable(name);
+    show($('status-'+name),'ok','Saved '+TABLES[name].length+' rows.');
+  }catch(e){ show($('status-'+name),'err','Save failed: '+e.message); }
 }
 
 // ---------- Publish ----------
 async function publishNow(){
   const what=[];
-  if($('pub_articles').checked) what.push('articles');
   if($('pub_sigcamp').checked) what.push('sigcamp');
+  if($('pub_cpu').checked) what.push('cpu');
   try{
     show($('publishStatus'),'info','Publishing…');
     const d=await api('/api/publish','POST',{what, message:$('pub_message').value||undefined});
@@ -378,7 +222,9 @@ async function publishNow(){
   }catch(e){ show($('publishStatus'),'err','Publish failed: '+e.message); }
 }
 
-checkToken(); loadPrices();
+checkToken();
+loadTable('sigcamp');
+loadTable('cpu');
 </script>
 </body>
 </html>
